@@ -102,7 +102,7 @@ Schema::create('vendors', function (Blueprint $table) {
     $table->string('sort_code')->nullable();
     $table->string('swift_code')->nullable();
     $table->string('iban')->nullable();  
-    // $table->foreignId('role_id')->nullable()->constrained();
+    $table->foreignId('role_id')->nullable()->constrained();
     $table->rememberToken();
     $table->softDeletes();
     $table->timestamps();
