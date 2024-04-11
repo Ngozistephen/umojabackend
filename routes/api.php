@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\CustomerRegisterController;
 
 /*
@@ -18,7 +19,7 @@ use App\Http\Controllers\Api\Auth\CustomerRegisterController;
 Route::prefix('auth')->group(function () {
     Route::post('register_customer', [CustomerRegisterController::class, '__invoke']);
     // Route::post('register_vendor', [VendorRegisterController::class, '__invoke']);
-    // Route::post('login', [LoginController::class, '__invoke']);
+     Route::post('login', [LoginController::class, '__invoke']);
     // Route::post('forget_password', [ForgetPasswordController::class, '__invoke']);
     // Route::post('reset_password', [ResetPasswordController::class, '__invoke'])->name('auth.reset_password');
     // social registrations still be worked on for vendor registration part

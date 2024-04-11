@@ -14,7 +14,7 @@ Schema::create('users', function (Blueprint $table) {
     $table->string('status')->default('active');
     $table->string('phone_number')->unique()->nullable();
     $table->string('image')->default('https://ih0.redbubble.net/image.210602545.3386/flat,1000x1000,075,f.u1.jpg');
-    // $table->foreignId('role_id')->nullable()->constrained();
+    $table->foreignId('role_id')->nullable()->constrained();
     $table->rememberToken();
     $table->timestamps();
     $table->softDeletes(); 

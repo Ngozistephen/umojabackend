@@ -24,7 +24,7 @@ class CustomerRegisterController extends Controller
             'terms_accepted' => ['required', 'accepted'],
         ]);
 
-        // Set the default role for new users (assuming customer role ID is defined)
+       
         $role = Role::where('name', 'Customer')->value('id');
 
         $user = User::create([
@@ -33,11 +33,10 @@ class CustomerRegisterController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'terms_accepted' => $request->terms_accepted,
-            'role_id' => $role, // Assign the default role
+            'role_id' => $role, 
         ]);
 
-        // Log::info('Reference: ' . $user);
-        // exit;
+       
         event(new Registered($user));
 
         $device = substr($request->userAgent() ?? '', 0, 255);
