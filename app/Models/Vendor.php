@@ -4,16 +4,18 @@ namespace App\Models;
 
 use App\Models\Role;
 use App\Models\User;
+use Spatie\MediaLibrary\HasMedia;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Vendor extends Model
+class Vendor extends Model implements HasMedia
 {
-    use  HasApiTokens, HasFactory,Notifiable, SoftDeletes;
+    use  HasApiTokens, HasFactory,Notifiable, SoftDeletes, InteractsWithMedia;
 
     protected $guarded = ['id'];
     

@@ -38,7 +38,6 @@ return new class extends Migration
             $table->string('utility_photo')->nullable();
             $table->string('business_number_photo')->nullable();
             $table->string('password')->nullable();
-            $table->string('image')->default('https://ih0.redbubble.net/image.210602545.3386/flat,1000x1000,075,f.u1.jpg');
             $table->string('status')->default('active');
             $table->string('language')->default('English')->nullable();
             $table->boolean('verified')->default(false);
