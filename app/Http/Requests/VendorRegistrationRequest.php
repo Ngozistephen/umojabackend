@@ -35,7 +35,7 @@ class VendorRegistrationRequest extends FormRequest
             'country_name' => 'required|string',
             'vendor_id_form_type' => 'required|string',
             'vendor_id_number' => 'required|string',
-            'phone_number' => 'required|string|unique',
+            'phone_number' => 'required|string|unique:vendors,phone_number',
             'company' => 'required|string',
             'address' => 'required|string',
             'apartment_suite' => 'nullable|string',
