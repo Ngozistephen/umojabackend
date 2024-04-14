@@ -6,7 +6,6 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
@@ -40,6 +39,8 @@ class SocialRegisterController extends Controller
             $names = explode(' ', $fullName, 2);
             $firstName = $names[0];
             $lastName = isset($names[1]) ? $names[1] : null;
+
+          
             $user = User::create([
                 $provider . '_id' => $response->getId(),
                 'first_name'     =>  $firstName, 
@@ -48,8 +49,7 @@ class SocialRegisterController extends Controller
                 'oauth_type'   => $provider,
                 'password'        => Hash::make($response->getId()),
                 'terms_accepted' => true, 
-                // 'role_id'         => Role::ROLE_CUSTOMER,
-                'role_id'         => Rule::in( Role::ROLE_CUSTOMER),
+                'role_id'         => Role::ROLE_CUSTOMER,
                 
             ]);
         }
@@ -80,7 +80,7 @@ class SocialRegisterController extends Controller
     {
         return $this->getValidationFactory()->make(
             ['provider' => $provider],
-            ['provider' => 'in:google,apple']
+            ['provider' => 'in:google,apple,facebook']
         )->validate();
     }
 }

@@ -32,7 +32,7 @@ class SendVendorPasswordSetupEmail implements ShouldQueue
        
         $event->vendor->update(['password_setup_token' => $passwordSetupToken]);
 
-        $passwordSetupUrl = config('app.frontend_url') . '/password/setup/' . $passwordSetupToken;
+        $passwordSetupUrl = config('app.frontend_url') . '/auth/password_setup/' . $passwordSetupToken;
 
         
          Mail::to($event->vendor->email)->send(new VendorPasswordSetupMail($passwordSetupUrl));

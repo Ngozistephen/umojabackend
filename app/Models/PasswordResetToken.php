@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TemporaryFile extends Model
+class PasswordResetToken extends Model
 {
     use HasFactory;
 
-    protected  $fillable = ['folder', 'file_name', 'fileType'];
+    protected $fillable = ['email', 'token'];
+
+    // protected $dates = ['created_at'];
 }
