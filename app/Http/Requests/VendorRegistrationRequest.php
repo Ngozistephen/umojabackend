@@ -25,7 +25,7 @@ class VendorRegistrationRequest extends FormRequest
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required| string|max:255',
-            'email' => 'required|string|email| max:255|unique:users',
+            'email' =>  'required|email|unique:vendors,email',
             'password' => 'nullable| confirmed|Password::defaults()',
             'language' => 'nullable|string',
             'verified' => 'nullable|boolean',
@@ -35,7 +35,7 @@ class VendorRegistrationRequest extends FormRequest
             'country_name' => 'required|string',
             'vendor_id_form_type' => 'required|string',
             'vendor_id_number' => 'required|string',
-            'phone_number' => 'required|string',
+            'phone_number' => 'required|string|unique',
             'company' => 'required|string',
             'address' => 'required|string',
             'apartment_suite' => 'nullable|string',
@@ -69,6 +69,17 @@ class VendorRegistrationRequest extends FormRequest
             'business_image' => 'nullable',
             'utility_photo' => 'nullable',
             'business_number_photo' => 'nullable'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'email.required' => 'The email field is required.',
+            'email.email' => 'Please enter a valid email address.',
+            'email.unique' => 'The email address has already been taken.',
+            'phone_number.required' => 'The Phone Number field is required.',
+            'phone_number.unique' => 'The Phone Number has already been taken.',
         ];
     }
 }
