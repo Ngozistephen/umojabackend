@@ -51,7 +51,7 @@
         <div class="header">
             <h1>Password Setup</h1>
         </div>
-        <div class="body-content">
+        <div class="body-content"> 
             <p>Hello,</p>
             <p>Thank you for signing up. Please click the button below to set up your password:</p>
             <a href="{{ $passwordSetupUrl }}" class="button">Set Up Password</a>

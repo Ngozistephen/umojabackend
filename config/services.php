@@ -42,5 +42,11 @@ return [
         'client_secret' => env('APPLE_CLIENT_SECRET'),
         'redirect' => 'http://localhost:8000/api/auth/apple/callback'
     ],
+    'facebook' => [
+        'client_id' => env('APPLE_CLIENT_ID'),
+        'client_secret' => env('APPLE_CLIENT_SECRET'),
+        'redirect' => 'http://localhost:8000/api/auth/facebook/callback'
+        // 'redirect' => env('FRONTEND_URL') .'/auth/facebook/callback'
+    ],  
 
 ];
