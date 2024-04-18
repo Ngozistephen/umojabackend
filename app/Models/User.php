@@ -13,7 +13,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -36,7 +36,10 @@ class User extends Authenticatable
         'oauth_type',
         'status',
         'phone_number',
-        'image'
+        'profile_photo',
+        'password_setup_token',
+        'email_verified_at',
+        
     ];
     /**
      * The attributes that should be hidden for serialization.
@@ -65,9 +68,9 @@ class User extends Authenticatable
     }
 
 
-    public function vendors():BelongsToMany
+    public function vendor():HasOne
     {
-        return $this->belongsToMany(Vendor::class);
+        return $this->hasOne(Vendor::class);
     }
 
     public function categories()
@@ -83,4 +86,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(VariationsOption::class);
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
+
 }

@@ -24,7 +24,7 @@ class SubcategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:sub_categories,name',
             'category_id' => 'required|exists:categories,id', 
             'photo' => 'nullable', 
         ];
@@ -33,5 +33,13 @@ class SubcategoryRequest extends FormRequest
     public function attributes()
     {
         return ['category_id' => 'category'];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name' => "Sub Cateegory Name must be Uniue",
+           
+        ];
     }
 }

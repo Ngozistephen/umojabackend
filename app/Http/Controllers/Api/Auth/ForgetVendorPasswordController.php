@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Models\Vendor;
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -23,7 +23,7 @@ class ForgetVendorPasswordController extends Controller
         ]);
 
         $email = $request->email;
-        $vendor = Vendor::where('email', $email)->first();
+        $vendor = User::where('email', $email)->first();
 
         if (!$vendor) {
             return response([

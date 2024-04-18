@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Api\Auth;
 
 
 use App\Models\Role;
+use App\Models\User;
 use App\Models\Vendor;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Events\VendorRegistered;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\VendorPasswordSetupMail;
 use App\Http\Requests\VendorRegistrationRequest;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
@@ -18,22 +21,32 @@ class VendorRegisterController extends Controller
 
     public function register(VendorRegistrationRequest $request)
     {
+       
+        $userDetails = $request->only(['first_name', 'last_name', 'email', 'password']);
         $role = Role::where('name', 'Vendor')->value('id');
+        $userDetails['role_id'] = $role;
+
+        $user = User::create($userDetails);
+
         $uploadedFiles = $this->upload($request);
+        $vendorData = $request->except(array_keys($uploadedFiles), ['password', 'profile_photo']);
+        $vendor = Vendor::create(array_merge($vendorData, $uploadedFiles, ['user_id' => $user->id]));
 
-        $vendorData = $request->except(array_keys($uploadedFiles));
+        $user->update(['profile_photo' => $uploadedFiles['profile_photo'] ?? null]);
 
-        $vendor = Vendor::create(array_merge($vendorData, $uploadedFiles, ['role_id' => $role]));
- 
-        event(new VendorRegistered($vendor));
+        $passwordSetupToken = Str::random(60);
+        $user->update(['password_setup_token' => $passwordSetupToken]);
+
+        $passwordSetupUrl = config('app.frontend_url') . '/auth/password_setup/' . $passwordSetupToken;
+
+        Mail::to($user->email)->send(new VendorPasswordSetupMail($user, $passwordSetupUrl));
 
         $device = substr($request->userAgent() ?? '', 0, 255);
-
-        $token = $vendor->createToken($device)->accessToken;
+        $token = $user->createToken($device)->accessToken;
 
         $response = [
             'access_token' => $token,
-            'user' => $vendor->first_name,
+            'vendor' => $user->first_name,
             'role' => Role::find($role)->name,
             'Message' => 'registered successfully.'
         ];
@@ -91,7 +104,6 @@ public function upload(Request $request)
 
     $fileFields = [
         'business_image' => 'business_image',
-        'profile_photo' => 'profile_photo',
         'picture_vendor_id_number' => 'picture_vendor_id_number',
         'utility_photo' => 'utility_photo',
         'business_number_photo' => 'business_number_photo'

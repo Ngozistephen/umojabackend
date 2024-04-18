@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Models\Vendor;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\PasswordResetToken;
 use App\Http\Controllers\Controller;
@@ -31,7 +31,7 @@ class ResetPasswordVendorController extends Controller
         }
     
         // Update the user's password
-        Vendor::where('email', $request->email)
+        User::where('email', $request->email)
             ->update(['password' => Hash::make($request->password)]);
     
         // Delete the password reset record

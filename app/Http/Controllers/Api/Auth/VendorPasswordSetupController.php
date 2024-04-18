@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
+use App\Models\User;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -14,10 +15,10 @@ class VendorPasswordSetupController extends Controller
      */
     public function __invoke(Request $request, $token)
     {
-        // Find the vendor by the token
-        $vendor = Vendor::where('password_setup_token', $token)->first();
+        // Find the user by the token
+        $user = User::where('password_setup_token', $token)->first();
 
-        if (!$vendor) {
+        if (! $user) {
             return response()->json(['error' => 'Invalid token'], 404);
         }
 
@@ -26,9 +27,9 @@ class VendorPasswordSetupController extends Controller
         ]);
 
         // Update vendor's password
-        $vendor->password = Hash::make($request->password);
-        $vendor->password_setup_token = null; 
-        $vendor->save();
+        $user->password = Hash::make($request->password);
+        $user->password_setup_token = null; 
+        $user->save();
 
       
         return response()->json(['message' => 'Password set successfully']);

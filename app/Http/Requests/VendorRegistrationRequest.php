@@ -23,10 +23,15 @@ class VendorRegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
+            // User fields
             'first_name' => 'required|string|max:255',
             'last_name' => 'required| string|max:255',
-            'email' =>  'required|email|unique:vendors,email',
+            'email' =>  'required|email|unique:users,email',
             'password' => 'nullable| confirmed|Password::defaults()',
+            'profile_photo' => 'nullable',
+
+
+            // Vendor fields
             'language' => 'nullable|string',
             'verified' => 'nullable|boolean',
             'rep_country' => 'nullable|string',
@@ -63,8 +68,6 @@ class VendorRegistrationRequest extends FormRequest
             'sort_code' => 'nullable|string', 
             'swift_code' => 'nullable|string', 
             'iban' => 'nullable|string',
-            'role_id' => 'nullable|integer',
-            'profile_photo' => 'nullable',
             'picture_vendor_id_number' => 'nullable',
             'business_image' => 'nullable',
             'utility_photo' => 'nullable',

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 
+use Log;
 use App\Models\Subcategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -76,11 +77,50 @@ class SubcategoryController extends Controller
     public function destroy(SubCategory $subCategory)
     {
         $this->authorize('all-access');
+        $photoUrl = $subCategory->photo;
+        // \Log::error("Failed to delete image from Cloudinary: " . $photoUrl );
+
+        if ($photoUrl && !empty($photoUrl)) {
+            $publicId = $this->getPublicIdFromCloudinaryUrl($photoUrl);
+            if ($publicId) {
+                try {
+                  Cloudinary::destroy($publicId);
+                } catch (\Exception $e) {
+                  // Log the deletion error for debugging purposes
+                  \Log::error("Failed to delete image from Cloudinary: " . $e->getMessage());
+                  // You can also return a specific error response here if desired
+                }
+              }
+        }
 
         $subCategory->delete();
 
         return response()->noContent();
     }
+    // public function destroy(SubCategory $subCategory)
+    // {
+    //     $this->authorize('all-access');
+
+    //     if ($subCategory->photo && !empty($subCategory->photo)) {
+    //         // $publicId = Cloudinary::getPublicIdFromUrl($subCategory->photo);
+    //         $publicId = $this->getPublicIdFromCloudinaryUrl($subCategory->photo);
+    //         if ($publicId) {
+    //             try {
+    //                 $result = Cloudinary::destroy($publicId);
+    //                 // Log the result of the deletion
+    //                 Log::info('Cloudinary image deletion result', ['result' => $result]);
+    //             } catch (\Exception $e) {
+    //                 // Log or handle the error
+    //                 \Log::error('Failed to delete image from Cloudinary', ['exception' => $e]);
+    //                 return response()->json(['error' => 'Failed to delete image from Cloudinary'], 500);
+    //             }
+    //         }
+    //     }
+
+    //     $subCategory->delete();
+
+    //     return response()->noContent();
+    // }
 
      
     public function upload(Request $request)
@@ -111,5 +151,14 @@ class SubcategoryController extends Controller
             // Handle case where no file is uploaded
             return response()->json(['error' => 'No file uploaded'], 400);
         }
+    }
+
+
+    private function getPublicIdFromCloudinaryUrl($url)
+    {
+        $parts = explode('/', $url);
+        $publicIdWithExtension = end($parts);
+        $publicId = pathinfo($publicIdWithExtension, PATHINFO_FILENAME);
+        return $publicId;
     }
 }

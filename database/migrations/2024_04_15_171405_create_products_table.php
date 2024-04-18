@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('vendor_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->string('sku')->nullable(); 
             $table->float('unit');
             $table->string('material')->nullable();

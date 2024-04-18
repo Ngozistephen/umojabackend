@@ -4,30 +4,38 @@ namespace App\Models;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Variation;
+use App\Models\VariationsOption;
 use Spatie\MediaLibrary\HasMedia;
-use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 
 class Vendor extends Model 
 {
-    use  HasApiTokens, HasFactory,Notifiable, SoftDeletes;
+    use  HasFactory,Notifiable, SoftDeletes;
 
     protected $guarded = ['id'];
     
 
 
-    public function users():BelongsToMany
-    {
-        return $this->belongsToMany(User::class);
-    }
-
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+
+   
+
+  
 }

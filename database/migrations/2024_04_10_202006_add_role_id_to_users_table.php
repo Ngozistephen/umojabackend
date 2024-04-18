@@ -13,9 +13,6 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('role_id')->constrained();
-            $table->string('google_id')->nullable();
-            $table->string('apple_id')->nullable();
-            $table->string('oauth_type')->nullable();
         });
     }
 

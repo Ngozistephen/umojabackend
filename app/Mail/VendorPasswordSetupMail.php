@@ -2,27 +2,37 @@
 
 namespace App\Mail;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class VendorPasswordSetupMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    // public $passwordSetupUrl;
+    public $user;
     public $passwordSetupUrl;
     // public $vendorFirstName;
     /**
      * Create a new message instance.
      */
-    public function __construct($passwordSetupUrl)
+    public function __construct(User $user, $passwordSetupUrl)
     {
+        $this->user = $user;
         $this->passwordSetupUrl = $passwordSetupUrl;
+
         // $this->$vendorFirstName = $vendorFirstName;
     }
+    // public function __construct($passwordSetupUrl)
+    // {
+    //     $this->passwordSetupUrl = $passwordSetupUrl;
+    //     // $this->$vendorFirstName = $vendorFirstName;
+    // }
 
     /**
      * Get the message envelope.
@@ -42,7 +52,10 @@ class VendorPasswordSetupMail extends Mailable
             return new Content(
                 view: 'emails.vendor_password_setup',
                 with: [
+                    'userName' => $this->user->first_name,
                     'passwordSetupUrl' => $this->passwordSetupUrl,
+
+                        
                     // 'vendor_name' => $this->vendorFirstName,
                   
                 ],

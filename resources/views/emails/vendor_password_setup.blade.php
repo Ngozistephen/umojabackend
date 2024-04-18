@@ -52,7 +52,7 @@
             <h1>Password Setup</h1>
         </div>
         <div class="body-content"> 
-            <p>Hello,</p>
+            <p>Hello, {{ $userName }}</p>
             <p>Thank you for signing up. Please click the button below to set up your password:</p>
             <a href="{{ $passwordSetupUrl }}" class="button">Set Up Password</a>
             <p>If you didn't sign up for this service, you can safely ignore this email.</p>
@@ -63,3 +63,6 @@
     </div>
 </body>
 </html>
+
+
+

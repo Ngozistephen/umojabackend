@@ -136,6 +136,13 @@ class CategoryController extends Controller
         if ($category->user_id != auth()->id()) {
             abort(403, 'Unauthorized');
         }
+
+        if ($category->photo && !empty($category->photo)) {
+            $publicId = Cloudinary::getPublicIdFromUrl($category->photo);
+            if ($publicId) {
+                Cloudinary::destroy($publicId);
+            }
+        }
  
         $category->delete();
  

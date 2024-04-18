@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
@@ -24,10 +23,10 @@ class VendorLoginController extends Controller
         
         ]);
  
-        $vendor = Vendor::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
 
-        if ( ! $vendor || ! Hash::check ($request->password, $vendor->password)) {
+        if ( ! $user || ! Hash::check ($request->password, $user->password)) {
             
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
@@ -37,9 +36,9 @@ class VendorLoginController extends Controller
         
 
         return response()->json([
-            'user' => $vendor->first_name,
-            'role' => Role::find($vendor->role_id)->name,
-            'access_token' => $vendor->createToken($device)->accessToken,
+            'user' => $user->first_name,
+            'role' => Role::find($user->role_id)->name,
+            'access_token' => $user->createToken($device)->accessToken,
             'message' => 'Logged in successfully.'
         ], Response::HTTP_CREATED);
     }

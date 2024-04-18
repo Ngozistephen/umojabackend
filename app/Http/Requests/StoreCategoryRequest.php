@@ -26,7 +26,7 @@ class StoreCategoryRequest extends FormRequest
     {
         
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:categories,name',
             'slug' => 'nullable|string|max:255|unique:categories',
             'photo' => 'nullable', 
         ];
@@ -37,6 +37,7 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'name.required' => 'The category name is required.',
+            'name.unique' => 'Category name is must be Unique.',
             
         ];
     }

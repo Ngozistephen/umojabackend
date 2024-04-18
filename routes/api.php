@@ -2,7 +2,9 @@
 
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Admin\CategoryController;
+use App\Http\Controllers\Api\Vendor\ProductController;
 use App\Http\Controllers\Api\Admin\VariationController;
 use App\Http\Controllers\Api\Auth\SocialLoginController;
 use App\Http\Controllers\Api\Auth\VendorLoginController;
@@ -10,8 +12,10 @@ use App\Http\Controllers\Api\Admin\SubcategoryController;
 use App\Http\Controllers\Api\Auth\CustomerLoginController;
 use App\Http\Controllers\Api\Auth\SocialRegisterController;
 use App\Http\Controllers\Api\Auth\VendorRegisterController;
+use App\Http\Controllers\Api\Public\ProductSearchController;
 use App\Http\Controllers\Api\Admin\VariationOptionController;
 use App\Http\Controllers\Api\Auth\CustomerRegisterController;
+use App\Http\Controllers\Api\Vendor\ProductVariationController;
 use App\Http\Controllers\Api\Auth\ResetPasswordVendorController;
 use App\Http\Controllers\Api\Auth\VendorPasswordSetupController;
 use App\Http\Controllers\Api\Auth\ForgetVendorPasswordController;
@@ -36,6 +40,7 @@ Route::prefix('auth')->group(function () {
     Route::post('upload', [VendorRegisterController::class, 'upload']);
     Route::post('vendor_login', [VendorLoginController::class, '__invoke']);
     Route::post('customer_login', [CustomerLoginController::class, '__invoke']);
+    Route::post('logout', [LogoutController::class, '__invoke'])->middleware('auth:api');
     Route::post('password_setup/{token}', [VendorPasswordSetupController::class, '__invoke']);
     Route::post('forget_customer_password', [ForgetCustomerPasswordController::class, '__invoke']);
     Route::post('forget_vendor_password', [ForgetVendorPasswordController::class, '__invoke']);
@@ -53,6 +58,7 @@ Route::prefix('auth')->group(function () {
     
     
 });
+Route::get('search', [ProductSearchController::class, '__invoke']);
 Route::middleware('auth:api')->group(function () {
     Route::prefix('admin')->group(function () {
         Route::apiResource('categories', CategoryController::class);
@@ -64,8 +70,9 @@ Route::middleware('auth:api')->group(function () {
         // Route::apiResource('discount_codes', DiscountCodeController::class);
     });
     Route::prefix('vendor')->group(function () {
-        // Route::apiResource('products', ProductController::class);
-        // Route::apiResource('products.variations', ProductVariationController::class)->except(['create', 'edit']);
+         Route::apiResource('products', ProductController::class);
+         Route::post('products/upload', [ProductController::class, 'upload']);
+         Route::apiResource('products.variations', ProductVariationController::class)->except(['create', 'edit']);
         // Route::post('/import/products', [ProductController::class, 'import']);
         // Route::get('/export/products', [ProductController::class, 'export']);      
     });

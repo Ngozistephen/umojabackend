@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('vendors', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users');
             $table->string('rep_country')->nullable();
             $table->string('business_type')->nullable();
             $table->string('business_name')->nullable();
@@ -22,10 +23,10 @@ return new class extends Migration
             $table->string('country_name')->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            // $table->string('first_name');
+            // $table->string('last_name');
+            // $table->string('email')->unique();
+            // $table->timestamp('email_verified_at')->nullable();
              $table->string('gender')->nullable();
             $table->date('date_birth')->nullable();
             $table->string('vendor_id_form_type')->nullable();	
@@ -37,11 +38,11 @@ return new class extends Migration
             $table->string('utility_bill_type')->nullable();
             $table->string('utility_photo')->nullable();
             $table->string('business_number_photo')->nullable();
-            $table->string('password')->nullable();
-            $table->string('status')->default('active');
+            // $table->string('password')->nullable();
+            // $table->string('status')->default('active');
             $table->string('language')->default('English')->nullable();
             $table->boolean('verified')->default(false);
-            $table->string('profile_photo')->nullable();
+            // $table->string('profile_photo')->nullable();
             $table->string('twitter_handle')->nullable();
             $table->string('facebook_handle')->nullable();
             $table->string('instagram_handle')->nullable();
@@ -58,8 +59,8 @@ return new class extends Migration
             $table->string('name_on_account')->nullable();
             $table->string('sort_code')->nullable();
             $table->string('swift_code')->nullable();
-            $table->string('iban')->nullable();  
-            $table->foreignId('role_id')->nullable()->constrained();
+            $table->string('iban')->nullable(); 
+            $table->string('cover_image')->nullable(); 
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();
