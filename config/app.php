@@ -59,6 +59,20 @@ return [
 
     'asset_url' => env('ASSET_URL'),
 
+
+    /*
+|--------------------------------------------------------------------------
+| Frontend URL
+|--------------------------------------------------------------------------
+|
+| This URL is used by the console to properly generate URLs when using
+| the Artisan command line tool. You should set this to the root of
+| your frontend application so that it is used when running tasks.
+|
+*/
+
+'frontend_url' => env('FRONTEND_URL', 'https://umoja-store.netlify.app/'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
