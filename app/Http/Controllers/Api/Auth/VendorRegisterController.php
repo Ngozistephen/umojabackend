@@ -140,46 +140,6 @@ public function upload(Request $request)
     return $uploadedFiles;
 }
 
-// public function upload(Request $request)
-// {
-//     $uploadedFiles = [];
-//     $errors = [];
-
-//     $fileFields = [
-//         'business_image' => 'business_image',
-//         'picture_vendor_id_number' => 'picture_vendor_id_number',
-//         'utility_photo' => 'utility_photo',
-//         'business_number_photo' => 'business_number_photo'
-//     ];
-
-//     foreach ($fileFields as $field => $folder) {
-//         if ($request->hasFile($field)) {
-//             $file = $request->file($field);
-
-//             try {
-//                 $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
-//                     'folder' => $folder,
-//                     'transformation' => [
-//                         ['width' => 400, 'height' => 400, 'crop' => 'fit'],
-//                         ['quality' => 'auto', 'fetch_format' => 'auto']
-//                     ]
-//                 ]);
-
-//                 $secureUrl = $cloudinaryResponse->getSecurePath();
-
-//                 $uploadedFiles[$field] = $secureUrl;
-//             } catch (ApiError $e) {
-//                 $errors[$field] = "Unsupported file format";
-//             }
-//         }
-//     }
-
-//     if (!empty($errors)) {
-//         return response()->json(['errors' => $errors], 422);
-//     }
-
-//     return response()->json(['uploaded_files' => $uploadedFiles], 200);
-// }
 
 
 
