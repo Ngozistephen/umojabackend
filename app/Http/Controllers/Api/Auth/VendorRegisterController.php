@@ -22,17 +22,17 @@ class VendorRegisterController extends Controller
     public function register(VendorRegistrationRequest $request)
     {
        
-        $userDetails = $request->only(['first_name', 'last_name', 'email', 'password']);
+        $userDetails = $request->only(['first_name', 'last_name', 'email', 'password','phone_number']);
         $role = Role::where('name', 'Vendor')->value('id');
         $userDetails['role_id'] = $role;
 
         $user = User::create($userDetails);
 
         $uploadedFiles = $this->upload($request);
-        $vendorData = $request->except(array_keys($uploadedFiles), ['password', 'profile_photo']);
+        $vendorData = $request->except(array_keys($uploadedFiles), ['password']);
         $vendor = Vendor::create(array_merge($vendorData, $uploadedFiles, ['user_id' => $user->id]));
 
-        $user->update(['profile_photo' => $uploadedFiles['profile_photo'] ?? null]);
+        // $user->update(['profile_photo' => $uploadedFiles['profile_photo'] ?? null]);
 
         $passwordSetupToken = Str::random(60);
         $user->update(['password_setup_token' => $passwordSetupToken]);

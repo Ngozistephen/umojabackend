@@ -28,10 +28,11 @@ class VendorRegistrationRequest extends FormRequest
             'last_name' => 'required| string|max:255',
             'email' =>  'required|email|unique:users,email',
             'password' => 'nullable| confirmed|Password::defaults()',
-            'profile_photo' => 'nullable',
-
-
+            'phone_number' => 'required|string|unique:users,phone_number',
+            
+            
             // Vendor fields
+            'profile_photo' => 'nullable',
             'language' => 'nullable|string',
             'verified' => 'nullable|boolean',
             'rep_country' => 'nullable|string',
@@ -40,7 +41,6 @@ class VendorRegistrationRequest extends FormRequest
             'country_name' => 'required|string',
             'vendor_id_form_type' => 'required|string',
             'vendor_id_number' => 'required|string',
-            'phone_number' => 'required|string|unique:vendors,phone_number',
             'company' => 'required|string',
             'address' => 'required|string',
             'apartment_suite' => 'nullable|string',
