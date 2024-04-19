@@ -22,45 +22,9 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 class VendorRegisterController extends Controller
 {
 
-    // public function register(VendorRegistrationRequest $request)
-    // {
-       
-    //     $userDetails = $request->only(['first_name', 'last_name', 'email', 'password','phone_number']);
-    //     $role = Role::where('name', 'Vendor')->value('id');
-    //     $userDetails['role_id'] = $role;
-
-    //     $user = User::create($userDetails);
-
-    //     $uploadedFiles = $this->upload($request);
-    //     $vendorData = $request->except(array_keys($uploadedFiles), ['password']);
-    //     $vendor = Vendor::create(array_merge($vendorData, $uploadedFiles, ['user_id' => $user->id]));
-
-    //     // $user->update(['profile_photo' => $uploadedFiles['profile_photo'] ?? null]);
-
-    //     $passwordSetupToken = Str::random(60);
-    //     $user->update(['password_setup_token' => $passwordSetupToken]);
-
-    //     $passwordSetupUrl = config('app.frontend_url') . '/auth/password_setup/' . $passwordSetupToken;
-
-    //     Mail::to($user->email)->send(new VendorPasswordSetupMail($user, $passwordSetupUrl));
-
-    //     $device = substr($request->userAgent() ?? '', 0, 255);
-    //     $token = $user->createToken($device)->accessToken;
-
-    //     $response = [
-    //         'access_token' => $token,
-    //         'vendor' => $user->first_name,
-    //         'role' => Role::find($role)->name,
-    //         'Message' => 'registered successfully. check your mail to Setup your password'
-    //     ];
-
-    //     return response()->json($response,  Response::HTTP_CREATED);
-    // }
-
     public function register(VendorRegistrationRequest $request)
-{
-    try {
-        DB::beginTransaction();
+    {
+       
         $userDetails = $request->only(['first_name', 'last_name', 'email', 'password','phone_number']);
         $role = Role::where('name', 'Vendor')->value('id');
         $userDetails['role_id'] = $role;
@@ -81,23 +45,57 @@ class VendorRegisterController extends Controller
         $device = substr($request->userAgent() ?? '', 0, 255);
         $token = $user->createToken($device)->accessToken;
 
-        DB::commit();
-
         $response = [
             'access_token' => $token,
             'vendor' => $user->first_name,
             'role' => Role::find($role)->name,
-            'Message' => 'registered successfully. Check your mail to setup your password.'
+            'Message' => 'registered successfully. check your mail to Setup your password'
         ];
 
         return response()->json($response,  Response::HTTP_CREATED);
-    } catch (\Exception $e) {
-    
-        DB::rollBack();
-        logger()->error($e);
-        return response()->json(['error' => 'An error occurred during registration. Please try again later.'], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
-}
+
+//     public function register(VendorRegistrationRequest $request)
+// {
+//     try {
+//         DB::beginTransaction();
+//         $userDetails = $request->only(['first_name', 'last_name', 'email', 'password','phone_number']);
+//         $role = Role::where('name', 'Vendor')->value('id');
+//         $userDetails['role_id'] = $role;
+
+//         $user = User::create($userDetails);
+
+//         $uploadedFiles = $this->upload($request);
+//         $vendorData = $request->except(array_keys($uploadedFiles), ['password']);
+//         $vendor = Vendor::create(array_merge($vendorData, $uploadedFiles, ['user_id' => $user->id]));
+
+//         $passwordSetupToken = Str::random(60);
+//         $user->update(['password_setup_token' => $passwordSetupToken]);
+
+//         $passwordSetupUrl = config('app.frontend_url') . '/auth/password_setup/' . $passwordSetupToken;
+
+//         Mail::to($user->email)->send(new VendorPasswordSetupMail($user, $passwordSetupUrl));
+
+//         $device = substr($request->userAgent() ?? '', 0, 255);
+//         $token = $user->createToken($device)->accessToken;
+
+//         DB::commit();
+
+//         $response = [
+//             'access_token' => $token,
+//             'vendor' => $user->first_name,
+//             'role' => Role::find($role)->name,
+//             'Message' => 'registered successfully. Check your mail to setup your password.'
+//         ];
+
+//         return response()->json($response,  Response::HTTP_CREATED);
+//     } catch (\Exception $e) {
+    
+//         DB::rollBack();
+//         logger()->error($e);
+//         return response()->json(['error' => 'An error occurred during registration. Please try again later.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+//     }
+// }
 
     
 
