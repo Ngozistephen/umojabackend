@@ -117,6 +117,10 @@ public function upload(Request $request)
 
             $validatedData = $request->validate([
                 $field . '.*' => 'nullable|image|mimes:jpeg,png,JPG,jpg,gif,svg|max:6048',
+            ], [
+                $field . '.*.image' => 'The ' . $field . ' must be an image.',
+                $field . '.*.mimes' => 'Unsupported file format for ' . $field . '. Supported formats are JPEG, PNG, GIF, and SVG.',
+                $field . '.*.max' => 'The ' . $field . ' may not be greater than 6 MB in size.',
             ]);
 
             $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
