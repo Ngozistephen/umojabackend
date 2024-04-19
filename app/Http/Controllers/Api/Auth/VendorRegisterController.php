@@ -21,7 +21,7 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 class VendorRegisterController extends Controller
 {
 
-     public function register(VendorRegistrationRequest $request)
+    public function register(VendorRegistrationRequest $request)
     {
        
         $userDetails = $request->only(['first_name', 'last_name', 'email', 'password','phone_number']);
@@ -32,8 +32,7 @@ class VendorRegisterController extends Controller
 
         $uploadedFiles = $this->upload($request);
         $vendorData = $request->except(array_keys($uploadedFiles), ['password']);
-        // $vendor = Vendor::create(array_merge($vendorData, $uploadedFiles, ['user_id' => $user->id]));
-        $vendor = Vendor::create(array_merge($vendorData, $uploadedFiles, TRUE, ['user_id' => $user->id]));
+        $vendor = Vendor::create(array_merge($vendorData, $uploadedFiles, ['user_id' => $user->id]));
 
         // $user->update(['profile_photo' => $uploadedFiles['profile_photo'] ?? null]);
 
@@ -51,7 +50,7 @@ class VendorRegisterController extends Controller
             'access_token' => $token,
             'vendor' => $user->first_name,
             'role' => Role::find($role)->name,
-            'Message' => 'registered successfully.'
+            'Message' => 'registered successfully. check your mail to Setup your password'
         ];
 
         return response()->json($response,  Response::HTTP_CREATED);
@@ -101,46 +100,9 @@ class VendorRegisterController extends Controller
 // }
 
 
-// public function upload(Request $request)
-// {
-//     $uploadedFiles = [];
-
-//     $fileFields = [
-//         'business_image' => 'business_image',
-//         'picture_vendor_id_number' => 'picture_vendor_id_number',
-//         'utility_photo' => 'utility_photo',
-//         'business_number_photo' => 'business_number_photo'
-//     ];
-
-//     foreach ($fileFields as $field => $folder) {
-//         if ($request->hasFile($field)) {
-//             $file = $request->file($field);
-
-//             $validatedData = $request->validate([
-//                 $field . '.*' => 'nullable|image|mimes:jpeg,png,JPG,jpg,gif,svg|max:6048',
-//             ]);
-
-//             $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
-//                 'folder' => $folder,
-//                 'transformation' => [
-//                     ['width' => 400, 'height' => 400, 'crop' => 'fit'],
-//                     ['quality' => 'auto', 'fetch_format' => 'auto']
-//                 ]
-//             ]);
-
-//             $secureUrl = $cloudinaryResponse->getSecurePath();
-
-//             $uploadedFiles[$field] = $secureUrl;
-//         }
-//     }
-
-//     return $uploadedFiles;
-// }
-
 public function upload(Request $request)
 {
     $uploadedFiles = [];
-    $errors = [];
 
     $fileFields = [
         'business_image' => 'business_image',
@@ -153,30 +115,67 @@ public function upload(Request $request)
         if ($request->hasFile($field)) {
             $file = $request->file($field);
 
-            try {
-                $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
-                    'folder' => $folder,
-                    'transformation' => [
-                        ['width' => 400, 'height' => 400, 'crop' => 'fit'],
-                        ['quality' => 'auto', 'fetch_format' => 'auto']
-                    ]
-                ]);
+            $validatedData = $request->validate([
+                $field . '.*' => 'nullable|image|mimes:jpeg,png,JPG,jpg,gif,svg|max:6048',
+            ]);
 
-                $secureUrl = $cloudinaryResponse->getSecurePath();
+            $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
+                'folder' => $folder,
+                'transformation' => [
+                    ['width' => 400, 'height' => 400, 'crop' => 'fit'],
+                    ['quality' => 'auto', 'fetch_format' => 'auto']
+                ]
+            ]);
 
-                $uploadedFiles[$field] = $secureUrl;
-            } catch (ApiError $e) {
-                $errors[$field] = "Unsupported file format";
-            }
+            $secureUrl = $cloudinaryResponse->getSecurePath();
+
+            $uploadedFiles[$field] = $secureUrl;
         }
     }
 
-    if (!empty($errors)) {
-        return response()->json(['errors' => $errors], 422);
-    }
-
-    return response()->json(['uploaded_files' => $uploadedFiles], 200);
+    return $uploadedFiles;
 }
+
+// public function upload(Request $request)
+// {
+//     $uploadedFiles = [];
+//     $errors = [];
+
+//     $fileFields = [
+//         'business_image' => 'business_image',
+//         'picture_vendor_id_number' => 'picture_vendor_id_number',
+//         'utility_photo' => 'utility_photo',
+//         'business_number_photo' => 'business_number_photo'
+//     ];
+
+//     foreach ($fileFields as $field => $folder) {
+//         if ($request->hasFile($field)) {
+//             $file = $request->file($field);
+
+//             try {
+//                 $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
+//                     'folder' => $folder,
+//                     'transformation' => [
+//                         ['width' => 400, 'height' => 400, 'crop' => 'fit'],
+//                         ['quality' => 'auto', 'fetch_format' => 'auto']
+//                     ]
+//                 ]);
+
+//                 $secureUrl = $cloudinaryResponse->getSecurePath();
+
+//                 $uploadedFiles[$field] = $secureUrl;
+//             } catch (ApiError $e) {
+//                 $errors[$field] = "Unsupported file format";
+//             }
+//         }
+//     }
+
+//     if (!empty($errors)) {
+//         return response()->json(['errors' => $errors], 422);
+//     }
+
+//     return response()->json(['uploaded_files' => $uploadedFiles], 200);
+// }
 
 
 
