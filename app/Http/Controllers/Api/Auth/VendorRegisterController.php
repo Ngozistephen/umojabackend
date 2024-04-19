@@ -12,6 +12,7 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VendorPasswordSetupMail;
+use Cloudinary\Api\Exception\ApiError;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\VendorRegistrationRequest;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -151,13 +152,7 @@ public function upload(Request $request)
         if ($request->hasFile($field)) {
             $file = $request->file($field);
 
-            $validator = Validator::make($request->all(), [
-                $field . '.*' => 'nullable|image|mimes:jpeg,png,JPG,jpg,gif,svg|max:6048',
-            ]);
-
-            if ($validator->fails()) {
-                $errors[$field] = $validator->errors()->first();
-            } else {
+            try {
                 $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
                     'folder' => $folder,
                     'transformation' => [
@@ -169,6 +164,8 @@ public function upload(Request $request)
                 $secureUrl = $cloudinaryResponse->getSecurePath();
 
                 $uploadedFiles[$field] = $secureUrl;
+            } catch (ApiError $e) {
+                $errors[$field] = "Unsupported file format";
             }
         }
     }
