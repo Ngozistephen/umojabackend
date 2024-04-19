@@ -18,7 +18,7 @@ class ProductSearchController extends Controller
     public function __invoke(Request $request)
     {
         $productsQuery = Product::query()
-            ->with(['variations', 'media' => fn($query) => $query->orderBy('position')])
+            ->with(['variations'])
             ->when($request->search_global, function ($query) use ($request) {
                 $searchTerm = '%' . $request->search_global . '%';
                 $query->where(function ($q) use ($request, $searchTerm) {

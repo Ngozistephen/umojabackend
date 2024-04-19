@@ -15,7 +15,7 @@ class VendorPasswordSetupController extends Controller
      */
     public function __invoke(Request $request, $token)
     {
-        // Find the user by the token
+        
         $user = User::where('password_setup_token', $token)->first();
 
         if (! $user) {
@@ -26,7 +26,6 @@ class VendorPasswordSetupController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
-        // Update vendor's password
         $user->password = Hash::make($request->password);
         $user->password_setup_token = null; 
         $user->save();

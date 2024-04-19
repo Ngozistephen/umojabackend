@@ -73,8 +73,8 @@ Route::middleware('auth:api')->group(function () {
          Route::apiResource('products', ProductController::class);
          Route::post('products/upload', [ProductController::class, 'upload']);
          Route::apiResource('products.variations', ProductVariationController::class)->except(['create', 'edit']);
-        // Route::post('/import/products', [ProductController::class, 'import']);
-        // Route::get('/export/products', [ProductController::class, 'export']);      
+         Route::post('/import/products', [ProductController::class, 'import']);
+         Route::get('/export/products', [ProductController::class, 'export']);      
     });
     // Route::prefix('customer')->group(function () {
     //     Route::post('products/{product}/addcart', [CartController::class, 'addCart']);

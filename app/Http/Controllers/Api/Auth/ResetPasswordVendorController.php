@@ -30,11 +30,11 @@ class ResetPasswordVendorController extends Controller
             return response()->json(['error' => 'Invalid or expired reset token.'], 400);
         }
     
-        // Update the user's password
+       
         User::where('email', $request->email)
             ->update(['password' => Hash::make($request->password)]);
     
-        // Delete the password reset record
+      
         $passwordResetToken->delete();
     
         return response()->json(['message' => 'Password has been reset successfully. You can now use your new password to login.'], 201);

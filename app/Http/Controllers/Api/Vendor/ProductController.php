@@ -205,28 +205,28 @@ class ProductController extends Controller
     }
 
 
-    // public function import(Request $request)
-    // {
-    //     $request->validate([
-    //         'file' => 'required|mimes:xls,xlsx,csv'
-    //     ]);
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx,csv'
+        ]);
 
-    //     $file = $request->file('file');
+        $file = $request->file('file');
 
-    //     Excel::import(new ProductsImport, $file);
+        Excel::import(new ProductsImport, $file);
 
-    //     return response()->json(['message' => 'Products imported successfully'], 200);
-    // }
+        return response()->json(['message' => 'Products imported successfully'], 200);
+    }
 
 
-    // public function export()
-    // {
-    //     $filename = 'Product_Import_' . now()->format('Ymd_His') . '.xlsx';
+    public function export()
+    {
+        $filename = 'Product_Import_' . now()->format('Ymd_His') . '.xlsx';
 
-    //     Excel::store(new ProductsExport, $filename);
+        Excel::store(new ProductsExport, $filename);
 
-    //     $url = URL::to(Storage::url($filename));
+        $url = URL::to(Storage::url($filename));
 
-    //     return response()->json(['url' => $url], 200);
-    // }
+        return response()->json(['url' => $url], 200);
+    }
 }
