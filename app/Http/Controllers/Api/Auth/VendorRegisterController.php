@@ -60,12 +60,10 @@ class VendorRegisterController extends Controller
     public function register(VendorRegistrationRequest $request)
 {
     try {
+        DB::beginTransaction();
         $userDetails = $request->only(['first_name', 'last_name', 'email', 'password','phone_number']);
         $role = Role::where('name', 'Vendor')->value('id');
         $userDetails['role_id'] = $role;
-
-        // Start a database transaction
-        DB::beginTransaction();
 
         $user = User::create($userDetails);
 
