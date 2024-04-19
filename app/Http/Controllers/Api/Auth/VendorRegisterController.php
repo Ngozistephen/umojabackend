@@ -12,6 +12,7 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VendorPasswordSetupMail;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\VendorRegistrationRequest;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
@@ -98,9 +99,46 @@ class VendorRegisterController extends Controller
 // }
 
 
+// public function upload(Request $request)
+// {
+//     $uploadedFiles = [];
+
+//     $fileFields = [
+//         'business_image' => 'business_image',
+//         'picture_vendor_id_number' => 'picture_vendor_id_number',
+//         'utility_photo' => 'utility_photo',
+//         'business_number_photo' => 'business_number_photo'
+//     ];
+
+//     foreach ($fileFields as $field => $folder) {
+//         if ($request->hasFile($field)) {
+//             $file = $request->file($field);
+
+//             $validatedData = $request->validate([
+//                 $field . '.*' => 'nullable|image|mimes:jpeg,png,JPG,jpg,gif,svg|max:6048',
+//             ]);
+
+//             $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
+//                 'folder' => $folder,
+//                 'transformation' => [
+//                     ['width' => 400, 'height' => 400, 'crop' => 'fit'],
+//                     ['quality' => 'auto', 'fetch_format' => 'auto']
+//                 ]
+//             ]);
+
+//             $secureUrl = $cloudinaryResponse->getSecurePath();
+
+//             $uploadedFiles[$field] = $secureUrl;
+//         }
+//     }
+
+//     return $uploadedFiles;
+// }
+
 public function upload(Request $request)
 {
     $uploadedFiles = [];
+    $errors = [];
 
     $fileFields = [
         'business_image' => 'business_image',
@@ -113,26 +151,35 @@ public function upload(Request $request)
         if ($request->hasFile($field)) {
             $file = $request->file($field);
 
-            $validatedData = $request->validate([
+            $validator = Validator::make($request->all(), [
                 $field . '.*' => 'nullable|image|mimes:jpeg,png,JPG,jpg,gif,svg|max:6048',
             ]);
 
-            $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
-                'folder' => $folder,
-                'transformation' => [
-                    ['width' => 400, 'height' => 400, 'crop' => 'fit'],
-                    ['quality' => 'auto', 'fetch_format' => 'auto']
-                ]
-            ]);
+            if ($validator->fails()) {
+                $errors[$field] = $validator->errors()->first();
+            } else {
+                $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
+                    'folder' => $folder,
+                    'transformation' => [
+                        ['width' => 400, 'height' => 400, 'crop' => 'fit'],
+                        ['quality' => 'auto', 'fetch_format' => 'auto']
+                    ]
+                ]);
 
-            $secureUrl = $cloudinaryResponse->getSecurePath();
+                $secureUrl = $cloudinaryResponse->getSecurePath();
 
-            $uploadedFiles[$field] = $secureUrl;
+                $uploadedFiles[$field] = $secureUrl;
+            }
         }
     }
 
-    return $uploadedFiles;
+    if (!empty($errors)) {
+        return response()->json(['errors' => $errors], 422);
+    }
+
+    return response()->json(['uploaded_files' => $uploadedFiles], 200);
 }
+
 
 
 
