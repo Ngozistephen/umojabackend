@@ -31,7 +31,13 @@ class VendorRegisterController extends Controller
         $user = User::create($userDetails);
 
         $uploadedFiles = $this->upload($request);
-        $vendorData = $request->except(array_keys($uploadedFiles), ['password']);
+        if (is_array($uploadedFiles)) {
+            $fileKeys = array_keys($uploadedFiles);
+        } else {
+            $fileKeys = [];
+        }
+        
+        $vendorData = $request->except(array_merge($fileKeys, ['password']));
         $vendor = Vendor::create(array_merge($vendorData, $uploadedFiles, ['user_id' => $user->id]));
 
         // $user->update(['profile_photo' => $uploadedFiles['profile_photo'] ?? null]);
