@@ -50,7 +50,7 @@ class VendorRegisterController extends Controller
             'access_token' => $token,
             'vendor' => $user->first_name,
             'role' => Role::find($role)->name,
-            'Message' => 'registered successfully. check your mail to Setup your password'
+            'Message' => 'registered successfully.'
         ];
 
         return response()->json($response,  Response::HTTP_CREATED);
