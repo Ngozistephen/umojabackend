@@ -53,7 +53,6 @@ return new class extends Migration
             // $table->string('zipcode')->nullable();
             // $table->timestamp('phone_verified_at')->nullable();
             $table->boolean('tax_exempt')->default(false);
-            // $table->string('company')->nullable();
             $table->string('bank_name')->nullable();
             $table->string('bank_account_number')->nullable();
             $table->string('name_on_account')->nullable();
