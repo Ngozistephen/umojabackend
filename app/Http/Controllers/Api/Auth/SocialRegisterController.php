@@ -17,14 +17,24 @@ class SocialRegisterController extends Controller
     {
         $this->validateProvider($provider);
 
-        return Socialite::driver($provider)->stateless()->redirect();
+       $url =  Socialite::driver($provider)->stateless()->redirect()->redirectUrl;
 
-        // return response()->json([
-        //     "url" = $url
-        // ]);
+       return response()->json([
+         "url" = $url
+       ]);
+         
+      
    
 
     }
+    // public function redirect(string $provider)
+    // {
+    //     $this->validateProvider($provider);
+
+    //     return Socialite::driver($provider)->stateless()->redirect();
+   
+
+    // }
     
     // public function callback(Request $request,string $provider)
     // {

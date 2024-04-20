@@ -39,7 +39,8 @@ class VendorRegisterController extends Controller
         $passwordSetupToken = Str::random(60);
         $user->update(['password_setup_token' => $passwordSetupToken]);
 
-        $passwordSetupUrl = config('app.frontend_url') . '/auth/password_setup/' . $passwordSetupToken;
+        $passwordSetupUrl = config('app.frontend_url') . '/vendor/setpass/' . $passwordSetupToken;
+        // $passwordSetupUrl = config('app.frontend_url') . '/auth/password_setup/' . $passwordSetupToken;
 
         Mail::to($user->email)->send(new VendorPasswordSetupMail($user, $passwordSetupUrl));
 
