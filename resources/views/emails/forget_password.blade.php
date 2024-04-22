@@ -11,7 +11,8 @@
     
     <p>Please click the following link to reset your password:</p>
     
-    <a href="{{ $resetLink }}">{{ $resetLink }}</a>
+    {{-- <a href="{{ $resetLink }}">{{ $resetLink }}</a> --}}
+    <a href="{{ $resetLink }}" class="button">Reset Password</a>
     
     <p>If you did not request a password reset, no further action is required.</p>
     
