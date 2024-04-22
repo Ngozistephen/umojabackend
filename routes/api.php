@@ -48,7 +48,7 @@ Route::prefix('auth')->group(function () {
     Route::post('reset_vendor_password', [ResetPasswordVendorController::class, '__invoke'])->name('auth.reset_vendor_password');
     // social registrations still be worked on for vendor registration part
     
-    Route::get('{provider}/redirect', [SocialRegisterController::class, 'redirect'])->name('auth.social_registration');
+    Route::get('{provider}/redirect', [SocialRegisterController::class, 'redirect']);
     Route::get('{provider}/callback', [SocialRegisterController::class, 'callback']);
     // Route::get('{provider}/redirect', [SocialLoginController::class, 'redirect']);
     // Route::get('{provider}/callback', [SocialLoginController::class, 'callback']);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
+use Exception;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,13 +15,14 @@ use Laravel\Socialite\Facades\Socialite;
 class SocialRegisterController extends Controller
 {
     public function redirect(string $provider)
+    // for front end 
     {
         $this->validateProvider($provider);
 
-       $url =  Socialite::driver($provider)->stateless()->redirect()->redirectUrl;
+       $url =  Socialite::driver($provider)->stateless()->redirect()->redirectUrl();
 
        return response()->json([
-         "url" = $url
+         "url" => $url
        ]);
          
       
@@ -89,50 +91,66 @@ class SocialRegisterController extends Controller
 
     public function callback(Request $request, string $provider)
     {
-    $this->validateProvider($provider);
+        $this->validateProvider($provider);
     
-    $response = Socialite::driver($provider)->stateless()->user();
-
-    // Check if existing user with matching email
-    $user = User::firstWhere(['email' => $response->getEmail()]);
-
-    // Existing user - update social media ID
-    if ($user) {
-        $user->update([$provider . '_id' => $response->getId()]);
-    } else {
-        // New user - create user record
-        $fullName = $response->getName();
-        $names = explode(' ', $fullName, 2);
-        $firstName = $names[0];
-        $lastName = isset($names[1]) ? $names[1] : null;
-        
-        $user = User::create([
-        $provider . '_id' => $response->getId(),
-        'first_name' => $firstName,
-        'last_name' => $lastName,
-        'email' => $response->getEmail(),
-        'oauth_type' => $provider,
-        'password' => Hash::make($response->getId()), // Consider a more secure approach
-        'terms_accepted' => true,
-        'role_id' => Role::ROLE_CUSTOMER,
-        ]);
-        
-        event(new Registered($user));
-    }
-
-    // Generate access token and response
-    $device = substr($request->userAgent() ?? '', 0, 255);
-    $token = $user->createToken($device)->accessToken;
-    $role = $user->role->name;
+        try {
+            $response = Socialite::driver($provider)->stateless()->user();
+        } catch (Exception $e) {
+            // Handle social login provider errors gracefully
+            return response()->json(['error' => 'Social login failed'], Response::HTTP_UNAUTHORIZED);
+        }
     
-    $response = [
-        'access_token' => $token,
-        'user' => $user->first_name,
-        'role' => $role,
-        'Message' => 'registered successfully.',
-    ];
+        // Check for existing user with verified email
+        $user = User::where('email', $response->getEmail())
+                //    ->whereNotNull('email_verified_at')
+                   ->first();
     
-    return response()->json($response, Response::HTTP_CREATED);
+        if (!$user) {
+            // New user - create user record
+            $fullName = $response->getName();
+            $names = explode(' ', $fullName, 2);
+            $firstName = $names[0];
+            $lastName = isset($names[1]) ? $names[1] : null;
+    
+            $user = User::create([
+                $provider . '_id' => $response->getId(),
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'email' => $response->getEmail(),
+                'oauth_type' => $provider,
+                // Do NOT store the social login ID as the password!
+                'password' => Hash::make($response->getId()),
+                'terms_accepted' => true,
+                'role_id' => Role::ROLE_CUSTOMER,
+            ]);
+    
+          
+    
+            event(new Registered($user));
+        } else {
+            // Existing user - update social media ID if necessary
+            if (!$user->$provider . '_id') {
+                $user->update([$provider . '_id' => $response->getId()]);
+            }
+        }
+    
+        // Generate access token and response (avoid sending sensitive info)
+        $device = substr($request->userAgent() ?? '', 0, 255);
+        $token = $user->createToken($device)->accessToken;
+        $role = $user->role->name;
+    
+        $response = [
+            'access_token' => $token,
+            // Only send necessary user information, not first name
+            'user' => [
+                'email' => $user->email, // Consider including only if needed
+                'name' => $user->first_name,
+                'role' => $role,
+            ],
+            'message' => 'Login successful.',
+        ];
+    
+        return response()->json($response, Response::HTTP_CREATED);
     }
 
 
