@@ -19,7 +19,9 @@ class SocialRegisterController extends Controller
     {
         $this->validateProvider($provider);
 
-       $url =  Socialite::driver($provider)->stateless()->redirect()->redirectUrl();
+    //    $url =  Socialite::driver($provider)->stateless()->redirect()->redirectUrl();
+        $url = Socialite::driver($provider)->redirect()->stateless()->redirectUrl();
+
 
        return response()->json([
          "url" => $url

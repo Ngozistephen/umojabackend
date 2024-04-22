@@ -2,6 +2,7 @@
 
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Vendor\ProductController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Api\Auth\VendorPasswordSetupController;
 use App\Http\Controllers\Api\Auth\ForgetVendorPasswordController;
 use App\Http\Controllers\Api\Auth\ResetPasswordCustomerController;
 use App\Http\Controllers\Api\Auth\ForgetCustomerPasswordController;
+use App\Http\Controllers\Api\VendorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +62,7 @@ Route::prefix('auth')->group(function () {
 });
 Route::get('search', [ProductSearchController::class, '__invoke']);
 Route::middleware('auth:api')->group(function () {
+    Route::get('vendors/{vendor}', [VendorController::class, 'show']);
     Route::prefix('admin')->group(function () {
         Route::apiResource('categories', CategoryController::class);
         Route::post('categories/upload', [CategoryController::class, 'upload']);
