@@ -14,31 +14,30 @@ use Laravel\Socialite\Facades\Socialite;
 
 class SocialRegisterController extends Controller
 {
-    // public function redirect(string $provider)
-    // // for front end 
-    // {
-    //     $this->validateProvider($provider);
-
-    // //    $url =  Socialite::driver($provider)->stateless()->redirect()->redirectUrl();
-    //     $url = Socialite::driver($provider)->redirect()->stateless()->redirectUrl();
-
-
-    //    return response()->json([
-    //     "message" => "Successfully generated Google redirect URL.",
-    //     "url" => $url,
-    //    ]);    
-      
-   
-
-    // }
     public function redirect(string $provider)
+    // for front end 
     {
         $this->validateProvider($provider);
 
-        return Socialite::driver($provider)->stateless()->redirect();
+    //    $url =  Socialite::driver($provider)->stateless()->redirect()->redirectUrl();
+        $url = Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();
+
+       return response()->json([
+        "message" => "Successfully generated Google redirect URL.",
+        "url" => $url,
+       ]);    
+      
    
 
     }
+    // public function redirect(string $provider)
+    // {
+    //     $this->validateProvider($provider);
+
+    //     return Socialite::driver($provider)->stateless()->redirect();
+   
+
+    // }
     
     // public function callback(Request $request,string $provider)
     // {
