@@ -23,7 +23,7 @@ class SocialRegisterController extends Controller
         $url = Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();
 
        return response()->json([
-        "message" => "Successfully generated Google redirect URL.",
+        "message" => "Successfully generated $provider redirect URL.",
         "url" => $url,
        ]);    
       
