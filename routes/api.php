@@ -2,8 +2,10 @@
 
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\VendorController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\Auth\LogoutController;
+use App\Http\Controllers\Api\Public\UserController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Vendor\ProductController;
 use App\Http\Controllers\Api\Admin\VariationController;
@@ -22,7 +24,6 @@ use App\Http\Controllers\Api\Auth\VendorPasswordSetupController;
 use App\Http\Controllers\Api\Auth\ForgetVendorPasswordController;
 use App\Http\Controllers\Api\Auth\ResetPasswordCustomerController;
 use App\Http\Controllers\Api\Auth\ForgetCustomerPasswordController;
-use App\Http\Controllers\Api\VendorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,15 +55,18 @@ Route::prefix('auth')->group(function () {
     Route::get('{provider}/callback', [SocialRegisterController::class, 'callback']);
     // Route::get('{provider}/redirect', [SocialLoginController::class, 'redirect']);
     // Route::get('{provider}/callback', [SocialLoginController::class, 'callback']);
-    // the login endpoint for users has social login with with google and apple. separate login for user
-    // to do today implementing queues work in railway and ask chucks if i should use my own google account for the gogle api key for social login
+
 
     
     
 });
 Route::get('search', [ProductSearchController::class, '__invoke']);
 Route::middleware('auth:api')->group(function () {
-    Route::get('vendors/{vendor}', [VendorController::class, 'show']);
+    Route::get('users/{user}', [UserController::class, 'show']);
+    // still working on the edit part 
+    Route::put('users/{user}', [UserController::class, 'update']);
+    Route::delete('users/{user}', [UserController::class, 'destroy']);
+
     Route::prefix('admin')->group(function () {
         Route::apiResource('categories', CategoryController::class);
         Route::post('categories/upload', [CategoryController::class, 'upload']);

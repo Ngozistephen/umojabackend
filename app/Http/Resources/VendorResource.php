@@ -15,10 +15,6 @@ class VendorResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'id' => $this->id,
-            'first_name' => $vendor->user->first_name,  // Access user data directly
-            'last_name' => $vendor->user->last_name,
-            'email' => $vendor->user->email,
             'language' => $this->language,
             'gender' => $this->gender,   
             'date_birth' => $this->date_birth,

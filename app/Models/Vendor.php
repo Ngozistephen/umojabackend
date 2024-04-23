@@ -17,25 +17,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 
-class Vendor extends Model 
-{
-    use  HasFactory,Notifiable, SoftDeletes;
+    class Vendor extends Model 
+    {
+        use  HasFactory,Notifiable, SoftDeletes;
 
-    protected $guarded = ['id'];
+        protected $guarded = ['id'];
+        
+
+        public function user(): BelongsTo
+        {
+            return $this->belongsTo(User::class);
+        }
+
     
 
 
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
+    
+
+    
     }
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-
-   
-
-  
-}
