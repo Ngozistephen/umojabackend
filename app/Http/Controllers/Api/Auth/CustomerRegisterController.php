@@ -47,7 +47,6 @@ class CustomerRegisterController extends Controller
             'access_token' => $token,
             'user' => $user->first_name,
             'role' => Role::find($role)->name,
-            'user_id' => $user->id,
             'Message' => 'registered successfully.'
         ];
 

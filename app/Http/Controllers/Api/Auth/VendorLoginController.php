@@ -38,6 +38,7 @@ class VendorLoginController extends Controller
         return response()->json([
             'user' => $user->first_name,
             'role' => Role::find($user->role_id)->name,
+            'user_id' => $user->id,
             'access_token' => $user->createToken($device)->accessToken,
             'message' => 'Logged in successfully.'
         ], Response::HTTP_CREATED);
