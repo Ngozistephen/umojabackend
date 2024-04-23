@@ -32,6 +32,12 @@ class VendorLoginController extends Controller
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
+
+        if ($user->role_id !== 1 && $user->role_id !== 2) {
+            throw ValidationException::withMessages([
+                'email' => ['You do not have permission to access this resource.'],
+            ]);
+        }
         $device = substr($request->userAgent() ?? '', 0, 255);
         
 
