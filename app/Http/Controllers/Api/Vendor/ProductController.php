@@ -28,6 +28,9 @@ class ProductController extends Controller
     public function index(ProductListRequest $request)
     {
         $products = Product::with('variations')
+                    
+                // Filter by ownership      
+                ->where('user_id', auth()->id())
 
                 // Search Global
                 ->when($request->search_global, function ($query) use ($request) {

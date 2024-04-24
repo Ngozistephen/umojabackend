@@ -27,7 +27,8 @@ class StoreProductRequest extends FormRequest
          return  [
             // 'user_id' => 'required|integer|exists:users,id',
             'sku' => 'nullable|string|unique:products,sku',
-            'unit' => 'required|numeric',
+            'unit' => 'required|string',
+            'unit_per_item' => 'required|string',
             'material' => 'required|string',
             'condition' => 'required|string',
             'sell_online' => 'required|boolean',
@@ -63,6 +64,8 @@ class StoreProductRequest extends FormRequest
             'height' => 'required|numeric',
             'shipping_method' => 'required|string',
             'digital_product_or_service' => 'nullable|boolean',
+            'tags' => 'nullable|array', 
+            'tags.*' => 'string',
 
         ];
         // if ($this->has('variations')) {

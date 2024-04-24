@@ -23,6 +23,9 @@ class Product extends Model
 
     protected $guarded = ['id'];
    
+    protected $casts = [
+        'tags' => 'json',
+    ];
 
     public function getPriceAttribute($value)
     {

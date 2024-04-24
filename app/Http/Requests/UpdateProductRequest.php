@@ -27,7 +27,8 @@ class UpdateProductRequest extends FormRequest
         return [
             // 'user_id' => 'required|integer|exists:users,id',
             'sku' => 'nullable|string|unique:products,sku',
-            'unit' => 'nullable|numeric',
+            'unit' => 'required|string',
+            'unit_per_item' => 'required|string',
             'material' => 'nullable|string',
             'condition' => 'nullable|string',
             'sell_online' => 'nullable|boolean',
@@ -63,6 +64,8 @@ class UpdateProductRequest extends FormRequest
             'height' => 'nullable|numeric',
             'shipping_method' => 'nullable|string',
             'digital_product_or_service' => 'nullable|boolean',
+            'tags' => 'nullable|array', 
+            'tags.*' => 'string',
 
         ];
     }
