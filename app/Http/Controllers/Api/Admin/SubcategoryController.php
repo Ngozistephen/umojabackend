@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 
 use Log;
-use App\Models\Subcategory;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubcategoryRequest;
