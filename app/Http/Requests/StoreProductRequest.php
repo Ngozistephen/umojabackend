@@ -62,7 +62,7 @@ class StoreProductRequest extends FormRequest
             'length' => 'nullable|numeric',
             'weight' => 'nullable|numeric',
             'height' => 'nullable|numeric',
-            'shipping_method' => 'required|string',
+            'shipping_method' => 'nullable|string',
             'digital_product_or_service' => 'nullable|boolean',
             'tags' => 'nullable|array', 
             'tags.*' => 'string',
