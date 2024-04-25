@@ -27,8 +27,8 @@ class UpdateProductRequest extends FormRequest
         return [
             // 'user_id' => 'required|integer|exists:users,id',
             'sku' => 'nullable|string|unique:products,sku',
-            'unit' => 'required|string',
-            'unit_per_item' => 'required|string',
+            'unit' => 'nullable|string',
+            'unit_per_item' => 'nullable|numeric',
             'material' => 'nullable|string',
             'condition' => 'nullable|string',
             'sell_online' => 'nullable|boolean',
