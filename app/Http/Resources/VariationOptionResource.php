@@ -17,6 +17,7 @@ class VariationOptionResource extends JsonResource
          return [
             'id' => $this->id,
             'name' => $this->name,
+            'variation_id' => $this->variation_id,
            
         ];
     }
