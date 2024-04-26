@@ -47,6 +47,7 @@ class ForgetCustomerPasswordController extends Controller
                 'token' => $token,
             ]);
         }
+        
 
         // if it is code is want i use rand(10,100000)
         // $resetLink = route('auth.reset_customer_password', ['token' => $token]);
