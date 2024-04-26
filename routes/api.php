@@ -43,6 +43,7 @@ Route::prefix('auth')->group(function () {
     Route::post('upload', [VendorRegisterController::class, 'upload']);
     Route::post('vendor_login', [VendorLoginController::class, '__invoke']);
     Route::post('customer_login', [CustomerLoginController::class, '__invoke']);
+    // Route::post('refresh_token_customer', [CustomerLoginController::class, 'refreshToken'])->middleware('auth:api');
     Route::post('logout', [LogoutController::class, '__invoke'])->middleware('auth:api');
     Route::post('password_setup/{token}', [VendorPasswordSetupController::class, '__invoke']);
     Route::post('forget_customer_password', [ForgetCustomerPasswordController::class, '__invoke']);
@@ -71,6 +72,7 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('categories', CategoryController::class);
         Route::post('categories/upload', [CategoryController::class, 'upload']);
         Route::apiResource('sub_categories', SubcategoryController::class);
+        Route::get('sub_categories/category/{category_id}', [SubcategoryController::class, 'bycategory']);
         Route::post('sub_categories/upload', [SubcategoryController::class, 'upload']); 
         Route::apiResource('variations', VariationController::class);
         Route::apiResource('variations_option', VariationOptionController::class);
