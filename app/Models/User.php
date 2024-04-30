@@ -4,16 +4,22 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Role;
+use App\Models\Order;
 use App\Models\Vendor;
+use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Variation;
+use App\Models\BillingAddress;
+use App\Models\ShippingMethod;
+use App\Models\ShippingAddress;
 use App\Models\VariationsOption;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -91,6 +97,32 @@ class User extends Authenticatable
     {
         return $this->hasMany(Product::class);
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
+    }
+
+    public function shippingAddresses(): HasMany
+    {
+        return $this->hasMany(ShippingAddress::class);
+    }
+
+    public function shippingMethods(): HasMany
+    {
+        return $this->hasMany(ShippingMethod::class);
+    }
+    public function billingAddresses(): HasMany
+    {
+        return $this->hasMany(BillingAddress::class);
+    }
+    
 
 
 }

@@ -25,6 +25,10 @@ class Product extends Model
    
     protected $casts = [
         'tags' => 'json',
+        'sizes' => 'json',
+        'colors' => 'json',
+        'materials' => 'json',
+        'styles' => 'json',
     ];
 
     public function getPriceAttribute($value)

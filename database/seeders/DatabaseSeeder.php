@@ -8,6 +8,7 @@ use Database\Seeders\RoleSeeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\AdminUserSeeder;
 use Database\Seeders\PermissionSeeder;
+use Database\Seeders\ShippingMethodSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CategorySeeder::class);
         $this->call(VariationsOptionSeeder::class);
         $this->call(VariationSeeder::class);
+        $this->call(ShippingMethodSeeder::class);
     }
 }

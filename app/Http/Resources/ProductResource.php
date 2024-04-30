@@ -29,7 +29,13 @@ class ProductResource extends JsonResource
             'description' => $this->description,
             'mini_stock' => $this->mini_stock,
             'tags' => $this->tags,
+            'sizes' => $this->sizes,
+            'colors' => $this->colors,
+            'materials' => $this->materials,
+            'styles' => $this->styles,
             'unit' => $this->unit,
+            'made_with_ghana_leather' => $this->made_with_ghana_leather,
+            'variations' => ProductVariationResource::collection($this->whenLoaded('variations')),
             // 'unit_per_item' => $this->unit_per_item,
             // 'condition' => $this->condition,   
             // 'sell_online' => $this->sell_online,
@@ -42,8 +48,7 @@ class ProductResource extends JsonResource
             // 'cost_per_item' => $this->cost_per_item,
             // 'profit' => $this->profit,
             // 'margin' => $this->margin,
-            // 'track_quantity' => $this->track_quantity,
-             'made_with_ghana_leather' => $this->made_with_ghana_leather,
+            // 'track_quantity' => $this->track_quantity,      
             // 'sell_out_of_stock' => $this->sell_out_of_stock,   
             // 'has_sku' => $this->has_sku,
             // 'storage_location' => $this->storage_location,
@@ -57,7 +62,7 @@ class ProductResource extends JsonResource
             // 'digital_product_or_service' => $this->digital_product_or_service,
 
             // uncomment later
-             'variations' => ProductVariationResource::collection($this->whenLoaded('variations')),
+            
           
             
         ];

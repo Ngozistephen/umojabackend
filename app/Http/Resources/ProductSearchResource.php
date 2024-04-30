@@ -24,8 +24,11 @@ class ProductSearchResource extends JsonResource
             'price' => $this->price,
             // 'material' => $this->material,
             'name' => $this->name,
+            'made_with_ghana_leather' => $this->made_with_ghana_leather,
             'description' => $this->description,
+            'variations' => ProductVariationResource::collection($this->whenLoaded('variations')),
             // 'mini_stock' => $this->mini_stock,
+
         ];
     }
 }

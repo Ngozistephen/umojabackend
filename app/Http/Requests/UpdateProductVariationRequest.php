@@ -28,6 +28,7 @@ class UpdateProductVariationRequest extends FormRequest
             'sku' => 'nullable|string|max:255',
             'no_available' => 'nullable|numeric|min:0',
             'price' => 'nullable|numeric|min:0', 
+            'color_image' => 'nullable|string|max:255', 
         ];
     }
 }

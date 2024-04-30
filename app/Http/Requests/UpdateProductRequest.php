@@ -66,6 +66,14 @@ class UpdateProductRequest extends FormRequest
             'digital_product_or_service' => 'nullable|boolean',
             'tags' => 'nullable|array', 
             'tags.*' => 'string',
+            'sizes' => 'nullable|array', 
+            'sizes.*' => 'string',
+            'colors' => 'nullable|array', 
+            'colors.*' => 'string',
+            'materials' => 'nullable|array', 
+            'materials.*' => 'string',
+            'styles' => 'nullable|array', 
+            'styles.*' => 'string',
 
         ];
     }

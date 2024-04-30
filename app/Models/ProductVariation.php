@@ -13,6 +13,9 @@ class ProductVariation extends Model
     use HasFactory, SoftDeletes;
     protected $fillable = ['name','product_id','no_available','sku','price']; 
 
+     protected $casts = [
+        'name' => 'json',
+    ];
 
     public function product(): BelongsTo
     {

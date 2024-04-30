@@ -5,14 +5,14 @@ namespace App\Http\Requests;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreProductVariationRequest extends FormRequest
+class UpdateBillingAddressRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Gate::allows('product-manage');
+        return Gate::allows('order-manage');
     }
 
     /**
@@ -23,12 +23,18 @@ class StoreProductVariationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            // 'product_id' => 'required|string|exists:products,id',
-            'sku' => 'nullable|string|max:255',
-            'no_available' => 'required|numeric|min:0',
-            'price' => 'required|numeric|min:0', 
-            'color_image' => 'nullable|string|max:255', 
+            'billing_phone_number' => 'nullable|string',
+            'billing_address' => 'nullable|string',
+            'billing_city' => 'nullable|string',
+            'billing_region' => 'nullable|string', 
+            'billing_postal_code' => 'nullable|string', 
+            'billing_country' => 'nullable|string', 
+            
+
+
+
+        
+    
         ];
     }
 }
