@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\Customer\ShippingAddressController;
 use App\Http\Controllers\Api\Auth\ForgetVendorPasswordController;
 use App\Http\Controllers\Api\Auth\ResetPasswordCustomerController;
 use App\Http\Controllers\Api\Auth\ForgetCustomerPasswordController;
+use App\Http\Controllers\Api\Customer\AllProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +68,7 @@ Route::prefix('auth')->group(function () {
     
 });
 Route::get('search', [ProductSearchController::class, '__invoke']);
+Route::get('allproducts', [AllProductController::class, '__invoke']);
 Route::middleware('auth:api')->group(function () {
     Route::get('users/{user}', [UserController::class, 'show']);
     // still working on the edit part 
@@ -104,6 +106,7 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('billingAddresses', BillingAddressController::class);
         // still working on 
         // Route::post('checkout', [OrderController::class, '__invoke']);
+        
 
     });
 
