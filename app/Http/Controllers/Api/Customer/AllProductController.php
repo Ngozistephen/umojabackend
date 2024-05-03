@@ -60,8 +60,8 @@ class AllProductController extends Controller
                     $query->orderBy($request->sortBy, $request->sortOrder);     
             })
 
-            ->latest();
-            // ->paginate(20);
+            ->latest()
+            ->get();
         return ProductResource::collection($products);
     }
 }
