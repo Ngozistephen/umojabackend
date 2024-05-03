@@ -19,7 +19,7 @@ class ShippingAddressResource extends JsonResource
             'user_id'=> $this->user_id,
             'full_name' => $this->shipping_full_name,
             'email' => $this->shipping_email,
-            'phone number' => $this->shipping_phone_number,
+            'phone_number' => $this->shipping_phone_number,
             'shipping_address' => $this->shipping_address,
             'shipping_city' => $this->shipping_city,
             'shipping_region' => $this->shipping_region,

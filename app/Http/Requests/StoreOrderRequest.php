@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
+use App\Enums\FulfillmentStatus;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rules\Enum;
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreOrderRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return Gate::allows('order-manage');
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            // 'user_id'  => ['required', 'integer', 'exists:users,id'],
+            'shipping_address_id'  => ['required', 'integer', 'exists:shipping_addresses,id'],
+            'shipping_method_id'  => ['required', 'integer', 'exists:shipping_methods,id'],
+            'billing_address_id'  => ['required', 'integer', 'exists:billing_addresses,id'],
+            'discount_code_id' => ['nullable', 'integer', 'exists:discount_codes,id' ],
+            'order_number'  => ['nullable', 'integer' ],
+            'items'  => ['required' ],
+            'read'  => ['nullable', 'boolean'],
+            'fulfillment_status'  => ['nullable', new Enum (FulfillmentStatus::class)],
+            'sub_total' => ['nullable', 'numeric'],
+            'total_amount' => ['nullable', 'numeric'],
+            'delivery_charge' => ['nullable', 'numeric'],
+            'payment_status' => ['nullable', new Enum (PaymentStatus::class)],
+            'order_status' => ['nullable', new Enum (OrderStatus::class)],
+            'tracking_number' => ['nullable', 'string' ],
+            'cancelled_at' =>['nullable', 'date' ],
+            'delivered_at' =>['nullable', 'date' ],
+            'paid_at' =>['nullable', 'date' ],
+        ];
+    }
+}

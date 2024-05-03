@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Vendor;
 use App\Models\CartItem;
 use App\Models\Category;
+use App\Models\OrderItem;
 use App\Models\Variation;
 use App\Models\BillingAddress;
 use App\Models\ShippingMethod;
@@ -78,6 +79,11 @@ class User extends Authenticatable
     {
         return $this->hasOne(Vendor::class);
     }
+    
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 
     public function categories()
     {
@@ -93,14 +99,15 @@ class User extends Authenticatable
         return $this->hasMany(VariationsOption::class);
     }
 
-    public function products()
-    {
-        return $this->hasMany(Product::class);
-    }
 
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
     }
 
     

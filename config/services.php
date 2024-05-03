@@ -50,4 +50,10 @@ return [
          'redirect' =>  config('app.frontend_url') .'/auth/facebook/callback'
     ],  
 
+    'stripe' => [
+        'publishable_key' => env('STRIPE_KEY'),
+        'secret_key' => env('STRIPE_SECRET'),
+        //  'redirect' =>  config('app.frontend_url') .'/auth/facebook/callback'
+    ],  
+
 ];

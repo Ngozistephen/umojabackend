@@ -13,10 +13,12 @@ use App\Http\Controllers\Api\Admin\VariationController;
 use App\Http\Controllers\Api\Auth\SocialLoginController;
 use App\Http\Controllers\Api\Auth\VendorLoginController;
 use App\Http\Controllers\Api\Admin\SubcategoryController;
+use App\Http\Controllers\Api\Customer\CheckoutController;
 use App\Http\Controllers\Api\Admin\DiscountCodeController;
 use App\Http\Controllers\Api\Auth\CustomerLoginController;
 use App\Http\Controllers\Api\Auth\SocialRegisterController;
 use App\Http\Controllers\Api\Auth\VendorRegisterController;
+use App\Http\Controllers\Api\Customer\AllProductController;
 use App\Http\Controllers\Api\Admin\ShippingMethodController;
 use App\Http\Controllers\Api\Public\ProductSearchController;
 use App\Http\Controllers\Api\Admin\VariationOptionController;
@@ -29,7 +31,6 @@ use App\Http\Controllers\Api\Customer\ShippingAddressController;
 use App\Http\Controllers\Api\Auth\ForgetVendorPasswordController;
 use App\Http\Controllers\Api\Auth\ResetPasswordCustomerController;
 use App\Http\Controllers\Api\Auth\ForgetCustomerPasswordController;
-use App\Http\Controllers\Api\Customer\AllProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -105,7 +106,7 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('shippingAddresses', ShippingAddressController::class);
         Route::apiResource('billingAddresses', BillingAddressController::class);
         // still working on 
-        // Route::post('checkout', [OrderController::class, '__invoke']);
+        Route::post('checkout', [CheckoutController::class, 'checkout']);
         
 
     });
