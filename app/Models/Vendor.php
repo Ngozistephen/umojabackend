@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\OrderItem;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -30,10 +32,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
             return $this->belongsTo(User::class);
         }
 
-        public function orderItems()
+        // public function products()
+        // {
+        //     return $this->hasMany(Product::class);
+        // }
+
+        public function orders(): HasMany
         {
-            return $this->hasMany(OrderItem::class);
+            return $this->hasMany(Order::class);
         }
+        
     
 
     

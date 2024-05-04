@@ -16,13 +16,15 @@ class ProductsImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        $userId = Auth::id();
+        $user = Auth::user();
+        $vendor_id = $user->vendor->id;
         $randomCategoryId = rand(1, 10);
         $randomSubCategoryId = rand(1, 10);
         $randomUnit = rand(1, 10);
 
         return new Product([
-            'user_id' => $userId,
+            'user_id' => $user->id,
+            'vendor_id' => $vendor_id,
             'name' => $row['title'],
             'description' => $row['description'],
             'material' => $row['material'],
