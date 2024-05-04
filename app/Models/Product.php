@@ -65,10 +65,10 @@ class Product extends Model
         return $this->belongsTo(User::class);
     }
 
-    // public function vendor()
-    // {
-    //     return $this->belongsTo(Vendor::class);
-    // }
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
+    }
 
     public function category(): BelongsTo
     {

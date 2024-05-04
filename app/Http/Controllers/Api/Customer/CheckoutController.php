@@ -148,7 +148,7 @@ class CheckoutController extends Controller
         foreach ($cartItems as $cartProduct){
             $product = Product::find($cartProduct->product_id);
             $subTotal += $cartProduct->product->price *  $cartProduct->quantity;
-            $vendorID = $cartProduct->product->user->vendor_id;
+            // $vendorID = $cartProduct->product->vendor_id;
 
 
             \Log::info('vendor ' . $vendorID);
@@ -172,7 +172,7 @@ class CheckoutController extends Controller
           
         $order = Order::create([
                 'user_id' =>auth()->id(),
-                'vendor_id' =>  $vendorID,
+                'vendor_id' =>  
                 'shipping_address_id' => $request->shipping_address_id,
                 'billing_address_id' => $request->billing_address_id,
                 'shipping_method_id' => $request->shipping_method_id,
