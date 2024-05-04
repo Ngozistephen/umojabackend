@@ -61,7 +61,7 @@ class AllProductController extends Controller
             })
 
             ->latest()
-            ->get();
+            ->paginate(60);
         return ProductResource::collection($products);
     }
 }

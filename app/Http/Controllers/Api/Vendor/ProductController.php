@@ -8,6 +8,7 @@ use App\Exports\ProductsExport;
 use App\Imports\ProductsImport;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\Storage;
@@ -88,30 +89,50 @@ class ProductController extends Controller
      * @param  \App\Http\Requests\StoreProductRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProductRequest $request)
-    {
+    // public function store(StoreProductRequest $request)
+    // {
  
-        $product = auth()->user()->products()->create($request->validated());
+    //     $product = auth()->user()->products()->create($request->validated());
 
-        $uploadedFiles = $this->upload($request);
-        // if ($request->hasFile('photo')) {
+    //     $uploadedFiles = $this->upload($request);
+    //     // if ($request->hasFile('photo')) {
             
-        //     $product->addMultipleMediaFromRequest(['photo'])
-        //         ->each(function ($fileAdder) use ($product) {
-        //             $photo = $fileAdder->toMediaCollection('product_photo');
+    //     //     $product->addMultipleMediaFromRequest(['photo'])
+    //     //         ->each(function ($fileAdder) use ($product) {
+    //     //             $photo = $fileAdder->toMediaCollection('product_photo');
 
-        //             $position = Media::query()
-        //                 ->where('model_type', 'App\Models\Product')
-        //                 ->where('model_id', $product->id)
-        //                 ->max('position') + 1;
+    //     //             $position = Media::query()
+    //     //                 ->where('model_type', 'App\Models\Product')
+    //     //                 ->where('model_id', $product->id)
+    //     //                 ->max('position') + 1;
 
                 
-        //             $photo->update(['position' => $position]);
-        //         });
-        // }
-        return response()->json(['message' => 'Product created successfully', 'product' => new ProductResource($product)], 201);
-    }
+    //     //             $photo->update(['position' => $position]);
+    //     //         });
+    //     // }
+    //     return response()->json(['message' => 'Product created successfully', 'product' => new ProductResource($product)], 201);
+    // }
 
+    public function store(StoreProductRequest $request)
+    {
+        // 1. Retrieve the vendor associated with the authenticated user
+        $vendor = Auth::user()->vendor;
+
+        // 2. Create the product using the retrieved vendor's ID
+        $validatedData = $request->validated();
+        $validatedData['vendor_id'] = $vendor->id; // Add the vendor_id to the validated data
+
+        $product = auth()->user()->products()->create($validatedData);
+
+        // 3. Upload any files if necessary
+        $uploadedFiles = $this->upload($request);
+
+        // 4. Return the response
+        return response()->json([
+            'message' => 'Product created successfully',
+            'product' => new ProductResource($product)
+        ], 201);
+    }
     
 
     

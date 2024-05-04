@@ -14,18 +14,19 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('vendor_id')->constrained('vendors');
             $table->foreignId('shipping_address_id')->constrained('shipping_addresses');
             $table->foreignId('shipping_method_id')->constrained('shipping_methods');
             $table->foreignId('billing_address_id')->constrained('billing_addresses');
-	        $table->foreignId('discount_code')->constrained('discount_codes');
+            $table->foreignId('discount_code')->nullable()->constrained('discount_codes');
             $table->integer('order_number');
             $table->enum('fulfillment_status', ['fulfilled', 'unfulfilled', 'cancelled'])->default('unfulfilled');
             $table->unsignedInteger('sub_total')->default(0);
             $table->unsignedInteger('total_amount')->default(0);
-            $table->unsignedInteger('delivery_charge')->default(0);
+            $table->unsignedInteger('delivery_charge')->default(0)->nullable();
             $table->enum('payment_status', ['paid', 'pending'])->default('pending');
             $table->enum('order_status', ['processed', 'shipped', 'intransit','delivered','processing'])->default('processing');
-            $table->string('tracking_number')->nullable();
+            $table->string('tracking_number');
             $table->timestamp('delivered_at')->nullable();
             $table->timestamp('paid_at')->nullable();
             $table->boolean('read')->default(false);

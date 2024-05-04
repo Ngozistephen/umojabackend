@@ -27,13 +27,13 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'user_id'  => ['required', 'integer', 'exists:users,id'],
+            //  'vendor_id'  => ['required', 'integer', 'exists:vendors,id'],
             'shipping_address_id'  => ['required', 'integer', 'exists:shipping_addresses,id'],
             'shipping_method_id'  => ['required', 'integer', 'exists:shipping_methods,id'],
             'billing_address_id'  => ['required', 'integer', 'exists:billing_addresses,id'],
             'discount_code_id' => ['nullable', 'integer', 'exists:discount_codes,id' ],
             'order_number'  => ['nullable', 'integer' ],
-            'items'  => ['required' ],
+            // 'items'  => ['required' ],
             'read'  => ['nullable', 'boolean'],
             'fulfillment_status'  => ['nullable', new Enum (FulfillmentStatus::class)],
             'sub_total' => ['nullable', 'numeric'],

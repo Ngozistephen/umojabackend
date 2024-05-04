@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Order;
 use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\OrderItem;
@@ -64,6 +65,11 @@ class Product extends Model
         return $this->belongsTo(User::class);
     }
 
+    // public function vendor()
+    // {
+    //     return $this->belongsTo(Vendor::class);
+    // }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -84,10 +90,12 @@ class Product extends Model
     //     $this->addMediaConversion('thumbnail')->width(800);
     // }
 
-    public function orderItems(): HasMany
+    public function order(): BelongsToMany
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->belongsToMany(Order::class)->withPivot(['qty', 'tracking_id']);
     }
+
+   
 
     // public function cartItems(): HasMany
     // {

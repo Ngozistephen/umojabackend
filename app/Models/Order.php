@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Vendor;
+use App\Models\Product;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Models\ShippingMethod;
@@ -14,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Order extends Model
 {
@@ -22,6 +25,8 @@ class Order extends Model
     // protected $guarded = ['id'];
     protected $fillable = [
             'user_id', 
+            // 'product_id',
+            'vendor_id',
             'shipping_address_id', 
             'shipping_method_id', 
             'billing_address_id', 
@@ -53,10 +58,8 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function orderItems(): HasMany
-    {
-        return $this->hasMany(OrderItem::class);
-    }
+   
+   
 
     // public function payment(): HasOne
     // {
@@ -77,5 +80,17 @@ class Order extends Model
     {
         return $this->hasOne(BillingAddress::class);
     }
+
+
+    public function vendor(): BelongsTo
+    {
+        return $this->belongsTo(Vendor::class);
+    }
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class)->withPivot(['qty', 'tracking_id', 'price' ]);
+    }
+
 }
 

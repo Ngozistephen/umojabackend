@@ -25,7 +25,7 @@ class StoreProductRequest extends FormRequest
     public function rules()
     {
          return  [
-            // 'user_id' => 'required|integer|exists:users,id',
+            'vendor_id' => 'nullable|integer|exists:vendors,id',
             'sku' => 'nullable|string|unique:products,sku',
             'unit' => 'required|string',
             'unit_per_item' => 'required|numeric',

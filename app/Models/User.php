@@ -80,6 +80,7 @@ class User extends Authenticatable
         return $this->hasOne(Vendor::class);
     }
     
+  
     public function products()
     {
         return $this->hasMany(Product::class);
