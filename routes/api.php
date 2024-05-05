@@ -94,7 +94,8 @@ Route::middleware('auth:api')->group(function () {
          Route::post('products/upload', [ProductController::class, 'upload']);
          Route::apiResource('products.variations', ProductVariationController::class)->except(['create', 'edit']);
          Route::post('/import/products', [ProductController::class, 'import']);
-         Route::get('/export/products', [ProductController::class, 'export']);      
+         Route::get('/export/products', [ProductController::class, 'export']);   
+         Route::get('allOrders', [CheckoutController::class, 'allOrders']);   
     });
     Route::prefix('customer')->group(function () {
         Route::post('products/{product}/addcart', [CartController::class, 'addCart']);
@@ -107,6 +108,7 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('billingAddresses', BillingAddressController::class);
         // still working on 
         Route::post('checkout', [CheckoutController::class, 'checkout']);
+       
         
 
     });
