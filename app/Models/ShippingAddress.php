@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,8 +24,9 @@ class ShippingAddress extends Model
     }
 
 
-    public function orders(): HasMany
+    
+    public function order(): HasOne
     {
-        return $this->hasMany(Order::class);
+        return $this->hasOne(Order::class, 'shipping_address_id');
     }
 }

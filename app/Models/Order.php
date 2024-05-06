@@ -66,19 +66,24 @@ class Order extends Model
     //     return $this->hasOne(Payment::class);
     // }
 
-    public function shippingAddress(): HasOne
+    // public function shippingAddress(): HasOne
+    // {
+    //     return $this->hasOne(ShippingAddress::class);
+    // }
+
+    public function shippingAddress(): BelongsTo
     {
-        return $this->hasOne(ShippingAddress::class);
+        return $this->belongsTo(ShippingAddress::class, 'shipping_address_id');
     }
 
-    public function shippingMethod()
+    public function shippingMethod(): BelongsTo
     {
-        return $this->hasOne(ShippingMethod::class);
+        return $this->belongsTo(ShippingMethod::class, 'shipping_method_id');
     }
 
     public function billingAddress()
     {
-        return $this->hasOne(BillingAddress::class);
+        return $this->belongsTo(BillingAddress::class, 'billing_address_id');
     }
 
 

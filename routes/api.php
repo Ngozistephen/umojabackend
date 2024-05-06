@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\VendorController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Public\UserController;
+use App\Http\Controllers\Api\Vendor\OrderController;
 use App\Http\Controllers\Api\Customer\CartController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Vendor\ProductController;
@@ -90,11 +91,14 @@ Route::middleware('auth:api')->group(function () {
 
     });
     Route::prefix('vendor')->group(function () {
+         Route::delete('products/{product_id}/delete_perm', [ProductController::class, 'delete_perm']);
+         Route::put('products/{product_id}/restore', [ProductController::class, 'restore']);
          Route::apiResource('products', ProductController::class);
          Route::post('products/upload', [ProductController::class, 'upload']);
          Route::apiResource('products.variations', ProductVariationController::class)->except(['create', 'edit']);
          Route::post('/import/products', [ProductController::class, 'import']);
-         Route::get('/export/products', [ProductController::class, 'export']);      
+         Route::get('/export/products', [ProductController::class, 'export']);   
+         Route::apiResource('orders', OrderController::class, );   
     });
     Route::prefix('customer')->group(function () {
         Route::post('products/{product}/addcart', [CartController::class, 'addCart']);
@@ -107,6 +111,7 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('billingAddresses', BillingAddressController::class);
         // still working on 
         Route::post('checkout', [CheckoutController::class, 'checkout']);
+       
         
 
     });
