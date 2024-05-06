@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreOrderRequest;
+use App\Http\Resources\OrderResource;
 use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
@@ -22,14 +23,14 @@ class CheckoutController extends Controller
      */
    
 
-     public function allOrders(Request $request)
-     {
-         // Fetch orders associated with the logged-in vendor, ordered by the latest
-         $vendorOrders = Auth::user()->vendor->orders()->latest()->paginate(20);
+    //  public function allOrders(Request $request)
+    //  {
+    //      // Fetch orders associated with the logged-in vendor, ordered by the latest
+    //      $vendorOrders = Auth::user()->vendor->orders()->latest()->paginate(20);
          
-         // Format orders using the resource class
-         return OrderResource::collection($vendorOrders);
-     }
+    //      // Format orders using the resource class
+    //      return OrderResource::collection($vendorOrders);
+    //  }
 
     public function checkout(StoreOrderRequest $request)
     {
@@ -88,10 +89,11 @@ class CheckoutController extends Controller
                 // Clear the cart items after successful checkout to uncomment later
                 // CartItem::where('user_id', auth()->id())->delete();
         
+            });
                 return response()->json([
                     'success' => 'Order placed successfully',
                 ], 200);
-            });
+                // return OrderResource::collection(Order::all()); for all
         } catch (\Exception $exception) {
             return response()->json(['Error' => 'Error Happened. Try Again or Contact us.' ]);
         }

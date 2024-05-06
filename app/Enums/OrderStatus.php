@@ -9,6 +9,7 @@ enum OrderStatus : string
   case INTRANSIT = 'intransit';
   case DELIVERED = 'delivered';
   case PROCESSING = 'processing';
+  case AWAITING_SHIPMENT = 'awaiting_shipment';
 
 
 
@@ -37,6 +38,11 @@ enum OrderStatus : string
   public function isProcessing(): bool 
   {
       return $this === self::PROCESSING;
+  }
+  
+  public function isAwaitingShipment(): bool 
+  {
+      return $this === self::AWAITING_SHIPMENT;
   }
   
 }

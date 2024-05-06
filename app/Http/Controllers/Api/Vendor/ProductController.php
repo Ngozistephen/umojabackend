@@ -199,8 +199,50 @@ class ProductController extends Controller
  
         $product->delete();
  
-        return response()->json(['message' => 'Product deleted successfully'], 200);
+        return response()->json(['message' => 'Product Archived successfully'], 200);
     }
+
+
+    public function restore($product_id)
+    {
+        $this->authorize('product-manage');
+
+        $product = Product::withTrashed()->find($product_id);
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        if ($product->user_id != auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+        
+        if ($product->trashed()) {
+            $product->restore();
+            return response()->json(['message' => 'Product restored successfully'], 200);
+        }
+        return response()->json(['message' => 'Product is not archived, cannot be restored'], 400);
+    }
+
+
+
+    public function delete_perm($product_id)
+    {
+        $this->authorize('product-manage');
+
+        $product = Product::find($product_id);
+    
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+    
+        if ($product->user_id != auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+        $product->forceDelete();
+    
+        return response()->json(['message' => 'Product deleted permanently'], 200);
+    }
+    
 
     public function upload(Request $request)
     {
