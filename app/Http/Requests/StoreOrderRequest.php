@@ -30,7 +30,7 @@ class StoreOrderRequest extends FormRequest
             //  'vendor_id'  => ['required', 'integer', 'exists:vendors,id'],
             'shipping_address_id'  => ['required', 'integer', 'exists:shipping_addresses,id'],
             'shipping_method_id'  => ['required', 'integer', 'exists:shipping_methods,id'],
-            'billing_address_id'  => ['required', 'integer', 'exists:billing_addresses,id'],
+            'payment_method_id'  => ['required', 'integer', 'exists:payment_methods,id'],
             'discount_code_id' => ['nullable', 'integer', 'exists:discount_codes,id' ],
             'order_number'  => ['nullable', 'integer' ],
             'products'  => ['required' ],
