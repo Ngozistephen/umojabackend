@@ -73,7 +73,7 @@ class CheckoutController extends Controller
             }
         }
 
-        \Log::info('Product: ' . $product);
+        \Log::info('Product: ' . json_encode($product));
         
         try {
                 // Create payment intent
