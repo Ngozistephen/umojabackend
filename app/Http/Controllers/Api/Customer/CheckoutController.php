@@ -55,7 +55,7 @@ class CheckoutController extends Controller
 
             if ($product['unit_per_item'] < $product['quantity'] || $product['variations']['no_available'] < $product['quantity']) {
                 return response()->json([
-                    'error' => "Product '{$product->name}' not found in stock"
+                    'error' => "Product '{$product['name']}' not found in stock"
                 ], 404);
             }
         }
