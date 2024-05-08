@@ -24,7 +24,7 @@ use App\Http\Controllers\Api\Admin\ShippingMethodController;
 use App\Http\Controllers\Api\Public\ProductSearchController;
 use App\Http\Controllers\Api\Admin\VariationOptionController;
 use App\Http\Controllers\Api\Auth\CustomerRegisterController;
-use App\Http\Controllers\Api\Customer\BillingAddressController;
+use App\Http\Controllers\Api\Customer\PaymentMethodController;
 use App\Http\Controllers\Api\Vendor\ProductVariationController;
 use App\Http\Controllers\Api\Auth\ResetPasswordVendorController;
 use App\Http\Controllers\Api\Auth\VendorPasswordSetupController;
@@ -108,7 +108,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('cartItems', [CartController::class, 'getCartItems']);
         Route::post('apply_discount', [DiscountCodeController::class, 'applyDiscount']);
         Route::apiResource('shippingAddresses', ShippingAddressController::class);
-        Route::apiResource('billingAddresses', BillingAddressController::class);
+        Route::apiResource('paymentMethods', PaymentMethodController::class);
         // still working on 
         Route::post('checkout', [CheckoutController::class, 'checkout']);
        

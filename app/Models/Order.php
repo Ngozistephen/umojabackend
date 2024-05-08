@@ -29,7 +29,7 @@ class Order extends Model
             'vendor_id',
             'shipping_address_id', 
             'shipping_method_id', 
-            'billing_address_id', 
+            'payment_method_id', 
             'order_number', 
             'fulfillment_status', 
             'sub_total', 
@@ -81,9 +81,9 @@ class Order extends Model
         return $this->belongsTo(ShippingMethod::class, 'shipping_method_id');
     }
 
-    public function billingAddress()
+    public function paymentMethod()
     {
-        return $this->belongsTo(BillingAddress::class, 'billing_address_id');
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
     }
 
 

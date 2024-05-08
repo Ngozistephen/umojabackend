@@ -12,6 +12,7 @@ use App\Models\CartItem;
 use App\Models\OrderItem;
 use Stripe\PaymentIntent;
 use Illuminate\Http\Request;
+use App\Models\PaymentMethod;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -37,8 +38,7 @@ class CheckoutController extends Controller
 
     public function checkout(StoreOrderRequest $request)
     {
-        // $cartItems = CartItem::with('product')->where('user_id', auth()->id())->get();
-        $products = $request->$products;
+        $products = $request->input('products');
         $subTotal = 0;
         $orderNumber = str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
         $trackingNumber = 'ID' . substr(uniqid(), -8) . 'RS';
@@ -65,15 +65,17 @@ class CheckoutController extends Controller
                 // Create payment intent
                 $user = Auth::user();
                 $user->createOrGetStripeCustomer();
-                $paymentMethod = $request->input('payment_method_id');
-                $user->updateDefaultPaymentMethod($paymentMethod);
-                $card = $user->defaultPaymentMethod()->card;
-                $cardBrand = $card->brand;
-                $expiryMonth = $card->exp_month;
-                $expiryYear = $card->exp_year;
+                $paymentMethodId = $request->input('payment_method_id');
+                $paymentMethod = PaymentMethod::findOrFail($paymentMethodId);
+
+                \Log::info('paymentMethod: ' .   $paymentMethod );
+                $user->updateDefaultPaymentMethod($paymentMethod->payment_method);
+          
+               
+                
 
                 $payment = $user->charge(
-                    $paymentMethod,
+                    $paymentMethod->payment_method,
                     [
                         'amount' => $totalAmount * 100, 
                         'currency' => 'eur', 
@@ -86,16 +88,9 @@ class CheckoutController extends Controller
                 $paymentIntent = $payment->asStripePaymentIntent();
                
                
-              
-                // $paymentIntent = PaymentIntent::create([
-                //     'amount' => $totalAmount * 100, // Stripe accepts amount in cents
-                //     'currency' => 'eur', 
-                //     'metadata' => [ // Store metadata for the order
-                //         'order_number' => $orderNumber,
-                //     ]
-                // ]);
+            
                 \Log::info('paymentIntent: ' .   $paymentIntent );
-            DB::transaction(function () use ($products,$vendorID, $request,$orderNumber,$trackingNumber, $subTotal,$totalAmount, $payment,$user, $cardBrand,$expiryMonth,$expiryYear ) {
+                DB::transaction(function () use ($products,$vendorID, $request,$orderNumber,$trackingNumber, $subTotal,$totalAmount, $payment,$user ) {
 
                 $order = $user->orders()->create([   
                     'vendor_id' => $vendorID,
@@ -109,10 +104,8 @@ class CheckoutController extends Controller
                     'discount_code_id' => $request->discount_code_id,
                     'total_amount' => $totalAmount, 
                     'transaction_id' => $payment->charges->data[0]->id,
-                    'last_card_digits' => Auth::user()->defaultPaymentMethod()->card->last4,
-                    'last_card_brand' => $cardBrand,
-                    'expiry_month' => $expiryMonth,
-                    'expiry_year' => $expiryYear,
+                    // 'last_card_digits' => Auth::user()->defaultPaymentMethod()->card->last4,
+                   
                     
 
                 ]);
@@ -145,9 +138,6 @@ class CheckoutController extends Controller
                 return response()->json([
                     'client_secret' => $paymentIntent->client_secret,
                     'last_four_digits' => Auth::user()->defaultPaymentMethod()->card->last4,
-                    'card_brand' => $cardBrand,
-                    'expiry_month' => $expiryMonth,
-                    'expiry_year' => $expiryYear,
                     'success' => 'Order placed successfully',
                 ], 200);
                 // return OrderResource::collection(Order::all()); for all

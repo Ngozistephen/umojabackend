@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BillingAddressResource extends JsonResource
+class PaymentMethodResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,12 +17,11 @@ class BillingAddressResource extends JsonResource
         return [
             'id' => $this->id,
             'user_id'=> $this->user_id,
-            'billing_phone_number' => $this->billing_phone_number,
-            'billing_address' => $this->billing_address,
-            'billing_city' => $this->billing_city,
-            'billing_region' => $this->billing_region,
-            'billing_postal_code' => $this->billing_postal_code,
-            'billing_country' => $this->billing_country,
+            'payment_method' => $this->payment_method,
+            'last_card_digits' => $this->last_card_digits,
+            'last_card_brand' => $this->last_card_brand,
+            'expiry_month' => $this->expiry_month,
+            'expiry_year' => $this->expiry_year,
             'created' => $this->created_at,
             
             // 'first_name' => $this->user?->first_name,

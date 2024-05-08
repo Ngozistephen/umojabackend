@@ -9,12 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class BillingAddress extends Model
+class PaymentMethod extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = ['user_id','billing_phone_number','billing_address','billing_city', 'billing_region', 'billing_postal_code', 'billing_country'];
+    protected $fillable = ['user_id','payment_method','last_card_digits','last_card_brand', 'expiry_month', 'expiry_year',];
 
 
     public function user(): BelongsTo
@@ -25,7 +26,7 @@ class BillingAddress extends Model
  
     public function order(): HasOne
     {
-        return $this->hasOne(Order::class, 'billing_address_id');
+        return $this->hasOne(Order::class, 'payment_method_id');
     }
 
 }

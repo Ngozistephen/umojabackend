@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('billing_addresses', function (Blueprint $table) {
+        Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->string('billing_phone_number')->nullable();
-            $table->string('billing_address');
-            $table->string('billing_city');
-            $table->string('billing_region');
-            $table->string('billing_postal_code');
-            $table->string('billing_country');
+            $table->string('payment_method');
+            $table->integer('last_card_digits');
+            $table->string('last_card_brand');
+            $table->unsignedInteger('expiry_month');
+            $table->unsignedInteger('expiry_year');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('billing_addresses');
+        Schema::dropIfExists('payment_methods');
     }
 };

@@ -10,7 +10,8 @@ use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\OrderItem;
 use App\Models\Variation;
-use App\Models\BillingAddress;
+use App\Models\PaymentMethod;
+use Laravel\Cashier\Billable;
 use App\Models\ShippingMethod;
 use App\Models\ShippingAddress;
 use App\Models\VariationsOption;
@@ -21,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Cashier\Billable;
 
 class User extends Authenticatable
 {
@@ -127,9 +127,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ShippingMethod::class);
     }
-    public function billingAddresses(): HasMany
+    public function paymentMethods(): HasMany
     {
-        return $this->hasMany(BillingAddress::class);
+        return $this->hasMany(PaymentMethod::class);
     }
     
 

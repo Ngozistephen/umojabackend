@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateBillingAddressRequest extends FormRequest
+class StorePaymentMethodRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,12 +23,12 @@ class UpdateBillingAddressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'billing_phone_number' => 'nullable|string',
-            'billing_address' => 'nullable|string',
-            'billing_city' => 'nullable|string',
-            'billing_region' => 'nullable|string', 
-            'billing_postal_code' => 'nullable|string', 
-            'billing_country' => 'nullable|string', 
+            'payment_method' => 'required|string',
+            'last_card_digits' => 'required|integer',
+            'last_card_brand' => 'required|string',
+            'expiry_month' => 'required|integer|min:1|max:12',
+            'expiry_year' => 'required|integer|min:' . date('Y'), 
+           
             
 
 
