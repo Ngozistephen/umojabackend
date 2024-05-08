@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->string('payment_method');
+            $table->string('email')->unique();
             $table->integer('last_card_digits');
             $table->string('last_card_brand');
             $table->unsignedInteger('expiry_month');
