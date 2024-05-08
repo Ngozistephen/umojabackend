@@ -48,7 +48,8 @@ class CheckoutController extends Controller
         foreach ($products as $product) {
             $subTotal += $product['price'] * $product['quantity'];
             $totalAmount += $product['price'] * $product['quantity']; 
-            $vendorID = $product->vendor_id;
+            // $vendorID = $product->vendor_id;
+            $vendorID = $product['vendor_id'];
 
         
 
