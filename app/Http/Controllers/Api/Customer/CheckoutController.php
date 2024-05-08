@@ -53,10 +53,23 @@ class CheckoutController extends Controller
 
         
 
-            if ($product['unit_per_item'] < $product['quantity'] || $product['variations']['no_available'] < $product['quantity']) {
-                return response()->json([
-                    'error' => "Product '{$product['name']}' not found in stock"
-                ], 404);
+            // if ($product['unit_per_item'] < $product['quantity'] || $product['variations']['no_available'] < $product['quantity']) {
+            //     return response()->json([
+            //         'error' => "Product '{$product['name']}' not found in stock"
+            //     ], 404);
+            // }
+
+            if (isset($product['variations']) && isset($product['variations']['no_available'])) {
+                if ($product['unit_per_item'] < $product['quantity'] || $product['variations']['no_available'] < $product['quantity']) {
+                    return response()->json([
+                        'error' => "Product '{$product['name']}' not found in stock"
+                    ], 404);
+                }
+            } else {
+                // Handle the case where 'no_available' key doesn't exist within 'variations'
+                // You might want to log a warning or handle it in another way based on your application's logic
+                // For example, log a warning
+                \Log::warning("No 'no_available' key found in 'variations' for product '{$product['name']}'");
             }
         }
 
@@ -96,7 +109,7 @@ class CheckoutController extends Controller
                 $order = $user->orders()->create([   
                     'vendor_id' => $vendorID,
                     'shipping_address_id' => $request->shipping_address_id,
-                    'billing_address_id' => $request->billing_address_id,
+                    'payment_method_id' => $request->payment_method_id,
                     'shipping_method_id' => $request->shipping_method_id,
                     'order_number' => $orderNumber,
                     'tracking_number' => $trackingNumber,
@@ -118,7 +131,7 @@ class CheckoutController extends Controller
                         'qty' => $product['quantity'],
                         'price' => $product['price'],
                         'tracking_id' => $randomCode,
-                        'vendor_id' => $product->vendor_id,
+                        'vendor_id' => $product['vendor_id'],
                     ]);
         
                     $product = Product::find($product['id']);
