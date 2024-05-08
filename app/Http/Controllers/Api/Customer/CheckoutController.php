@@ -37,29 +37,29 @@ class CheckoutController extends Controller
 
     public function checkout(StoreOrderRequest $request)
     {
-        $cartItems = CartItem::with('product')->where('user_id', auth()->id())->get();
+        // $cartItems = CartItem::with('product')->where('user_id', auth()->id())->get();
+        $products = $request->$products;
         $subTotal = 0;
         $orderNumber = str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
         $trackingNumber = 'ID' . substr(uniqid(), -8) . 'RS';
         $totalAmount = 0; 
        
 
-        foreach ($cartItems as $cartProduct) {
-            $product = $cartProduct->product; 
-            $subTotal += $product->price * $cartProduct->quantity;
-            $totalAmount += $product->price * $cartProduct->quantity; 
+        foreach ($products as $product) {
+            $subTotal += $product['price'] * $product['quantity'];
+            $totalAmount += $product['price'] * $product['quantity']; 
             $vendorID = $product->vendor_id;
 
         
 
-            if ($product->unit_per_item < $cartProduct->quantity || $product->variations->pluck('no_available')->sum() < $cartProduct->quantity) {
+            if ($product['unit_per_item'] < $product['quantity'] || $product['variations']['no_available'] < $product['quantity']) {
                 return response()->json([
                     'error' => "Product '{$product->name}' not found in stock"
                 ], 404);
             }
         }
 
-        \Log::info('cartProduct: ' . $cartProduct);
+        \Log::info('Product: ' . $product);
         
         try {
                 // Create payment intent
@@ -95,7 +95,7 @@ class CheckoutController extends Controller
                 //     ]
                 // ]);
                 \Log::info('paymentIntent: ' .   $paymentIntent );
-            DB::transaction(function () use ($cartItems,$vendorID, $request,$orderNumber,$trackingNumber, $subTotal,$totalAmount, $payment,$user, $cardBrand,$expiryMonth,$expiryYear ) {
+            DB::transaction(function () use ($products,$vendorID, $request,$orderNumber,$trackingNumber, $subTotal,$totalAmount, $payment,$user, $cardBrand,$expiryMonth,$expiryYear ) {
 
                 $order = $user->orders()->create([   
                     'vendor_id' => $vendorID,
@@ -117,22 +117,19 @@ class CheckoutController extends Controller
 
                 ]);
         
-                foreach ($cartItems as $cartProduct) {
+                foreach ($products as $product) {
                     $randomCode = rand(1000000, 9999999);
         
-                    $order->products()->attach($cartProduct->product_id, [
-                        'qty' => $cartProduct->quantity,
-                        'price' => $cartProduct->product->price,
+                    $order->products()->attach($product['id'], [
+                        'qty' => $product['quantity'],
+                        'price' => $product['price'],
                         'tracking_id' => $randomCode,
-                        'vendor_id' => $cartProduct->product->vendor_id,
+                        'vendor_id' => $product->vendor_id,
                     ]);
         
-                    $product = Product::find($cartProduct->product_id);
-                    $product->decrement('unit_per_item', $cartProduct->quantity);
+                    $product = Product::find($product['id']);
+                    $product->decrement('unit_per_item', $product['quantity']);
                 }
-        
-                // Clear the cart items after successful checkout to uncomment later
-                // CartItem::where('user_id', auth()->id())->delete();
         
                 $order->update(['paid_at' => now() , 'payment_status' => 'paid']);
             });

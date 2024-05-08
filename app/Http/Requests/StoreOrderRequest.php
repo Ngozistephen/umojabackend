@@ -33,7 +33,7 @@ class StoreOrderRequest extends FormRequest
             'billing_address_id'  => ['required', 'integer', 'exists:billing_addresses,id'],
             'discount_code_id' => ['nullable', 'integer', 'exists:discount_codes,id' ],
             'order_number'  => ['nullable', 'integer' ],
-            // 'items'  => ['required' ],
+            'products'  => ['required' ],
             'read'  => ['nullable', 'boolean'],
             'fulfillment_status'  => ['nullable', new Enum (FulfillmentStatus::class)],
             'sub_total' => ['nullable', 'numeric'],
