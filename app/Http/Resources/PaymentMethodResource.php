@@ -22,6 +22,7 @@ class PaymentMethodResource extends JsonResource
             'last_card_brand' => $this->last_card_brand,
             'expiry_month' => $this->expiry_month,
             'expiry_year' => $this->expiry_year,
+            'email' => $this->email,
             'created' => $this->created_at,
             
             // 'first_name' => $this->user?->first_name,

@@ -26,6 +26,7 @@ class StorePaymentMethodRequest extends FormRequest
             'payment_method' => 'required|string',
             'last_card_digits' => 'required|integer',
             'last_card_brand' => 'required|string',
+            'email' =>  'required|email',
             'expiry_month' => 'required|integer|min:1|max:12',
             'expiry_year' => 'required|integer|min:' . date('Y'), 
            

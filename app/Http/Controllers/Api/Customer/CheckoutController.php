@@ -48,7 +48,6 @@ class CheckoutController extends Controller
         foreach ($products as $product) {
             $subTotal += $product['price'] * $product['quantity'];
             $totalAmount += $product['price'] * $product['quantity']; 
-            // $vendorID = $product->vendor_id;
             $vendorID = $product['vendor_id'];
 
         
@@ -78,28 +77,28 @@ class CheckoutController extends Controller
         try {
                 // Create payment intent
                 $user = Auth::user();
-                // $user->createOrGetStripeCustomer();
-                // $paymentMethodId = $request->input('payment_method_id');
-                // $paymentMethod = PaymentMethod::findOrFail($paymentMethodId);
+                $user->createOrGetStripeCustomer();
+                $paymentMethodId = $request->input('payment_method_id');
+                $paymentMethod = PaymentMethod::findOrFail($paymentMethodId);
 
-                // \Log::info('paymentMethod: ' .   $paymentMethod );
-                // $user->updateDefaultPaymentMethod($paymentMethod->payment_method);
+                \Log::info('paymentMethod: ' .   $paymentMethod );
+                $user->updateDefaultPaymentMethod($paymentMethod->payment_method);
           
                
                 
 
-                // $payment = $user->charge(
-                //     $paymentMethod->payment_method,
-                //     [
-                //         'amount' => $totalAmount * 100, 
-                //         'currency' => 'eur', 
-                //         'metadata' => [ 
-                //             'order_number' => $orderNumber,
-                //         ]
-                //     ]
-                // );
+                $payment = $user->charge(
+                    $paymentMethod->payment_method,
+                    [
+                        'amount' => $totalAmount * 100, 
+                        'currency' => 'eur', 
+                        'metadata' => [ 
+                            'order_number' => $orderNumber,
+                        ]
+                    ]
+                );
 
-                // $paymentIntent = $payment->asStripePaymentIntent();
+                $paymentIntent = $payment->asStripePaymentIntent();
                
                
             
@@ -148,9 +147,9 @@ class CheckoutController extends Controller
                 }
                 
 
-                // \Log::info('paymentIntent: ' .   $paymentIntent->client_secret);
+                 \Log::info('paymentIntent: ' .   $paymentIntent->client_secret);
                 return response()->json([
-                    // 'client_secret' => $paymentIntent->client_secret,
+                     'client_secret' => $paymentIntent->client_secret,
                     'last_four_digits' => Auth::user()->defaultPaymentMethod()->card->last4,
                     'success' => 'Order placed successfully',
                 ], 200);

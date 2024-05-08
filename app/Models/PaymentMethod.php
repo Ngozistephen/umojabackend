@@ -15,7 +15,7 @@ class PaymentMethod extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['user_id','payment_method','last_card_digits','last_card_brand', 'expiry_month', 'expiry_year',];
+    protected $fillable = ['user_id','payment_method','last_card_digits','last_card_brand', 'expiry_month', 'expiry_year', 'email'];
 
 
     public function user(): BelongsTo
