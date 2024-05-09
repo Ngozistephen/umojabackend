@@ -111,6 +111,7 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('paymentMethods', PaymentMethodController::class);
         // still working on 
         Route::post('checkout', [CheckoutController::class, 'checkout']);
+        Route::stripeWebhooks('webhook');
        
         
 

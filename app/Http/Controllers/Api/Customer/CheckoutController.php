@@ -13,12 +13,15 @@ use App\Models\OrderItem;
 use Stripe\PaymentIntent;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
+use App\Mail\OrderConfirmation;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\OrderResource;
 use Stripe\Exception\ApiErrorException;
 use App\Http\Requests\StoreOrderRequest;
+use App\Notifications\SendOrderNotification;
 
 class CheckoutController extends Controller
 {
@@ -99,11 +102,13 @@ class CheckoutController extends Controller
                 );
 
                 $paymentIntent = $payment->asStripePaymentIntent();
+                \Log::info('paymentIntent: ' . $paymentIntent->jsonSerialize());
                
                
             
+                $order = null;
                 // \Log::info('paymentIntent: ' .   $paymentIntent );
-                DB::transaction(function () use ($products,$vendorID, $request,$orderNumber,$trackingNumber, $subTotal,$totalAmount, $payment,$user ) {
+                DB::transaction(function () use ($products,$vendorID, $request,$orderNumber,$trackingNumber, $subTotal,$totalAmount, $payment,$user, ) {
 
                 $order = $user->orders()->create([   
                     'vendor_id' => $vendorID,
@@ -137,9 +142,11 @@ class CheckoutController extends Controller
                     $product->decrement('unit_per_item', $product['quantity']);
                 }
         
-                $order->update(['paid_at' => now() , 'payment_status' => 'paid']);
+                // $order->update(['paid_at' => now() , 'payment_status' => 'paid']);
             });
     
+            // $user->notify(new SendOrderNotification());
+
 
                 // verify the payment with the orderNumber
                 if ($paymentIntent->metadata->order_number !== $orderNumber) {
@@ -147,7 +154,11 @@ class CheckoutController extends Controller
                 }
                 
 
-                 \Log::info('paymentIntent: ' .   $paymentIntent->client_secret);
+                $paymentMethod = $user->defaultPaymentMethod;
+
+          
+             
+                //  \Log::info('paymentIntent: ' .   $paymentIntent->client_secret);
                 return response()->json([
                      'client_secret' => $paymentIntent->client_secret,
                     'last_four_digits' => Auth::user()->defaultPaymentMethod()->card->last4,
