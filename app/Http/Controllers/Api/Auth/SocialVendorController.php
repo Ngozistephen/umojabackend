@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\VendorSetupAccountMail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialVendorController extends Controller
@@ -64,40 +65,37 @@ class SocialVendorController extends Controller
                 'last_name' => $lastName,
                 'email' => $response->getEmail(),
                 'oauth_type' => $provider,
-                // Do NOT store the social login ID as the password!
                 'password' => Hash::make($response->getId()),
                 'terms_accepted' => true,
                 'role_id' => Role::ROLE_VENDOR,
             ]);
     
-            $passwordSetupToken = Str::random(60);
-
-            // Store the token in the password_setup_token column of the users table
-            $user->update(['password_setup_token' => $passwordSetupToken]);
+            $verificationCode = mt_rand(100000, 999999); 
+  
+            $cacheKey = 'verification_code_' . $request->email;
+            Cache::put($cacheKey, $verificationCode, now()->addMinutes(30));
     
-            // Send email to the user for vendor account setup
-            $accountSetupUrl = config('app.frontend_url') . '/vendor/setup/' . $passwordSetupToken;
-            Mail::to($user->email)->send(new VendorSetupAccountMail($user, $accountSetupUrl));
-            return response()->json(['message' => 'An email has been sent to your registered email address for vendor account setup. Please check your inbox.'], Response::HTTP_CREATED);
+            Mail::to($user->email)->send(new VendorSetupAccountMail($user, $verificationCode));
+            return response()->json(['message' => 'An email has been sent to your registered email address for the verification code.. Please check your inbox.'], Response::HTTP_CREATED);
     
-            // event(new Registered($user));
+           
         } else {
-            // Existing user - update social media ID if necessary
+            
             if (!$user->{$provider . '_id'}) {
                 $user->update([$provider . '_id' => $response->getId()]);
             }
         }
     
-        // Generate access token and response (avoid sending sensitive info)
+
         $device = substr($request->userAgent() ?? '', 0, 255);
         $token = $user->createToken($device)->accessToken;
         $role = $user->role->name;
     
         $response = [
             'access_token' => $token,
-            // Only send necessary user information, not first name
+           
             'user' => [
-                'email' => $user->email, // Consider including only if needed
+                'email' => $user->email, 
                 'name' => $user->first_name,
                 'role' => $role,
             ],

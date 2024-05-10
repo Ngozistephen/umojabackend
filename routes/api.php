@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\Admin\ShippingMethodController;
 use App\Http\Controllers\Api\Public\ProductSearchController;
 use App\Http\Controllers\Api\Admin\VariationOptionController;
 use App\Http\Controllers\Api\Auth\CustomerRegisterController;
+use App\Http\Controllers\Api\Auth\VendorVerifyCodeController;
 use App\Http\Controllers\Api\Customer\PaymentMethodController;
 use App\Http\Controllers\Api\Vendor\ProductVariationController;
 use App\Http\Controllers\Api\Auth\ResetPasswordVendorController;
@@ -52,7 +53,7 @@ Route::prefix('auth')->group(function () {
     Route::post('vendor_login', [VendorLoginController::class, '__invoke']);
     Route::post('customer_login', [CustomerLoginController::class, '__invoke']);
     Route::post('logout', [LogoutController::class, '__invoke'])->middleware('auth:api');
-    // Route::post('password_setup/{token}', [VendorPasswordSetupController::class, '__invoke']);
+    Route::post('verify', [VendorVerifyCodeController::class, '__invoke']);
     
     Route::post('forget_customer_password', [ForgetCustomerPasswordController::class, '__invoke']);
     Route::post('forget_vendor_password', [ForgetVendorPasswordController::class, '__invoke']);
@@ -91,7 +92,6 @@ Route::middleware('auth:api')->group(function () {
 
     });
     Route::prefix('vendor')->group(function () {
-        Route::post('setup/{token}', [VendorController::class, 'setupAccount']);
         Route::post('setup/{userId}', [VendorController::class, 'setupAccount']);
         Route::post('upload', [VendorController::class, 'upload']);
          Route::delete('products/{product_id}/delete_perm', [ProductController::class, 'delete_perm']);

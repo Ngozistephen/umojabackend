@@ -16,6 +16,7 @@ use App\Mail\VendorSetupAccountMail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VendorPasswordSetupMail;
+use Illuminate\Support\Facades\Cache;
 use Cloudinary\Api\Exception\ApiError;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
@@ -36,6 +37,11 @@ class VendorRegisterController extends Controller
             'terms_accepted' => ['required', 'accepted'],
         ]);
         $role = Role::where('name', 'Vendor')->value('id');
+         
+        $verificationCode = mt_rand(100000, 999999); 
+  
+        $cacheKey = 'verification_code_' . $request->email;
+        Cache::put($cacheKey, $verificationCode, now()->addMinutes(30));
 
         $user = User::create([
             'first_name' => $request->first_name,
@@ -46,12 +52,8 @@ class VendorRegisterController extends Controller
             'role_id' => $role, 
         ]);
 
-        $accountSetupToken = Str::random(60);
-        $user->update(['password_setup_token' => $accountSetupToken]);
-
-        // $accountSetupUrl = config('app.frontend_url') . '/vendor/setup/' . $user->id;
-        $accountSetupUrl = config('app.frontend_url') . '/vendor/setup/' .  $accountSetupToken;
-        Mail::to($user->email)->send(new VendorSetupAccountMail($user, $accountSetupUrl));
+       
+        Mail::to($user->email)->send(new VendorSetupAccountMail($user, $verificationCode));
        
 
 
@@ -62,7 +64,7 @@ class VendorRegisterController extends Controller
             'access_token' => $token,
             'vendor' => $user->first_name,
             'role' => Role::find($role)->name,
-            'Message' => 'registered successfully. Check your email to set up your Account.'
+            'Message' => 'Registered successfully. Check your email for the verification code.'
         ];
 
         return response()->json($response,  Response::HTTP_CREATED);

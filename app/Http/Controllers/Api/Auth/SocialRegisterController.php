@@ -119,7 +119,6 @@ class SocialRegisterController extends Controller
                 'last_name' => $lastName,
                 'email' => $response->getEmail(),
                 'oauth_type' => $provider,
-                // Do NOT store the social login ID as the password!
                 'password' => Hash::make($response->getId()),
                 'terms_accepted' => true,
                 'role_id' => Role::ROLE_CUSTOMER,

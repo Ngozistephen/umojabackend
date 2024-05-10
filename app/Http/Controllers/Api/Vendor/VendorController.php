@@ -50,49 +50,21 @@ class VendorController extends Controller
     {
         //
     }
-    public function setupAccount(VendorProfileRequest $request, $token)
-    {
-         // Fetch the user by the provided $userId
-         $user = User::where('password_setup_token', $token)->first();
-         if (! $user) {
-             return response()->json(['error' => 'Invalid token'], 404);
-            }
-            
-            $user->password_setup_token = null; 
-            $vendorData = $request->validated();
-            // Create or update the vendor profile
-            $vendor = $user->vendor ?? new Vendor();
-            $vendor->fill($vendorData);
-            $user->vendor()->save($vendor);
-         $uploadedFiles = $this->upload($request);
-
-
-         return response()->json([
-            'message' => 'Vendor profile Setup successfully',
-            'user' => $user,
-            'vendor' => $vendor,
-            'uploadedFiles' => $uploadedFiles
-        ], 200);
-
-
-
-     
-    }
-
-
-    // public function setupAccount(VendorProfileRequest $request, $userId)
+    // public function setupAccount(VendorProfileRequest $request, $token)
     // {
-    //       // Fetch the user by the provided $userId
-    //     $user = User::findOrFail($userId);
-
-    //     // Create or update the vendor profile
-    //     $vendor = $user->vendor ?? new Vendor();
-    //     $vendor->fill($request->validated());
-    //     $user->vendor()->save($vendor);
-
-    //     // Process file uploads
-    //     $uploadedFiles = $this->upload($request);
-           
+    //      // Fetch the user by the provided $userId
+    //      $user = User::where('password_setup_token', $token)->first();
+    //      if (! $user) {
+    //          return response()->json(['error' => 'Invalid token'], 404);
+    //         }
+            
+    //         $user->password_setup_token = null; 
+    //         $vendorData = $request->validated();
+    //         // Create or update the vendor profile
+    //         $vendor = $user->vendor ?? new Vendor();
+    //         $vendor->fill($vendorData);
+    //         $user->vendor()->save($vendor);
+    //      $uploadedFiles = $this->upload($request);
 
 
     //      return response()->json([
@@ -106,6 +78,34 @@ class VendorController extends Controller
 
      
     // }
+
+
+    public function setupAccount(VendorProfileRequest $request, $userId)
+    {
+      
+        $user = User::findOrFail($userId);
+
+      
+        $vendor = $user->vendor ?? new Vendor();
+        $vendor->fill($request->validated());
+        $user->vendor()->save($vendor);
+
+        // Process file uploads
+        $uploadedFiles = $this->upload($request);
+           
+
+
+         return response()->json([
+            'message' => 'Vendor profile Setup successfully',
+            'user' => $user,
+            'vendor' => $vendor,
+            'uploadedFiles' => $uploadedFiles
+        ], 200);
+
+
+
+     
+    }
 
     public function upload(Request $request)
     {

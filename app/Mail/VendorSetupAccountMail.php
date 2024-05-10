@@ -16,15 +16,15 @@ class VendorSetupAccountMail extends Mailable
 
     // public $passwordSetupUrl;
     public $user;
-    public $accountSetupUrl;
+    public $verificationCode;
     // public $vendorFirstName;
     /**
      * Create a new message instance.
      */
-    public function __construct(User $user, $accountSetupUrl)
+    public function __construct(User $user, $verificationCode)
     {
         $this->user = $user;
-        $this->accountSetupUrl = $accountSetupUrl;
+        $this->verificationCode = $verificationCode;
 
      
     }
@@ -49,7 +49,7 @@ class VendorSetupAccountMail extends Mailable
                 view: 'emails.vendor_setup_account_email',
                 with: [
                     'userName' => $this->user->first_name,
-                     'accountSetupUrl' => $this->accountSetupUrl,
+                     'verificationCode' => $this->verificationCode,
 
                         
                    
