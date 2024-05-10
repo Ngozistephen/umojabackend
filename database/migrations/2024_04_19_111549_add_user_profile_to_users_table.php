@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('user_profile')->nullable()->default('https://ih0.redbubble.net/image.210602545.3386/flat,1000x1000,075,f.u1.jpg');
-        });
+        if (!Schema::hasColumn('users', 'user_profile')) {
+
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('user_profile')->nullable()->default('https://ih0.redbubble.net/image.210602545.3386/flat,1000x1000,075,f.u1.jpg');
+            });
+        }
+
     }
 
     /**

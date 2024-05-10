@@ -4,59 +4,105 @@ namespace App\Http\Controllers\Api\Auth;
 
 
 
-use Illuminate\Support\Facades\DB;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Vendor;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Mail\VendorSetupAccountMail;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VendorPasswordSetupMail;
 use Cloudinary\Api\Exception\ApiError;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 use App\Http\Requests\VendorRegistrationRequest;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+
 
 
 class VendorRegisterController extends Controller
 {
 
-    public function register(VendorRegistrationRequest $request)
+    public function register(Request $request)
     {
-        $userDetails = $request->only(['first_name', 'last_name', 'email', 'password','phone_number']);
+        $request->validate([
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required','confirmed', Password::defaults()],
+            'terms_accepted' => ['required', 'accepted'],
+        ]);
         $role = Role::where('name', 'Vendor')->value('id');
-        $userDetails['role_id'] = $role;
 
-        return DB::transaction(function () use ($request, $userDetails, $role) {
-            $user = User::create($userDetails);
+        $user = User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'terms_accepted' => $request->terms_accepted,
+            'role_id' => $role, 
+        ]);
 
-            $uploadedFiles = $this->upload($request);
-            $vendorData = $request->except(array_keys($uploadedFiles), ['password']);
-            $vendor = Vendor::create(array_merge($vendorData, $uploadedFiles, ['user_id' => $user->id]));
+        $accountSetupToken = Str::random(60);
+        $user->update(['password_setup_token' => $accountSetupToken]);
 
-            $passwordSetupToken = Str::random(60);
-            $user->update(['password_setup_token' => $passwordSetupToken]);
+        // $accountSetupUrl = config('app.frontend_url') . '/vendor/setup/' . $user->id;
+        $accountSetupUrl = config('app.frontend_url') . '/vendor/setup/' .  $accountSetupToken;
+        Mail::to($user->email)->send(new VendorSetupAccountMail($user, $accountSetupUrl));
+       
 
-            $passwordSetupUrl = config('app.frontend_url') . '/vendor/setpass/' . $passwordSetupToken;
-            // $passwordSetupUrl = config('app.frontend_url') . '/auth/password_setup/' . $passwordSetupToken;
 
-            Mail::to($user->email)->send(new VendorPasswordSetupMail($user, $passwordSetupUrl));
+        $device = substr($request->userAgent() ?? '', 0, 255);
+        $token = $user->createToken($device)->accessToken;
 
-            $device = substr($request->userAgent() ?? '', 0, 255);
-            $token = $user->createToken($device)->accessToken;
+        $response = [
+            'access_token' => $token,
+            'vendor' => $user->first_name,
+            'role' => Role::find($role)->name,
+            'Message' => 'registered successfully. Check your email to set up your Account.'
+        ];
 
-            $response = [
-                'access_token' => $token,
-                'vendor' => $user->first_name,
-                'role' => Role::find($role)->name,
-                'Message' => 'registered successfully. Check your email to set up your password.'
-            ];
+        return response()->json($response,  Response::HTTP_CREATED);
 
-            return response()->json($response,  Response::HTTP_CREATED);
-        });
+    
     }
+    // public function register(VendorRegistrationRequest $request)
+    // {
+    //     $userDetails = $request->only(['first_name', 'last_name', 'email', 'password','phone_number']);
+    //     $role = Role::where('name', 'Vendor')->value('id');
+    //     $userDetails['role_id'] = $role;
+
+    //     return DB::transaction(function () use ($request, $userDetails, $role) {
+    //         $user = User::create($userDetails);
+
+    //         $uploadedFiles = $this->upload($request);
+    //         $vendorData = $request->except(array_keys($uploadedFiles), ['password']);
+    //         $vendor = Vendor::create(array_merge($vendorData, $uploadedFiles, ['user_id' => $user->id]));
+
+    //         $passwordSetupToken = Str::random(60);
+    //         $user->update(['password_setup_token' => $passwordSetupToken]);
+
+  
+    //         // $passwordSetupUrl = config('app.frontend_url') . '/auth/password_setup/' . $passwordSetupToken;
+
+    //         Mail::to($user->email)->send(new VendorPasswordSetupMail($user, $passwordSetupUrl));
+
+    //         $device = substr($request->userAgent() ?? '', 0, 255);
+    //         $token = $user->createToken($device)->accessToken;
+
+    //         $response = [
+    //             'access_token' => $token,
+    //             'vendor' => $user->first_name,
+    //             'role' => Role::find($role)->name,
+    //             'Message' => 'registered successfully. Check your email to set up your password.'
+    //         ];
+
+    //         return response()->json($response,  Response::HTTP_CREATED);
+    //     });
+    // }
 
     
 
@@ -102,45 +148,7 @@ class VendorRegisterController extends Controller
 // }
 
 
-public function upload(Request $request)
-{
-    $uploadedFiles = [];
 
-    $fileFields = [
-        'business_image' => 'business_image',
-        'picture_vendor_id_number' => 'picture_vendor_id_number',
-        'utility_photo' => 'utility_photo',
-        'business_number_photo' => 'business_number_photo'
-    ];
-
-    foreach ($fileFields as $field => $folder) {
-        if ($request->hasFile($field)) {
-            $file = $request->file($field);
-
-            $validatedData = $request->validate([
-                $field . '.*' => 'nullable|image|mimes:jpeg,png,JPG,jpg,gif,svg|max:6048',
-            ], [
-                $field . '.*.image' => 'The ' . $field . ' must be an image.',
-                $field . '.*.mimes' => 'Unsupported file format for ' . $field . '. Supported formats are JPEG, PNG, GIF, and SVG.',
-                $field . '.*.max' => 'The ' . $field . ' may not be greater than 6 MB in size.',
-            ]);
-
-            $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
-                'folder' => $folder,
-                'transformation' => [
-                    ['width' => 400, 'height' => 400, 'crop' => 'fit'],
-                    ['quality' => 'auto', 'fetch_format' => 'auto']
-                ]
-            ]);
-
-            $secureUrl = $cloudinaryResponse->getSecurePath();
-
-            $uploadedFiles[$field] = $secureUrl;
-        }
-    }
-
-    return $uploadedFiles;
-}
 
 
 

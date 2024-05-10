@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Setup</title>
+    <title>Welcome Mail for Vendors</title>
     <style>
         /* Reset styles to ensure consistency across email clients */
         body, html {
@@ -49,13 +49,13 @@
 <body>
     <div class="email-wrapper">
         <div class="header">
-            <h1>Password Setup</h1>
+            <h1>Welcome to Umoja E-commerce Platform</h1>
         </div>
         <div class="body-content"> 
-            <p>Hello, {{ $userName }}</p>
-            <p>Thank you for signing up. Please click the button below to set up your password:</p>
-            <a href="{{ $passwordSetupUrl }}" class="button">Set Up Password</a>
-            <p>If you didn't sign up for this service, you can safely ignore this email.</p>
+            <p>Hello, {{  $userName }}</p>
+            <p>Thank you for joining as a vendor on Umoja E-commerce Platform. Please click the button below to set up your account:</p>
+            <a href="{{ $accountSetupUrl }}" class="button">Set Up Account</a>
+            <p>If you did not sign up to become a vendor on our platform, please disregard this email.</p>
         </div>
         <div class="footer">
             <p>This email was sent automatically. Please do not reply to this email.</p>
@@ -63,6 +63,3 @@
     </div>
 </body>
 </html>
-
-
-
