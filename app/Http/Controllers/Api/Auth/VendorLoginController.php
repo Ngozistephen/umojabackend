@@ -41,7 +41,7 @@ class VendorLoginController extends Controller
 
         if (!$user->is_verified) {
             throw ValidationException::withMessages([
-                'email' => ['Your account is not yet verified., please click o resend button'],
+                'email' => ['Your account is not yet verified., please click on resend button'],
             ]);
         }
         
