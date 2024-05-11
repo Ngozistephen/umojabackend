@@ -28,16 +28,19 @@ class VendorVerifyCodeController extends Controller
         $cachedCode = Cache::get('verification_code_' . $email);    
 
         if ($cachedCode && $cachedCode === $verificationCode) {
-            $user = User::where('email', $email)->first();
-    
-            $user->email_verified_at = now();
+            $affectedRows = User::where('email', $email)->whereNull('email_verified_at') 
+                ->update([
+                    'email_verified_at' => now(),
+                    'is_verified' => true,
+                ]);
 
-            $user->save();
-            $userId = $user->id;
-            
-            Cache::forget('verification_code_' . $email);
-    
-            return response()->json(['message' => 'Verification successful', 'user_id' => $userId], 200);
+                if ($affectedRows > 0) {
+                    Cache::forget('verification_code_' . $email);
+                    return response()->json(['message' => 'Verification successful'], 200);
+                } else {
+                   
+                    return response()->json(['message' => 'Email is already verified'], 400);
+                }
         } else {
             return response()->json(['message' => 'Invalid verification code'], 400);
         }

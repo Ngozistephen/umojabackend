@@ -38,6 +38,13 @@ class VendorLoginController extends Controller
                 'email' => ['You do not have permission to access this resource.'],
             ]);
         }
+
+        if (!$user->is_verified) {
+            throw ValidationException::withMessages([
+                'email' => ['Your account is not yet verified., please click o resend button'],
+            ]);
+        }
+        
         $device = substr($request->userAgent() ?? '', 0, 255);
         
 
