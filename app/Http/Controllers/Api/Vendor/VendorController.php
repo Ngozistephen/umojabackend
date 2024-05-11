@@ -84,6 +84,7 @@ class VendorController extends Controller
     {
       
         $user = User::findOrFail($userId);
+        $userDetails = $request->only(['phone_number']);
 
       
         $vendor = $user->vendor ?? new Vendor();

@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Auth\SocialLoginController;
 use App\Http\Controllers\Api\Auth\VendorLoginController;
 use App\Http\Controllers\Api\Admin\SubcategoryController;
 use App\Http\Controllers\Api\Auth\SocialVendorController;
+use App\Http\Controllers\Api\Auth\VerificationController;
 use App\Http\Controllers\Api\Customer\CheckoutController;
 use App\Http\Controllers\Api\Admin\DiscountCodeController;
 use App\Http\Controllers\Api\Auth\CustomerLoginController;
@@ -54,6 +55,7 @@ Route::prefix('auth')->group(function () {
     Route::post('customer_login', [CustomerLoginController::class, '__invoke']);
     Route::post('logout', [LogoutController::class, '__invoke'])->middleware('auth:api');
     Route::post('verify', [VendorVerifyCodeController::class, '__invoke']);
+    Route::post('resend_code', [VerificationController::class, '__invoke']);
     
     Route::post('forget_customer_password', [ForgetCustomerPasswordController::class, '__invoke']);
     Route::post('forget_vendor_password', [ForgetVendorPasswordController::class, '__invoke']);
@@ -114,7 +116,7 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('paymentMethods', PaymentMethodController::class);
         // still working on 
         Route::post('checkout', [CheckoutController::class, 'checkout']);
-        Route::stripeWebhooks('webhook');
+      
        
         
 
@@ -122,3 +124,4 @@ Route::middleware('auth:api')->group(function () {
 
    
 });
+Route::stripeWebhooks('customer/webhook');

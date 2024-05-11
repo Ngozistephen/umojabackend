@@ -23,6 +23,8 @@ class VendorProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'busniess_email' => 'required| string|email',
+            'busniess_phone_number' => 'required|string|unique:vendors',
             'profile_photo' => 'nullable',
             'language' => 'nullable|string',
             'verified' => 'nullable|boolean',
@@ -35,7 +37,6 @@ class VendorProfileRequest extends FormRequest
             'company' => 'nullable|string',
             'address' => 'required|string',
             'apartment_suite' => 'nullable|string',
-            'rep_country' => 'nullable|string',
             'status' => 'nullable|string',
             'state' => 'nullable|string',
             'city' => 'nullable|string', 
@@ -53,9 +54,9 @@ class VendorProfileRequest extends FormRequest
             'business_number' => 'required|string',
             'tax_id_number' => 'required|string',
             'utility_bill_type' => 'required|string',
-            'bank_name' => 'nullable|string', 
-            'bank_account_number' => 'nullable|string', 
-            'name_on_account' => 'nullable|string', 
+            'bank_name' => 'required|string', 
+            'bank_account_number' => 'required|string', 
+            'name_on_account' => 'required|string', 
             'sort_code' => 'nullable|string', 
             'swift_code' => 'nullable|string', 
             'iban' => 'nullable|string',
