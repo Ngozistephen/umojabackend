@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Foundation\Http\FormRequest;
 
-class VendorRegistrationRequest extends FormRequest
+class VendorProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,15 +23,6 @@ class VendorRegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // User fields
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required| string|max:255',
-            'email' =>  'required|email|unique:users,email',
-            'password' => 'nullable| confirmed|Password::defaults()',
-            'phone_number' => 'required|string|unique:users,phone_number',
-            
-            
-            // Vendor fields
             'profile_photo' => 'nullable',
             'language' => 'nullable|string',
             'verified' => 'nullable|boolean',
@@ -75,14 +66,14 @@ class VendorRegistrationRequest extends FormRequest
         ];
     }
 
-    public function messages()
-    {
-        return [
-            'email.required' => 'The email field is required.',
-            'email.email' => 'Please enter a valid email address.',
-            'email.unique' => 'The email address has already been taken.',
-            'phone_number.required' => 'The Phone Number field is required.',
-            'phone_number.unique' => 'The Phone Number has already been taken.',
-        ];
-    }
+    // public function messages()
+    // {
+    //     return [
+    //         'email.required' => 'The email field is required.',
+    //         'email.email' => 'Please enter a valid email address.',
+    //         'email.unique' => 'The email address has already been taken.',
+    //         'phone_number.required' => 'The Phone Number field is required.',
+    //         'phone_number.unique' => 'The Phone Number has already been taken.',
+    //     ];
+    // }
 }

@@ -2,18 +2,19 @@
 
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\VendorController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Public\UserController;
 use App\Http\Controllers\Api\Vendor\OrderController;
 use App\Http\Controllers\Api\Customer\CartController;
+use App\Http\Controllers\Api\Vendor\VendorController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Vendor\ProductController;
 use App\Http\Controllers\Api\Admin\VariationController;
 use App\Http\Controllers\Api\Auth\SocialLoginController;
 use App\Http\Controllers\Api\Auth\VendorLoginController;
 use App\Http\Controllers\Api\Admin\SubcategoryController;
+use App\Http\Controllers\Api\Auth\SocialVendorController;
 use App\Http\Controllers\Api\Customer\CheckoutController;
 use App\Http\Controllers\Api\Admin\DiscountCodeController;
 use App\Http\Controllers\Api\Auth\CustomerLoginController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\Api\Admin\ShippingMethodController;
 use App\Http\Controllers\Api\Public\ProductSearchController;
 use App\Http\Controllers\Api\Admin\VariationOptionController;
 use App\Http\Controllers\Api\Auth\CustomerRegisterController;
+use App\Http\Controllers\Api\Auth\VendorVerifyCodeController;
 use App\Http\Controllers\Api\Customer\PaymentMethodController;
 use App\Http\Controllers\Api\Vendor\ProductVariationController;
 use App\Http\Controllers\Api\Auth\ResetPasswordVendorController;
@@ -48,12 +50,11 @@ use App\Http\Controllers\Api\Auth\ForgetCustomerPasswordController;
 Route::prefix('auth')->group(function () {
     Route::post('register_customer', [CustomerRegisterController::class, '__invoke']);
     Route::post('register_vendor', [VendorRegisterController::class, 'register']);
-    Route::post('upload', [VendorRegisterController::class, 'upload']);
     Route::post('vendor_login', [VendorLoginController::class, '__invoke']);
     Route::post('customer_login', [CustomerLoginController::class, '__invoke']);
-    // Route::post('refresh_token_customer', [CustomerLoginController::class, 'refreshToken'])->middleware('auth:api');
     Route::post('logout', [LogoutController::class, '__invoke'])->middleware('auth:api');
-    Route::post('password_setup/{token}', [VendorPasswordSetupController::class, '__invoke']);
+    Route::post('verify', [VendorVerifyCodeController::class, '__invoke']);
+    
     Route::post('forget_customer_password', [ForgetCustomerPasswordController::class, '__invoke']);
     Route::post('forget_vendor_password', [ForgetVendorPasswordController::class, '__invoke']);
     Route::post('reset_customer_password', [ResetPasswordCustomerController::class, '__invoke'])->name('auth.reset_customer_password');
@@ -62,8 +63,8 @@ Route::prefix('auth')->group(function () {
     
     Route::get('{provider}/redirect', [SocialRegisterController::class, 'redirect']);
     Route::get('{provider}/callback', [SocialRegisterController::class, 'callback']);
-    // Route::get('{provider}/redirect', [SocialLoginController::class, 'redirect']);
-    // Route::get('{provider}/callback', [SocialLoginController::class, 'callback']);
+    Route::get('{provider}/vendor/redirect', [SocialVendorController::class, 'vendor_redirect']);
+    Route::get('{provider}/vendor/callback', [SocialVendorController::class, 'vendor_callback']);
 
 
     
@@ -91,6 +92,8 @@ Route::middleware('auth:api')->group(function () {
 
     });
     Route::prefix('vendor')->group(function () {
+        Route::post('setup/{userId}', [VendorController::class, 'setupAccount']);
+        Route::post('upload', [VendorController::class, 'upload']);
          Route::delete('products/{product_id}/delete_perm', [ProductController::class, 'delete_perm']);
          Route::put('products/{product_id}/restore', [ProductController::class, 'restore']);
          Route::apiResource('products', ProductController::class);

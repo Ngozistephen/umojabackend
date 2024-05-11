@@ -47,6 +47,7 @@ class User extends Authenticatable
         'profile_photo',
         'password_setup_token',
         'email_verified_at',
+        'business_profile_complete',
         
     ];
     /**

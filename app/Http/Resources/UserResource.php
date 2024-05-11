@@ -22,7 +22,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'status' => $this->status,
             'picture' => $this->user_profile,
-            'phone number' => $this->phone_number,
+            'phone_number' => $this->phone_number,
             'role ' => $this->role->name,
             'created' => $this->created_at,
             // 'vendor_details' => VendorResource::collection($this->whenLoaded('vendor')),

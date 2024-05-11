@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Setup</title>
+    <title>Verification Code Email</title>
     <style>
         /* Reset styles to ensure consistency across email clients */
         body, html {
@@ -49,13 +49,14 @@
 <body>
     <div class="email-wrapper">
         <div class="header">
-            <h1>Password Setup</h1>
+            <h1>Verification Code Email</h1>
         </div>
         <div class="body-content"> 
             <p>Hello, {{ $userName }}</p>
-            <p>Thank you for signing up. Please click the button below to set up your password:</p>
-            <a href="{{ $passwordSetupUrl }}" class="button">Set Up Password</a>
-            <p>If you didn't sign up for this service, you can safely ignore this email.</p>
+            <p>Your verification code for Umoja E-commerce Platform is: <strong>{{ $verificationCode }}</strong></p>
+            <p>Please use the following code to verify your account:</p>
+            <a href="#" class="button">{{ $verificationCode }}</a>
+            <p>If you did not request this verification code, please disregard this email.</p>
         </div>
         <div class="footer">
             <p>This email was sent automatically. Please do not reply to this email.</p>
@@ -63,6 +64,3 @@
     </div>
 </body>
 </html>
-
-
-

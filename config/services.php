@@ -35,7 +35,8 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         // 'redirect' => 'http://localhost:8000/api/auth/google/callback'
-         'redirect' => config('app.frontend_url') .'/auth/google/callback'
+         'redirect' => config('app.frontend_url') .'/auth/google/callback',
+         'vendor_redirect' => config('app.frontend_url') .'/auth/google/vendor/callback'
     ],
 
     'apple' => [
@@ -47,7 +48,8 @@ return [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
         // 'redirect' => 'http://localhost:8000/api/auth/facebook/callback'
-         'redirect' =>  config('app.frontend_url') .'/auth/facebook/callback'
+         'redirect' =>  config('app.frontend_url') .'/auth/facebook/callback',
+         'vendor_redirect' =>  config('app.frontend_url') .'/auth/facebook/vendor/callback'
     ],  
 
     'stripe' => [

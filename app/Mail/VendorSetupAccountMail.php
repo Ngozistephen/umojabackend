@@ -10,29 +10,25 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class VendorPasswordSetupMail extends Mailable
+class VendorSetupAccountMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     // public $passwordSetupUrl;
     public $user;
-    public $passwordSetupUrl;
+    public $verificationCode;
     // public $vendorFirstName;
     /**
      * Create a new message instance.
      */
-    public function __construct(User $user, $passwordSetupUrl)
+    public function __construct(User $user, $verificationCode)
     {
         $this->user = $user;
-        $this->passwordSetupUrl = $passwordSetupUrl;
+        $this->verificationCode = $verificationCode;
 
-        // $this->$vendorFirstName = $vendorFirstName;
+     
     }
-    // public function __construct($passwordSetupUrl)
-    // {
-    //     $this->passwordSetupUrl = $passwordSetupUrl;
-    //     // $this->$vendorFirstName = $vendorFirstName;
-    // }
+   
 
     /**
      * Get the message envelope.
@@ -40,7 +36,7 @@ class VendorPasswordSetupMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Vendor Password Setup Mail',
+            subject: 'Welcome to Umoja E-commerce Platform',
         );
     }
 
@@ -50,13 +46,13 @@ class VendorPasswordSetupMail extends Mailable
         public function content(): Content
         {
             return new Content(
-                view: 'emails.vendor_password_setup',
+                view: 'emails.vendor_setup_account_email',
                 with: [
                     'userName' => $this->user->first_name,
-                    'passwordSetupUrl' => $this->passwordSetupUrl,
+                     'verificationCode' => $this->verificationCode,
 
                         
-                    // 'vendor_name' => $this->vendorFirstName,
+                   
                   
                 ],
             );

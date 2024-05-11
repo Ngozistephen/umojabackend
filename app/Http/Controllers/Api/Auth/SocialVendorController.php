@@ -5,16 +5,19 @@ namespace App\Http\Controllers\Api\Auth;
 use Exception;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
+use App\Mail\VendorSetupAccountMail;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Socialite\Facades\Socialite;
 
-class SocialRegisterController extends Controller
+class SocialVendorController extends Controller
 {
-    public function redirect(string $provider)
+    public function vendor_redirect(string $provider)
     // for front end 
     {
         $this->validateProvider($provider);
@@ -30,67 +33,10 @@ class SocialRegisterController extends Controller
    
 
     }
-    // public function redirect(string $provider)
-    // {
-    //     $this->validateProvider($provider);
-
-    //     return Socialite::driver($provider)->stateless()->redirect();
-   
-
-    // }
-    
-    // public function callback(Request $request,string $provider)
-    // {
-    //     $this->validateProvider($provider);
-        
-    //     $response  = Socialite::driver($provider)->stateless()->user();
-       
-    //     $user = User::firstWhere(['email' => $response->getEmail()]);
-
-    //     if ($user) {
-    //         $user->update([$provider . '_id' => $response->getId()]);
-    //     } else {
-               
-    //         $fullName = $response->getName();
-
-    //         $names = explode(' ', $fullName, 2);
-    //         $firstName = $names[0];
-    //         $lastName = isset($names[1]) ? $names[1] : null;
-
-          
-    //         $user = User::create([
-    //             $provider . '_id' => $response->getId(),
-    //             'first_name'     =>  $firstName, 
-    //             'last_name'      => $lastName,  
-    //             'email'          => $response->getEmail(),
-    //             'oauth_type'   => $provider,
-    //             'password'        => Hash::make($response->getId()),
-    //             'terms_accepted' => true, 
-    //             'role_id'         => Role::ROLE_CUSTOMER,
-                
-    //         ]);
-    //     }
 
 
-    //     event(new Registered($user));
-        
-    //     $device = substr($request->userAgent() ?? '', 0, 255);
-    
-    //     $token = $user->createToken($device)->accessToken;
-    
-    //     $role = $user->role->name;
 
-    //     $response = [
-    //         'access_token' => $token,
-    //         'user' => $user->first_name,
-    //         'role' => $role,
-    //         'Message' => 'registered successfully.'
-    //     ];
-        
-    //     return response()->json($response,  Response::HTTP_CREATED);
-    // }
-
-    public function callback(Request $request, string $provider)
+    public function vendor_callback(Request $request, string $provider)
     {
         $this->validateProvider($provider);
     
@@ -121,29 +67,35 @@ class SocialRegisterController extends Controller
                 'oauth_type' => $provider,
                 'password' => Hash::make($response->getId()),
                 'terms_accepted' => true,
-                'role_id' => Role::ROLE_CUSTOMER,
+                'role_id' => Role::ROLE_VENDOR,
             ]);
     
-          
+            $verificationCode = mt_rand(100000, 999999); 
+  
+            $cacheKey = 'verification_code_' . $request->email;
+            Cache::put($cacheKey, $verificationCode, now()->addMinutes(30));
     
-            event(new Registered($user));
+            Mail::to($user->email)->send(new VendorSetupAccountMail($user, $verificationCode));
+            return response()->json(['message' => 'An email has been sent to your registered email address for the verification code.. Please check your inbox.'], Response::HTTP_CREATED);
+    
+           
         } else {
-            // Existing user - update social media ID if necessary
-            if (!$user->$provider . '_id') {
+            
+            if (!$user->{$provider . '_id'}) {
                 $user->update([$provider . '_id' => $response->getId()]);
             }
         }
     
-        // Generate access token and response (avoid sending sensitive info)
+
         $device = substr($request->userAgent() ?? '', 0, 255);
         $token = $user->createToken($device)->accessToken;
         $role = $user->role->name;
     
         $response = [
             'access_token' => $token,
-            // Only send necessary user information, not first name
+           
             'user' => [
-                'email' => $user->email, // Consider including only if needed
+                'email' => $user->email, 
                 'name' => $user->first_name,
                 'role' => $role,
             ],
@@ -154,8 +106,6 @@ class SocialRegisterController extends Controller
     }
 
 
-
-
     protected function validateProvider(string $provider): array
     {
         return $this->getValidationFactory()->make(
@@ -163,4 +113,7 @@ class SocialRegisterController extends Controller
             ['provider' => 'in:google,apple,facebook']
         )->validate();
     }
+
+
+
 }
