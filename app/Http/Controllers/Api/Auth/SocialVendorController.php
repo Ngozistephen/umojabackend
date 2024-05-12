@@ -76,7 +76,11 @@ class SocialVendorController extends Controller
             Cache::put($cacheKey, $verificationCode, now()->addMinutes(30));
     
             Mail::to($user->email)->send(new VendorSetupAccountMail($user, $verificationCode));
-            return response()->json(['message' => 'An email has been sent to your registered email address for the verification code.. Please check your inbox.'], Response::HTTP_CREATED);
+            $response = [
+                'user_email' => $user->email, 
+                'message' => 'An email has been sent to your registered email address for the verification code. Please check your inbox.',
+            ];
+            return response()->json($response, Response::HTTP_CREATED);
     
            
         } else {
