@@ -47,7 +47,6 @@ class VendorProfileRequest extends FormRequest
             'office_state' => 'nullable|string',
             'office_city' => 'nullable|string',
             'office_address' => 'nullable|string',
-            'complex_building_address' => 'nullable|string',
             'accept_mail_marketing' => 'nullable|boolean', 
             'tax_exempt' => 'nullable|boolean', 
             'twitter_handle' => 'nullable|string', 
