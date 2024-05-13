@@ -48,9 +48,7 @@ class SocialVendorController extends Controller
         }
     
         // Check for existing user with verified email
-        $user = User::where('email', $response->getEmail())
-                //    ->whereNotNull('email_verified_at')
-                   ->first();
+        $user = User::where('email', $response->getEmail())->first();
     
         if (!$user) {
             // New user - create user record
@@ -68,17 +66,19 @@ class SocialVendorController extends Controller
                 'password' => Hash::make($response->getId()),
                 'terms_accepted' => true,
                 'role_id' => Role::ROLE_VENDOR,
+                'is_verified' => true,
             ]);
     
-            $verificationCode = mt_rand(100000, 999999); 
+          
+            // $verificationCode = mt_rand(100000, 999999); 
   
-            $cacheKey = 'verification_code_' . $request->email;
-            Cache::put($cacheKey, $verificationCode, now()->addMinutes(30));
+            // $cacheKey = 'verification_code_' . $request->email;
+            // Cache::put($cacheKey, $verificationCode, now()->addMinutes(30));
     
-            Mail::to($user->email)->send(new VendorSetupAccountMail($user, $verificationCode));
+            // Mail::to($user->email)->send(new VendorSetupAccountMail($user, $verificationCode));
             $response = [
                 'user_email' => $user->email, 
-                'message' => 'An email has been sent to your registered email address for the verification code. Please check your inbox.',
+                'message' => 'Vendor account created successfully. Please Setup your profile',
             ];
             return response()->json($response, Response::HTTP_CREATED);
     

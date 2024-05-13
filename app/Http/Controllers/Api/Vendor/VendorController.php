@@ -113,6 +113,7 @@ class VendorController extends Controller
 
         $fileFields = [
             'business_image' => 'business_image',
+            'profile_photo' => 'profile_photo',
             'picture_vendor_id_number' => 'picture_vendor_id_number',
             'utility_photo' => 'utility_photo',
             'business_number_photo' => 'business_number_photo'
