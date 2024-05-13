@@ -23,8 +23,8 @@ class SocialVendorController extends Controller
         $this->validateProvider($provider);
 
    
-        // $url = Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();
-        $url = config('services.'.$provider.'.vendor_redirect');
+        $url = Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();
+        // $url = config('services.'.$provider.'.vendor_redirect');
 
        return response()->json([
         "message" => "Successfully generated $provider redirect URL.",
