@@ -7,6 +7,7 @@ use App\Models\Vendor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VendorProfileRequest;
+use App\Http\Resources\VendorResource;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class VendorController extends Controller
@@ -97,8 +98,8 @@ class VendorController extends Controller
          return response()->json([
             'message' => 'Vendor profile Setup successfully',
             'user' => $user,
-            'vendor' => $vendor,
-            'uploadedFiles' => $uploadedFiles
+            'vendor' => new VendorResource($vendor),
+            // 'uploadedFiles' => $uploadedFiles
         ], 200);
 
 
