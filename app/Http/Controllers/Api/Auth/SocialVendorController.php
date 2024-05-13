@@ -102,6 +102,7 @@ class SocialVendorController extends Controller
             'user' => [
                 'email' => $user->email, 
                 'name' => $user->first_name,
+                'user_id' => $user->id, 
                 'role' => $role,
             ],
             'message' => 'Login successful.',
