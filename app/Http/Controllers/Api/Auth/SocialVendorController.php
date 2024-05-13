@@ -78,7 +78,7 @@ class SocialVendorController extends Controller
     
             // Mail::to($user->email)->send(new VendorSetupAccountMail($user, $verificationCode));
             $response = [
-                'user_email' => $user->email, 
+                'user_id' => $user->id, 
                 'message' => 'Vendor account created successfully. Please Setup your profile',
             ];
             return response()->json($response, Response::HTTP_CREATED);
