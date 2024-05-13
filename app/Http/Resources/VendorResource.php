@@ -42,7 +42,7 @@ class VendorResource extends JsonResource
             'office_city' => $this->office_city,
             'office_address' => $this->office_address,
             'busniess_email' => $this->busniess_email,
-            // 'business_image' => $this->business_image,
+            'business_image' => $this->business_image,
             // 'business_number' => $this->business_number,
             // 'tax_id_number' => $this->tax_id_number,
             // 'utility_photo' => $this->utility_photo,
