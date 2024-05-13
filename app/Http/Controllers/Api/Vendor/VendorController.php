@@ -84,8 +84,6 @@ class VendorController extends Controller
     {
       
         $user = User::findOrFail($userId);
-       
-
       
         $vendor = $user->vendor ?? new Vendor();
         $vendor->fill($request->validated());
