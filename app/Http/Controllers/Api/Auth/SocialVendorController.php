@@ -17,52 +17,33 @@ use Laravel\Socialite\Facades\Socialite;
 
 class SocialVendorController extends Controller
 {
-    // public function vendor_redirect(string $provider)
-    // // for front end 
-    // {
-    //     $this->validateProvider($provider);
+    public function vendor_redirect(string $provider)
+    // for front end 
+    {
+        $this->validateProvider($provider);
 
    
-    //     $url = Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();
-    //     // $url = config('services.'.$provider.'.vendor_redirect');
+       // Retrieve the appropriate redirect URL based on the provider
+       $redirectUrl = config('services.'.$provider.'.vendor_redirect');
+        
+       // Generate the OAuth redirect URL for the vendor
+       $url = Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();
+        // $url = config('services.'.$provider.'.vendor_redirect');
 
-    //    return response()->json([
-    //     "message" => "Successfully generated $provider redirect URL.",
-    //     "url" => $url,
-    //    ]);    
+       return response()->json([
+        "message" => "Successfully generated $provider redirect URL.",
+        "url" => $url,
+       ]);    
       
    
 
-    // }
-
-    public function vendor_redirect(Request $request, string $provider)
-    {
-        // Check if the URL contains '/vendor/'
-        $isVendor = strpos($request->url(), '/vendor/') !== false;
-
-        if ($isVendor) {
-            // Vendor redirect logic
-            $this->validateProvider($provider);
-            $url = Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();
-            return response()->json([
-                "message" => "Successfully generated $provider redirect URL for vendors.",
-                "url" => $url,
-            ]);
-        } else {
-            // Regular user redirect logic
-            // Add your logic here
-        }
     }
+
 
 
     public function vendor_callback(Request $request, string $provider)
     {
-        // Check if the URL contains '/vendor/'
-        $isVendor = strpos($request->url(), '/vendor/') !== false;
-
-        if ($isVendor) {
-            // Vendor callback logic
-            $this->validateProvider($provider);
+        $this->validateProvider($provider);
     
         try {
             $response = Socialite::driver($provider)->stateless()->user();
@@ -132,85 +113,7 @@ class SocialVendorController extends Controller
         ];
     
         return response()->json($response, Response::HTTP_CREATED);
-        } else {
-            // Regular user callback logic
-            // Add your regular user callback logic here
-        }
     }
-
-    // public function vendor_callback(Request $request, string $provider)
-    // {
-    //     $this->validateProvider($provider);
-    
-    //     try {
-    //         $response = Socialite::driver($provider)->stateless()->user();
-    //     } catch (Exception $e) {
-    //         // Handle social login provider errors gracefully
-    //         return response()->json(['error' => 'Social login failed'], Response::HTTP_UNAUTHORIZED);
-    //     }
-    
-    //     // Check for existing user with verified email
-    //     $user = User::where('email', $response->getEmail())->first();
-    
-    //     if (!$user) {
-    //         // New user - create user record
-    //         $fullName = $response->getName();
-    //         $names = explode(' ', $fullName, 2);
-    //         $firstName = $names[0];
-    //         $lastName = isset($names[1]) ? $names[1] : null;
-    
-    //         $user = User::create([
-    //             $provider . '_id' => $response->getId(),
-    //             'first_name' => $firstName,
-    //             'last_name' => $lastName,
-    //             'email' => $response->getEmail(),
-    //             'oauth_type' => $provider,
-    //             'password' => Hash::make($response->getId()),
-    //             'terms_accepted' => true,
-    //             'role_id' => Role::ROLE_VENDOR,
-    //             'is_verified' => true,
-    //         ]);
-    
-          
-    //         // $verificationCode = mt_rand(100000, 999999); 
-  
-    //         // $cacheKey = 'verification_code_' . $request->email;
-    //         // Cache::put($cacheKey, $verificationCode, now()->addMinutes(30));
-    
-    //         // Mail::to($user->email)->send(new VendorSetupAccountMail($user, $verificationCode));
-    //         $response = [
-    //             'user_id' => $user->id, 
-    //             'message' => 'Vendor account created successfully. Please Setup your profile',
-    //         ];
-    //         return response()->json($response, Response::HTTP_CREATED);
-    
-           
-    //     } else {
-            
-    //         if (!$user->{$provider . '_id'}) {
-    //             $user->update([$provider . '_id' => $response->getId()]);
-    //         }
-    //     }
-    
-
-    //     $device = substr($request->userAgent() ?? '', 0, 255);
-    //     $token = $user->createToken($device)->accessToken;
-    //     $role = $user->role->name;
-    
-    //     $response = [
-    //         'access_token' => $token,
-           
-    //         'user' => [
-    //             'email' => $user->email, 
-    //             'name' => $user->first_name,
-    //             'user_id' => $user->id, 
-    //             'role' => $role,
-    //         ],
-    //         'message' => 'Login successful.',
-    //     ];
-    
-    //     return response()->json($response, Response::HTTP_CREATED);
-    // }
 
 
     protected function validateProvider(string $provider): array
