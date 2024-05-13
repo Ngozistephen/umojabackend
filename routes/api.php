@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\Auth\CustomerLoginController;
 use App\Http\Controllers\Api\Auth\SocialRegisterController;
 use App\Http\Controllers\Api\Auth\VendorRegisterController;
 use App\Http\Controllers\Api\Customer\AllProductController;
+use App\Http\Controllers\Api\Vendor\SubscriptionController;
 use App\Http\Controllers\Api\Admin\ShippingMethodController;
 use App\Http\Controllers\Api\Public\ProductSearchController;
 use App\Http\Controllers\Api\Admin\VariationOptionController;
@@ -96,6 +97,9 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('vendor')->group(function () {
         Route::post('setup/{userId}', [VendorController::class, 'setupAccount']);
         Route::post('upload', [VendorController::class, 'upload']);
+        Route::get('subscribe/{plan?}', [SubscriptionController::class, 'subscribe']);
+        Route::get('subscribe/success', [SubscriptionController::class, 'success'])->name('vendor.subscription_success');
+        Route::get('subscribe/cancel', [SubscriptionController::class, 'cancel'])->name('vendor.subscription_cancel');
          Route::delete('products/{product_id}/delete_perm', [ProductController::class, 'delete_perm']);
          Route::put('products/{product_id}/restore', [ProductController::class, 'restore']);
          Route::apiResource('products', ProductController::class);
