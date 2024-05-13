@@ -29,7 +29,7 @@ class SocialVendorController extends Controller
        // Generate the OAuth redirect URL for the vendor
        $url = Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();
         // $url = config('services.'.$provider.'.vendor_redirect');
-        dd( $url); 
+    
        return response()->json([
         "message" => "Successfully generated $provider redirect URL.",
         "url" => $url,

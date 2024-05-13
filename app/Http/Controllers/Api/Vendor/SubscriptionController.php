@@ -15,14 +15,20 @@ class SubscriptionController extends Controller
      */
     public function subscribe(Request $request, string $plan = 'price_1PFHkMP7XylLhhgiIodwtUZX')
     {
-        return $request->user()
-                ->newSubscription('prod_Q5SfkqMREoWTkc', $plan)
+        $user = $request->user();
+        $subscription = $user->newSubscription('prod_Q5SfkqMREoWTkc', $plan)
                 // ->trialDays(5)
                 // ->allowPromotionCodes()
                 ->checkout([
                     'success_url' => route('vendor.subscription_success'),
                     'cancel_url' => route('vendor.subscription_cancel'),
                 ]);
+        $vendor = $user->vendor;
+
+       
+        $vendor->update(['complete_setup' => true]);
+    
+        return $subscription;
     }
 
     public function success(Request $request)
