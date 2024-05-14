@@ -58,10 +58,17 @@ class SubscriptionController extends Controller
     public function cancel(Request $request)
     {
         
-        $subscription = $request->user()->subscription('prod_Q5SfkqMREoWTkc');
-        
-     
+          
+        $user = $request->user();
+
+   
+        $vendor = $user->vendor;
+
+        $subscription = $user->subscription('prod_Q5SfkqMREoWTkc');
         $subscription->cancel();
+
+   
+        $vendor->update(['complete_setup' => false]);
 
       
         return new Response("Your subscription has been canceled successfully.");

@@ -17,9 +17,10 @@ class VendorResource extends JsonResource
         return [
             // 'language' => $this->language,
             // 'gender' => $this->gender,   
-            // 'date_birth' => $this->date_birth,
+            'country_name' => $this->country_name,
             'busniess_phone_number' => $this->busniess_phone_number,
             'company' => $this->company,
+            'complete_setup' => $this->complete_setup,
             'address' => $this->address,
             'complex_building_address' => $this->complex_building_address,
             'rep_country' => $this->rep_country,
