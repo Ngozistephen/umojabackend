@@ -48,6 +48,7 @@ class User extends Authenticatable
         'password_setup_token',
         'email_verified_at',
         'business_profile_complete',
+        'is_verified',
         
     ];
     /**
