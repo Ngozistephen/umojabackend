@@ -49,6 +49,7 @@ class User extends Authenticatable
         'email_verified_at',
         'business_profile_complete',
         'is_verified',
+        'complete_setup',
         
     ];
     /**

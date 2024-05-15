@@ -40,7 +40,7 @@ class SubscriptionController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
             
-            // Update user's complete_setup to true
+            
             $user->update(['complete_setup' => true]);
             
             // Retrieve the updated user data to include complete_setup in the response
