@@ -40,20 +40,25 @@ class SubscriptionController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
             
-            // Update vendor complete_setup to true
-            $vendor = $user->vendor;
+            // Update user's complete_setup to true
+            $user->update(['complete_setup' => true]);
             
-            if ($vendor) {
-                $vendor->update(['complete_setup' => true]);
-            } else {
-                return response()->json(['error' => 'Vendor not found'], 404);
-            }
+            // Retrieve the updated user data to include complete_setup in the response
+            $user = $user->fresh();
     
-            return response()->json(['message' => 'Vendor setup completed successfully']);
+            // Include complete_setup in the response
+            $responseData = [
+                'message' => 'Vendor setup completed successfully',
+                'complete_setup' => $user->complete_setup,
+            ];
+    
+            return response()->json($responseData);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
+
     
 
 
