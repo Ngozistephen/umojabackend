@@ -31,7 +31,7 @@ class SubscriptionController extends Controller
     //     return $subscription;
     // }
 
-    public function subscribe(Request $request, string $plan = 'price_1PFHkMP7XylLhhgiIodwtUZX')
+    public function subscribe(Request $request)
     {
         try {
             $user = $request->user();
@@ -39,9 +39,6 @@ class SubscriptionController extends Controller
             if (!$user) {
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
-            
-            // Find or create the subscription for the user
-            $user->newSubscription('default', $plan)->create();
             
             // Update vendor complete_setup to true
             $vendor = $user->vendor;
@@ -51,12 +48,13 @@ class SubscriptionController extends Controller
             } else {
                 return response()->json(['error' => 'Vendor not found'], 404);
             }
-
-            return response()->json(['message' => 'Subscription created successfully']);
+    
+            return response()->json(['message' => 'Vendor setup completed successfully']);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
 
 
     public function success(Request $request)

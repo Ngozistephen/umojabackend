@@ -97,7 +97,8 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('vendor')->group(function () {
         Route::post('setup/{userId}', [VendorController::class, 'setupAccount']);
         Route::post('upload', [VendorController::class, 'upload']);
-        Route::get('subscribe/{plan?}', [SubscriptionController::class, 'subscribe']);
+        // Route::get('subscribe/{plan?}', [SubscriptionController::class, 'subscribe']);
+        Route::post('subscribe', [SubscriptionController::class, 'subscribe']);
         Route::get('subscribe/success', [SubscriptionController::class, 'success'])->name('vendor.subscription_success');
         Route::post('subscribe/cancel', [SubscriptionController::class, 'cancel'])->name('vendor.subscription_cancel');
          Route::delete('products/{product_id}/delete_perm', [ProductController::class, 'delete_perm']);
