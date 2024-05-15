@@ -13,23 +13,51 @@ class SubscriptionController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function subscribe(Request $request, string $plan = 'price_1PFHkMP7XylLhhgiIodwtUZX')
-    {
-        $user = $request->user();
-        $subscription = $user->newSubscription('prod_Q5SfkqMREoWTkc', $plan)
-                // ->trialDays(5)
-                // ->allowPromotionCodes()
-                ->checkout([
-                    'success_url' => route('vendor.subscription_success'),
-                    'cancel_url' => route('vendor.subscription_cancel'),
-                ]);
-        $vendor = $user->vendor;
+    // public function subscribe(Request $request, string $plan = 'price_1PFHkMP7XylLhhgiIodwtUZX')
+    // {
+    //     $user = $request->user();
+    //     $subscription = $user->newSubscription('prod_Q5SfkqMREoWTkc', $plan)
+    //             // ->trialDays(5)
+    //             // ->allowPromotionCodes()
+    //             ->checkout([
+    //                 'success_url' => route('vendor.subscription_success'),
+    //                 'cancel_url' => route('vendor.subscription_cancel'),
+    //             ]);
+    //     $vendor = $user->vendor;
 
        
-        $vendor->update(['complete_setup' => true]);
+    //     $vendor->update(['complete_setup' => true]);
     
-        return $subscription;
+    //     return $subscription;
+    // }
+
+    public function subscribe(Request $request, string $plan = 'price_1PFHkMP7XylLhhgiIodwtUZX')
+    {
+        try {
+            $user = $request->user();
+            
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            
+            // Find or create the subscription for the user
+            $user->newSubscription('default', $plan)->create();
+            
+            // Update vendor complete_setup to true
+            $vendor = $user->vendor;
+            
+            if ($vendor) {
+                $vendor->update(['complete_setup' => true]);
+            } else {
+                return response()->json(['error' => 'Vendor not found'], 404);
+            }
+
+            return response()->json(['message' => 'Subscription created successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
+
 
     public function success(Request $request)
     {
