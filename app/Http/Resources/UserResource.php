@@ -25,6 +25,7 @@ class UserResource extends JsonResource
             'phone_number' => $this->phone_number,
             'role ' => $this->role->name,
             'created' => $this->created_at,
+            'complete_setup' => $this->complete_setup,
             // 'vendor_details' => VendorResource::collection($this->whenLoaded('vendor')),
             'vendor_details' => new VendorResource($this->vendor),
            

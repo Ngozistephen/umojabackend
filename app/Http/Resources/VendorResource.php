@@ -20,7 +20,6 @@ class VendorResource extends JsonResource
             'country_name' => $this->country_name,
             'busniess_phone_number' => $this->busniess_phone_number,
             'company' => $this->company,
-            'complete_setup' => $this->complete_setup,
             'address' => $this->address,
             'complex_building_address' => $this->complex_building_address,
             'rep_country' => $this->rep_country,
