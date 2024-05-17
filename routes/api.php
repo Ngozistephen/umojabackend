@@ -129,4 +129,4 @@ Route::middleware('auth:api')->group(function () {
 
    
 });
-Route::stripeWebhooks('customer/webhook');
+Route::stripeWebhooks('webhook');

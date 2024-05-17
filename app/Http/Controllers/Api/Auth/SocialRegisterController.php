@@ -15,7 +15,6 @@ use Laravel\Socialite\Facades\Socialite;
 class SocialRegisterController extends Controller
 {
     public function redirect(string $provider)
-    // for front end 
     {
         $this->validateProvider($provider);
 
@@ -143,6 +142,7 @@ class SocialRegisterController extends Controller
             'access_token' => $token,
             // Only send necessary user information, not first name
             'user' => [
+                'user_id' => $user->id, 
                 'email' => $user->email, // Consider including only if needed
                 'name' => $user->first_name,
                 'role' => $role,
