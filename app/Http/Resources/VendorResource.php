@@ -24,6 +24,7 @@ class VendorResource extends JsonResource
             'complex_building_address' => $this->complex_building_address,
             'rep_country' => $this->rep_country,
             'profile_photo' => $this->profile_photo,
+            'cover_image' => $this->cover_image,
             // 'vendor_id_number' => $this->vendor_id_number,
             'state' => $this->state,
             'city' => $this->city,

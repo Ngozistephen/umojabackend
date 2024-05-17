@@ -118,7 +118,8 @@ class VendorController extends Controller
             'profile_photo' => 'profile_photo',
             'picture_vendor_id_number' => 'picture_vendor_id_number',
             'utility_photo' => 'utility_photo',
-            'business_number_photo' => 'business_number_photo'
+            'business_number_photo' => 'business_number_photo',
+            'cover_image' => 'cover_image'
         ];
 
         foreach ($fileFields as $field => $folder) {

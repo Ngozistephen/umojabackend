@@ -69,7 +69,8 @@ class VendorProfileRequest extends FormRequest
             'picture_vendor_id_number' => 'nullable',
             'business_image' => 'nullable',
             'utility_photo' => 'nullable',
-            'business_number_photo' => 'nullable'
+            'business_number_photo' => 'nullable',
+            'cover_image' => 'nullable'
         ];
     }
 
