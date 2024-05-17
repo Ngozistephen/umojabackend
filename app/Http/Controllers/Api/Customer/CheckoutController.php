@@ -71,15 +71,19 @@ class CheckoutController extends Controller
             $user->updateDefaultPaymentMethod($paymentMethod->payment_method);
 
             $payment = $user->charge(
-                $totalAmount * 100, // Amount in cents
-                $paymentMethod->payment_method, // Payment method ID
-                [
-                    // 'currency' => 'eur',
-                    'metadata' => [
-                        'order_number' => $orderNumber,
-                    ],
-                ]
-            );
+            $totalAmount * 100, // Amount in cents
+            $paymentMethod->payment_method, // Payment method ID
+            [
+                'currency' => 'eur',
+                'metadata' => [
+                    'order_number' => $orderNumber,
+                ],
+                'automatic_payment_methods' => [
+                    'enabled' => true,
+                    'allow_redirects' => 'never', // Disable redirects
+                ],
+            ]
+        );
 
             $paymentIntent = $payment->asStripePaymentIntent();
 
