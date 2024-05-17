@@ -70,6 +70,7 @@ class CheckoutController extends Controller
             $paymentMethod = PaymentMethod::findOrFail($paymentMethodId);
             $user->updateDefaultPaymentMethod($paymentMethod->payment_method);
 
+            $returnUrl = 'https://umoja-store.netlify.app/order/summary';
             $payment = $user->charge(
                 $totalAmount * 100, // Amount in cents
                 $paymentMethod->payment_method, // Payment method ID
@@ -77,7 +78,8 @@ class CheckoutController extends Controller
                     'currency' => 'eur',
                     'metadata' => [
                         'order_number' => $orderNumber,
-                    ]
+                    ],
+                    'return_url' => $returnUrl,
                 ]
             );
     
