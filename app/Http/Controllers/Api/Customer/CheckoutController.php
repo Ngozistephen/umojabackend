@@ -74,7 +74,7 @@ class CheckoutController extends Controller
                 $totalAmount * 100, // Amount in cents
                 $paymentMethod->payment_method, // Payment method ID
                 [
-                    'currency' => 'eur',
+                    // 'currency' => 'eur',
                     'metadata' => [
                         'order_number' => $orderNumber,
                     ],
