@@ -15,10 +15,13 @@ return new class extends Migration
 
         if (!Schema::hasColumn('orders', 'discount_code')) {
             Schema::table('orders', function (Blueprint $table) {
-                $table->foreignId('discount_code')->nullable()->constrained('discount_codes');
-               
+                $table->foreignId('discount_code')->nullable()->default(NULL)->constrained('discount_codes');
             });
-        } 
+        } else {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->foreignId('discount_code')->nullable()->default(NULL)->change();
+            });
+        }
     }
 
     /**
