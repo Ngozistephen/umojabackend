@@ -82,23 +82,40 @@ class CheckoutController extends Controller
                 $user = Auth::user();
                 $user->createOrGetStripeCustomer();
                 $paymentMethodId = $request->input('payment_method_id');
-                $paymentMethod = PaymentMethod::findOrFail($paymentMethodId);
+                $totalAmountInCents = (int) ($totalAmount * 100);
+                // $paymentMethod = PaymentMethod::findOrFail($paymentMethodId);
+
+                $paymentMethod = \Stripe\PaymentMethod::retrieve($paymentMethodId);
+                if (!$paymentMethod) {
+                    throw new \Exception('Invalid payment method ID');
+                }
 
                 \Log::info('paymentMethod: ' .   $paymentMethod );
                 $user->updateDefaultPaymentMethod($paymentMethod->payment_method);
           
-                $totalAmountInCents = (int) ($totalAmount * 100);
+                // $totalAmountInCents = (int) ($totalAmount * 100);
 
-                $payment = $user->charge(
-                    $paymentMethod->payment_method,
-                    $totalAmountInCents, // Corrected: Amount should be an integer
-                    [
-                        'currency' => 'eur',
-                        'metadata' => [
-                            'order_number' => (string) $orderNumber, // Ensure this is a string
-                        ]
-                    ]
-                );
+                $payment = \Stripe\PaymentIntent::create([
+                    'amount' => $totalAmountInCents, // Amount in cents
+                    'currency' => 'eur',
+                    'customer' => $user->stripe_id,
+                    'payment_method' => $paymentMethodId,
+                    'confirmation_method' => 'automatic',
+                    'confirm' => true,
+                    'metadata' => [
+                        'order_number' => (string) $orderNumber,
+                    ],
+                ]);
+                // $payment = $user->charge(
+                //     $paymentMethod->payment_method,
+                //     $totalAmountInCents, // Corrected: Amount should be an integer
+                //     [
+                //         'currency' => 'eur',
+                //         'metadata' => [
+                //             'order_number' => (string) $orderNumber, // Ensure this is a string
+                //         ]
+                //     ]
+                // );
 
                 $paymentIntent = $payment->asStripePaymentIntent();
                 \Log::info('paymentIntent: ' . $paymentIntent->jsonSerialize());
