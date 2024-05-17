@@ -27,7 +27,7 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'vendor_id'  => ['required', 'integer', 'exists:vendors,id'],
+            // 'vendor_id'  => ['required', 'integer', 'exists:vendors,id'],
             'shipping_address_id'  => ['required', 'integer', 'exists:shipping_addresses,id'],
             'shipping_method_id'  => ['required', 'integer', 'exists:shipping_methods,id'],
             'payment_method_id'  => ['required', 'integer', 'exists:payment_methods,id'],

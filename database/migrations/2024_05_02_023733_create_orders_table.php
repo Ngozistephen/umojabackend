@@ -16,7 +16,6 @@ return new class extends Migration
             Schema::create('orders', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained('users');
-                $table->foreignId('vendor_id')->constrained('vendors');
                 $table->foreignId('shipping_address_id')->constrained('shipping_addresses');
                 $table->foreignId('shipping_method_id')->constrained('shipping_methods');
                 $table->foreignId('payment_method_id')->constrained('payment_methods');
