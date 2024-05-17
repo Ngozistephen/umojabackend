@@ -90,16 +90,27 @@ class CheckoutController extends Controller
                 $totalAmountInCents = (int) ($totalAmount * 100);
                 
 
+                // $payment = $user->charge(
+                //     $paymentMethod->payment_method,
+                //     [
+                //         'amount' => $totalAmountInCents, 
+                //         'currency' => 'eur', 
+                //         'metadata' => [ 
+                //             'order_number' => (string) $orderNumber,
+                //         ]
+                //     ]
+                // );
                 $payment = $user->charge(
                     $paymentMethod->payment_method,
+                    $totalAmountInCents, // Corrected: Amount should be an integer
                     [
-                        'amount' => $totalAmountInCents, 
-                        'currency' => 'eur', 
-                        'metadata' => [ 
-                            'order_number' => (string) $orderNumber,
+                        'currency' => 'eur',
+                        'metadata' => [
+                            'order_number' => (string) $orderNumber, 
                         ]
                     ]
                 );
+        
 
                 $paymentIntent = $payment->asStripePaymentIntent();
                 \Log::info('paymentIntent: ' . $paymentIntent->jsonSerialize());
