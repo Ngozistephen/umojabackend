@@ -30,14 +30,14 @@ class CheckoutController extends Controller
      */
    
 
-    //  public function allOrders(Request $request)
-    //  {
-    //      // Fetch orders associated with the logged-in vendor, ordered by the latest
-    //      $vendorOrders = Auth::user()->vendor->orders()->latest()->paginate(20);
+     public function allOrders(Request $request)
+     {
+         // Fetch orders associated with the logged-in vendor, ordered by the latest
+         $vendorOrders = Auth::user()->vendor->orders()->latest()->paginate(20);
          
-    //      // Format orders using the resource class
-    //      return OrderResource::collection($vendorOrders);
-    //  }
+         // Format orders using the resource class
+         return OrderResource::collection($vendorOrders);
+     }
 
     public function checkout(StoreOrderRequest $request)
     {

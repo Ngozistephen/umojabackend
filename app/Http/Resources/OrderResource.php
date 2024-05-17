@@ -59,11 +59,11 @@ class OrderResource extends JsonResource
             'customer_region' => $this->shippingAddress?->shipping_region,
             'customer_postal_code' => $this->shippingAddress?->shipping_postal_code,
             'customer_country' => $this->shippingAddress?->shipping_country,
-            'billing_address' => $this->billingAddress?->billing_address,
-            'billing_city' => $this->billingAddress?->billing_city,
-            'billing_region' => $this->billingAddress?->billing_region,
-            'billing_postal_code' => $this->billingAddress?->billing_postal_code,
-            'billing_country' => $this->billingAddress?->billing_country,
+            // 'billing_address' => $this->billingAddress?->billing_address,
+            // 'billing_city' => $this->billingAddress?->billing_city,
+            // 'billing_region' => $this->billingAddress?->billing_region,
+            // 'billing_postal_code' => $this->billingAddress?->billing_postal_code,
+            // 'billing_country' => $this->billingAddress?->billing_country,
            
 
             
