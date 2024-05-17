@@ -18,7 +18,6 @@ return new class extends Migration
                 $table->foreignId('user_id')->constrained('users');
                 $table->foreignId('shipping_address_id')->constrained('shipping_addresses');
                 $table->foreignId('shipping_method_id')->constrained('shipping_methods');
-                $table->foreignId('payment_method_id')->constrained('payment_methods');
                 $table->foreignId('discount_code')->nullable()->constrained('discount_codes');
                 $table->integer('order_number');
                 $table->enum('fulfillment_status', ['fulfilled', 'unfulfilled', 'cancelled'])->default('unfulfilled');
