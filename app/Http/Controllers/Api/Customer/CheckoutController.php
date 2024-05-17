@@ -70,13 +70,18 @@ class CheckoutController extends Controller
             $paymentMethod = PaymentMethod::findOrFail($paymentMethodId);
             $user->updateDefaultPaymentMethod($paymentMethod->payment_method);
 
-            $paymentIntent = $user->createSetupIntent([
-                'amount' => $totalAmount * 100,
-                'currency' => 'eur',
-                'metadata' => [
-                    'order_number' => $orderNumber,
+            $payment = $user->charge(
+                $totalAmount * 100, // Amount in cents
+                $paymentMethod->payment_method, // Payment method ID
+                [
+                    'currency' => 'eur',
+                    'metadata' => [
+                        'order_number' => $orderNumber,
+                    ],
                 ]
-            ]);
+            );
+
+            $paymentIntent = $payment->asStripePaymentIntent();
 
             \Log::info('paymentIntent: ' . json_encode($paymentIntent));
 
