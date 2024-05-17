@@ -87,16 +87,15 @@ class CheckoutController extends Controller
                 \Log::info('paymentMethod: ' .   $paymentMethod );
                 $user->updateDefaultPaymentMethod($paymentMethod->payment_method);
           
-                // $totalAmountInCents = (int) ($totalAmount * 100);
-                
+                $totalAmountInCents = (int) ($totalAmount * 100);
 
                 $payment = $user->charge(
                     $paymentMethod->payment_method,
+                    $totalAmountInCents, // Corrected: Amount should be an integer
                     [
-                        'amount' => intval($totalAmount * 100), 
-                        'currency' => 'eur', 
-                        'metadata' => [ 
-                            'order_number' => strval($orderNumber),
+                        'currency' => 'eur',
+                        'metadata' => [
+                            'order_number' => (string) $orderNumber, // Ensure this is a string
                         ]
                     ]
                 );
