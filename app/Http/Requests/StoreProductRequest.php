@@ -31,7 +31,7 @@ class StoreProductRequest extends FormRequest
             'unit_per_item' => 'required|numeric',
             'material' => 'required|string',
             'condition' => 'required|string',
-            'sell_online' => 'required|boolean',
+            'sell_online' => 'nullable|boolean',
             'name' => 'required|string',
             'description' => 'required|string|min:20',
             'product_spec' => 'required|string|min:20',
