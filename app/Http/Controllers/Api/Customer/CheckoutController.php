@@ -46,20 +46,11 @@ class CheckoutController extends Controller
         $orderNumber = str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
         $trackingNumber = 'ID' . substr(uniqid(), -8) . 'RS';
         $totalAmount = 0; 
-       
 
         foreach ($products as $product) {
             $subTotal += $product['price'] * $product['quantity'];
             $totalAmount += $product['price'] * $product['quantity']; 
             $vendorID = $product['vendor_id'];
-
-        
-
-            // if ($product['unit_per_item'] < $product['quantity'] || $product['variations']['no_available'] < $product['quantity']) {
-            //     return response()->json([
-            //         'error' => "Product '{$product['name']}' not found in stock"
-            //     ], 404);
-            // }
 
             if (isset($product['variations']) && isset($product['variations']['no_available'])) {
                 if ($product['unit_per_item'] < $product['quantity'] || $product['variations']['no_available'] < $product['quantity']) {
@@ -68,65 +59,51 @@ class CheckoutController extends Controller
                     ], 404);
                 }
             } else {
-                // Handle the case where 'no_available' key doesn't exist within 'variations'
-                // You might want to log a warning or handle it in another way based on your application's logic
-                // For example, log a warning
                 \Log::warning("No 'no_available' key found in 'variations' for product '{$product['name']}'");
             }
         }
 
         \Log::info('Product: ' . json_encode($product));
-        
-        try {
-                // Create payment intent
-                $user = Auth::user();
-                $user->createOrGetStripeCustomer();
-                $paymentMethodId = $request->input('payment_method_id');
-                $totalAmountInCents = (int) ($totalAmount * 100);
-                // $paymentMethod = PaymentMethod::findOrFail($paymentMethodId);
 
+        try {
+            // Create payment intent
+            $user = Auth::user();
+            $user->createOrGetStripeCustomer();
+            $paymentMethodId = $request->input('payment_method_id');
+
+            // Ensure the payment method ID is valid
+            try {
                 $paymentMethod = \Stripe\PaymentMethod::retrieve($paymentMethodId);
                 if (!$paymentMethod) {
                     throw new \Exception('Invalid payment method ID');
                 }
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Invalid payment method ID'], 400);
+            }
 
-                \Log::info('paymentMethod: ' .   $paymentMethod );
-                $user->updateDefaultPaymentMethod($paymentMethod->payment_method);
-          
-                // $totalAmountInCents = (int) ($totalAmount * 100);
+            \Log::info('paymentMethod: ' . json_encode($paymentMethod));
+            $user->updateDefaultPaymentMethod($paymentMethodId);
 
-                $payment = \Stripe\PaymentIntent::create([
-                    'amount' => $totalAmountInCents, // Amount in cents
-                    'currency' => 'eur',
-                    'customer' => $user->stripe_id,
-                    'payment_method' => $paymentMethodId,
-                    'confirmation_method' => 'automatic',
-                    'confirm' => true,
-                    'metadata' => [
-                        'order_number' => (string) $orderNumber,
-                    ],
-                ]);
-                // $payment = $user->charge(
-                //     $paymentMethod->payment_method,
-                //     $totalAmountInCents, // Corrected: Amount should be an integer
-                //     [
-                //         'currency' => 'eur',
-                //         'metadata' => [
-                //             'order_number' => (string) $orderNumber, // Ensure this is a string
-                //         ]
-                //     ]
-                // );
+            // Ensure the amount is an integer (in cents)
+            $totalAmountInCents = (int) ($totalAmount * 100);
 
-                $paymentIntent = $payment->asStripePaymentIntent();
-                \Log::info('paymentIntent: ' . $paymentIntent->jsonSerialize());
-               
-               
-            
-                $order = null;
-                // \Log::info('paymentIntent: ' .   $paymentIntent );
-                DB::transaction(function () use ($products,$vendorID, $request,$orderNumber,$trackingNumber, $subTotal,$totalAmount, $payment,$user, ) {
+            $paymentIntent = \Stripe\PaymentIntent::create([
+                'amount' => $totalAmountInCents,
+                'currency' => 'eur',
+                'customer' => $user->stripe_id,
+                'payment_method' => $paymentMethodId,
+                'confirmation_method' => 'automatic',
+                'confirm' => true,
+                'metadata' => [
+                    'order_number' => (string) $orderNumber,
+                ],
+            ]);
 
-                $order = $user->orders()->create([   
+            \Log::info('paymentIntent: ' . json_encode($paymentIntent));
+
+            $order = null;
+            DB::transaction(function () use ($products, $vendorID, $request, $orderNumber, $trackingNumber, $subTotal, $totalAmount, $paymentIntent, $user) {
+                $order = $user->orders()->create([
                     'vendor_id' => $vendorID,
                     'shipping_address_id' => $request->shipping_address_id,
                     'payment_method_id' => $request->payment_method_id,
@@ -136,61 +113,181 @@ class CheckoutController extends Controller
                     'sub_total' => $subTotal,
                     'delivery_charge' => $request->delivery_charge,
                     'discount_code_id' => $request->discount_code_id,
-                    'total_amount' => $totalAmount, 
-                    'transaction_id' => $payment->charges->data[0]->id,
-                    // 'last_card_digits' => Auth::user()->defaultPaymentMethod()->card->last4,
-                   
-                    
-
+                    'total_amount' => $totalAmount,
+                    'transaction_id' => $paymentIntent->charges->data[0]->id,
                 ]);
-        
+
                 foreach ($products as $product) {
                     $randomCode = rand(1000000, 9999999);
-        
+
                     $order->products()->attach($product['id'], [
                         'qty' => $product['quantity'],
                         'price' => $product['price'],
                         'tracking_id' => $randomCode,
                         'vendor_id' => $product['vendor_id'],
                     ]);
-        
-                    $product = Product::find($product['id']);
-                    $product->decrement('unit_per_item', $product['quantity']);
+
+                    $productModel = Product::find($product['id']);
+                    $productModel->decrement('unit_per_item', $product['quantity']);
                 }
-        
-                // $order->update(['paid_at' => now() , 'payment_status' => 'paid']);
             });
-    
-            // $user->notify(new SendOrderNotification());
+
+            // Verify the payment with the orderNumber
+            if ($paymentIntent->metadata->order_number !== $orderNumber) {
+                throw new \Exception('Payment does not match the order');
+            }
+
+            return response()->json([
+                'client_secret' => $paymentIntent->client_secret,
+                'last_four_digits' => $user->defaultPaymentMethod()->card->last4,
+                'success' => 'Order placed successfully',
+            ], 200);
+        } catch (\Stripe\Exception\ApiErrorException $exception) {
+            // Handle Stripe API errors
+            return response()->json(['error' => 'Error processing payment'], 500);
+        } catch (\Exception $exception) {
+            // Handle other exceptions
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
+    }
 
 
-                // verify the payment with the orderNumber
-                if ($paymentIntent->metadata->order_number !== $orderNumber) {
-                    throw new \Exception('Payment does not match the order');
-                }
+    // public function checkout(StoreOrderRequest $request)
+    // {
+    //     $products = $request->input('products');
+    //     $subTotal = 0;
+    //     $orderNumber = str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
+    //     $trackingNumber = 'ID' . substr(uniqid(), -8) . 'RS';
+    //     $totalAmount = 0; 
+       
+
+    //     foreach ($products as $product) {
+    //         $subTotal += $product['price'] * $product['quantity'];
+    //         $totalAmount += $product['price'] * $product['quantity']; 
+    //         $vendorID = $product['vendor_id'];
+
+        
+
+    //         // if ($product['unit_per_item'] < $product['quantity'] || $product['variations']['no_available'] < $product['quantity']) {
+    //         //     return response()->json([
+    //         //         'error' => "Product '{$product['name']}' not found in stock"
+    //         //     ], 404);
+    //         // }
+
+    //         if (isset($product['variations']) && isset($product['variations']['no_available'])) {
+    //             if ($product['unit_per_item'] < $product['quantity'] || $product['variations']['no_available'] < $product['quantity']) {
+    //                 return response()->json([
+    //                     'error' => "Product '{$product['name']}' not found in stock"
+    //                 ], 404);
+    //             }
+    //         } else {
+    //             // Handle the case where 'no_available' key doesn't exist within 'variations'
+    //             // You might want to log a warning or handle it in another way based on your application's logic
+    //             // For example, log a warning
+    //             \Log::warning("No 'no_available' key found in 'variations' for product '{$product['name']}'");
+    //         }
+    //     }
+
+    //     \Log::info('Product: ' . json_encode($product));
+        
+    //     try {
+    //             // Create payment intent
+    //             $user = Auth::user();
+    //             $user->createOrGetStripeCustomer();
+    //             $paymentMethodId = $request->input('payment_method_id');
+    //             $paymentMethod = PaymentMethod::findOrFail($paymentMethodId);
+
+    //             \Log::info('paymentMethod: ' .   $paymentMethod );
+    //             $user->updateDefaultPaymentMethod($paymentMethod->payment_method);
+          
+               
                 
 
-                $paymentMethod = $user->defaultPaymentMethod;
+    //             $payment = $user->charge(
+    //                 $paymentMethod->payment_method,
+    //                 [
+    //                     'amount' => intval($totalAmount * 100), 
+    //                     'currency' => 'eur', 
+    //                     'metadata' => [ 
+    //                         'order_number' => strval($orderNumber),
+    //                     ]
+    //                 ]
+    //             );
+
+    //             $paymentIntent = $payment->asStripePaymentIntent();
+    //             \Log::info('paymentIntent: ' . $paymentIntent->jsonSerialize());
+               
+               
+            
+    //             $order = null;
+    //             // \Log::info('paymentIntent: ' .   $paymentIntent );
+    //             DB::transaction(function () use ($products,$vendorID, $request,$orderNumber,$trackingNumber, $subTotal,$totalAmount, $payment,$user, ) {
+
+    //             $order = $user->orders()->create([   
+    //                 'vendor_id' => $vendorID,
+    //                 'shipping_address_id' => $request->shipping_address_id,
+    //                 'payment_method_id' => $request->payment_method_id,
+    //                 'shipping_method_id' => $request->shipping_method_id,
+    //                 'order_number' => $orderNumber,
+    //                 'tracking_number' => $trackingNumber,
+    //                 'sub_total' => $subTotal,
+    //                 'delivery_charge' => $request->delivery_charge,
+    //                 'discount_code_id' => $request->discount_code_id,
+    //                 'total_amount' => $totalAmount, 
+    //                 'transaction_id' => $payment->charges->data[0]->id,
+    //                 // 'last_card_digits' => Auth::user()->defaultPaymentMethod()->card->last4,
+                   
+                    
+
+    //             ]);
+        
+    //             foreach ($products as $product) {
+    //                 $randomCode = rand(1000000, 9999999);
+        
+    //                 $order->products()->attach($product['id'], [
+    //                     'qty' => $product['quantity'],
+    //                     'price' => $product['price'],
+    //                     'tracking_id' => $randomCode,
+    //                     'vendor_id' => $product['vendor_id'],
+    //                 ]);
+        
+    //                 $product = Product::find($product['id']);
+    //                 $product->decrement('unit_per_item', $product['quantity']);
+    //             }
+        
+    //             // $order->update(['paid_at' => now() , 'payment_status' => 'paid']);
+    //         });
+    
+    //         // $user->notify(new SendOrderNotification());
+
+
+    //             // verify the payment with the orderNumber
+    //             if ($paymentIntent->metadata->order_number !== $orderNumber) {
+    //                 throw new \Exception('Payment does not match the order');
+    //             }
+                
+
+    //             $paymentMethod = $user->defaultPaymentMethod;
 
           
              
-                //  \Log::info('paymentIntent: ' .   $paymentIntent->client_secret);
-                return response()->json([
-                     'client_secret' => $paymentIntent->client_secret,
-                    'last_four_digits' => Auth::user()->defaultPaymentMethod()->card->last4,
-                    'success' => 'Order placed successfully',
-                ], 200);
-                // return OrderResource::collection(Order::all()); for all
-            } catch (ApiErrorException $exception) {
-                // Handle Stripe API errors
-                return response()->json(['error' => 'Error processing payment'], 500);
-            } catch (\Exception $exception) {
-                // Handle other exceptions
-                return response()->json(['error' => $exception->getMessage()], 500);
-            }
+    //             //  \Log::info('paymentIntent: ' .   $paymentIntent->client_secret);
+    //             return response()->json([
+    //                  'client_secret' => $paymentIntent->client_secret,
+    //                 'last_four_digits' => Auth::user()->defaultPaymentMethod()->card->last4,
+    //                 'success' => 'Order placed successfully',
+    //             ], 200);
+    //             // return OrderResource::collection(Order::all()); for all
+    //         } catch (ApiErrorException $exception) {
+    //             // Handle Stripe API errors
+    //             return response()->json(['error' => 'Error processing payment'], 500);
+    //         } catch (\Exception $exception) {
+    //             // Handle other exceptions
+    //             return response()->json(['error' => $exception->getMessage()], 500);
+    //         }
        
 
-    }
+    // }
     // public function checkout(StoreOrderRequest $request)
     // {
     //     $products = $request->input('products');

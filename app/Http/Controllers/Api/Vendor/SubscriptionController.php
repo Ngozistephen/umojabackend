@@ -24,7 +24,6 @@ class SubscriptionController extends Controller
     //                 'cancel_url' => route('vendor.subscription_cancel'),
     //             ]);
     //     $vendor = $user->vendor;
-
        
     //     $vendor->update(['complete_setup' => true]);
     
