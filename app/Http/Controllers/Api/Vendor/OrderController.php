@@ -37,9 +37,15 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Order $order)
     {
-        //
+        $vendorId = Auth::user()->vendor->id;
+        if ($order->products()->where('vendor_id', $vendorId)->exists()) {
+            $order->update(['read' => true]);   
+            return new OrderResource($order);
+        } else {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
     }
 
     /**

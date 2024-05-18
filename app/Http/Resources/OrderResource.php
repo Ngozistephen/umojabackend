@@ -25,16 +25,13 @@ class OrderResource extends JsonResource
             // ]),
             'id' => $this->id,
             'order_id' => $this->order_number,
+            'read' => $this->read,
             'created_at' => $this->created_at,
             'customer_fullname'=> $this->shippingAddress?->shipping_full_name,
             'total' => $this->total_amount,
             'discount' => $this->discount_code?->discount_amount,
             'delivery_price' => $this->delivery_charge,
             'sub_total' => $this->sub_total,
-            // 'payment_status' => [
-            //     'is_paid' => $this->payment_status->isPaid(),
-            //     'is_pending' => $this->payment_status->isPending(),
-            // ],
             'payment_status' => $this->payment_status,
             // 'items' => $this->products->map(function ($product) use ($vendorId) {
             //     if ($product->pivot->vendor_id == $vendorId) {
@@ -66,11 +63,6 @@ class OrderResource extends JsonResource
                 
                 ];
             }),
-            // 'fulfillment_status' => [
-            //     'is_fulfilled' => $this->fulfillment_status->isFulfilled(),
-            //     'is_unfulfilled' => $this->fulfillment_status->isUnfulfilled(),
-            //     'is_cancelled' => $this->fulfillment_status->isCancelled(),
-            // ],
             'fulfillment_status'=>$this->fulfillment_status,  
             'delivery_method' => $this->shippingMethod?->type,
             'delivery_duration' => $this->shippingMethod?->duration,
