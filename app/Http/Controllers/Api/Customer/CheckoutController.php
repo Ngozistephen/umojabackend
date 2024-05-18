@@ -89,7 +89,7 @@ class CheckoutController extends Controller
 
             \Log::info('paymentIntent: ' . json_encode($paymentIntent));
 
-            $order = DB::transaction(function () use ($products, $request, $orderNumber, $trackingNumber, $subTotal, $totalAmount, $paymentIntent, $user) {
+            DB::transaction(function () use ($products, $request, $orderNumber, $trackingNumber, $subTotal, $totalAmount, $paymentIntent, $user) {
                 $order = $user->orders()->create([
                     // 'vendor_id' => $vendorID,
                     'shipping_address_id' => $request->shipping_address_id,
@@ -103,8 +103,6 @@ class CheckoutController extends Controller
                     'total_amount' => $totalAmount,
                     'transaction_id' => $paymentIntent->id,
                 ]);
-
-                
 
                 foreach ($products as $product) {
                     $randomCode = rand(1000000, 9999999);
@@ -120,15 +118,12 @@ class CheckoutController extends Controller
                 }
 
                 $order->update(['paid_at' => now(), 'payment_status' => 'paid']);
-
-                return $order;
             });
 
             return response()->json([
                 'client_secret' => $paymentIntent->client_secret,
                 'last_four_digits' => Auth::user()->defaultPaymentMethod()->card->last4,
                 'success' => 'Order placed successfully',
-                'order' => new OrderResource($order)
             ], 200);
         } catch (ApiErrorException $exception) {
             return response()->json(['error' => 'Error processing payment'], 500);
