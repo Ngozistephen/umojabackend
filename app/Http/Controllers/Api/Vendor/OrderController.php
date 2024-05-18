@@ -22,7 +22,7 @@ class OrderController extends Controller
                 $query->where('order_product.vendor_id', $vendorId);
             }])->latest()->paginate(20);
 
-    // Format orders using the resource class
+ 
         return OrderResource::collection($orders);
     }
 
