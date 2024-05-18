@@ -135,7 +135,7 @@ class CheckoutController extends Controller
     //     }
     // }
 
- 
+//  working with order response
     public function checkout(StoreOrderRequest $request)
     {
         $products = $request->input('products');
@@ -172,8 +172,8 @@ class CheckoutController extends Controller
     
             $returnUrl = 'https://umoja-store.netlify.app/order/summary';
             $payment = $user->charge(
-                $totalAmount * 100, // Amount in cents
-                $paymentMethod->payment_method, // Payment method ID
+                $totalAmount * 100, 
+                $paymentMethod->payment_method, 
                 [
                     'currency' => 'eur',
                     'metadata' => [
@@ -204,10 +204,6 @@ class CheckoutController extends Controller
                     'transaction_id' => $paymentIntent->id,
                 ]);
     
-                if (!$order) {
-                    \Log::error('Order creation failed');
-                    throw new \Exception('Order creation failed');
-                }
     
                 foreach ($products as $product) {
                     $randomCode = rand(1000000, 9999999);
@@ -220,7 +216,6 @@ class CheckoutController extends Controller
     
                     $productModel = Product::find($product['id']);
                     if (!$productModel) {
-                        \Log::error("Product with ID {$product['id']} not found");
                         throw new \Exception("Product with ID {$product['id']} not found");
                     }
                     $productModel->decrement('unit_per_item', $product['quantity']);
@@ -228,13 +223,10 @@ class CheckoutController extends Controller
     
                 $order->update(['paid_at' => now(), 'payment_status' => 'paid']);
     
-                return $order; // Return the created order
+                return $order; 
             });
     
-            if (!$order) {
-                \Log::error('Order is null after transaction');
-                throw new \Exception('Order is null after transaction');
-            }
+           
     
             $defaultPaymentMethod = $user->defaultPaymentMethod();
             if (!$defaultPaymentMethod || !$defaultPaymentMethod->card) {
@@ -255,7 +247,7 @@ class CheckoutController extends Controller
                     'transaction_id' => $order->transaction_id,
                     'paid_at' => $order->paid_at,
                     'payment_status' => $order->payment_status,
-                    'products' => $order->products, // Ensure this returns the products correctly
+                    'products' => $order->products, 
                 ],
                 'success' => 'Order placed successfully'
             ], 200);

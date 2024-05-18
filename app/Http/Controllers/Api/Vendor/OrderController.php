@@ -17,9 +17,9 @@ class OrderController extends Controller
     {
         $vendorId = Auth::user()->vendor->id;
         $orders = Order::whereHas('products', function ($query) use ($vendorId) {
-                    $query->where('vendor_id', $vendorId);
-                })->latest()->paginate(20);
-    
+                $query->where('order_product.vendor_id', $vendorId); // Specify the table name
+            })->latest()->paginate(20);
+
         // Format orders using the resource class
         return OrderResource::collection($orders);
     }
