@@ -13,18 +13,55 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
+    // public function index(Request $request)
+    // {
+    //     $vendorId = Auth::user()->vendor->id;
+    //     $orders = Order::whereHas('products', function ($query) use ($vendorId) {
+    //             $query->where('order_product.vendor_id', $vendorId);
+    //         })->with(['products' => function ($query) use ($vendorId) {
+    //             $query->where('order_product.vendor_id', $vendorId);
+    //         }]
+
+    //         ->when($request->fulfillment_status === 'is_unfulfilled', function ($query) use ($request){
+    //             $query->where('fulfillment_status', 'is_unfulfilled');
+    //         })
+            
+    //         )->latest()
+            
+    //         ->paginate(20);
+
+ 
+    //     return OrderResource::collection($orders);
+    // }
+
     public function index(Request $request)
     {
         $vendorId = Auth::user()->vendor->id;
+    
         $orders = Order::whereHas('products', function ($query) use ($vendorId) {
                 $query->where('order_product.vendor_id', $vendorId);
-            })->with(['products' => function ($query) use ($vendorId) {
+            })
+            ->with(['products' => function ($query) use ($vendorId) {
                 $query->where('order_product.vendor_id', $vendorId);
-            }])->latest()->paginate(20);
-
- 
+            }])
+            ->when($request->has('unfulfilled') && $request->unfulfilled === 'true', function ($query) {
+                $query->where('fulfillment_status', 'unfulfilled');
+            })
+            ->when($request->has('unpaid') && $request->unpaid === 'true', function ($query) {
+                $query->where('payment_status', 'pending');
+            })
+            ->when($request->has('open') && $request->open === 'true', function ($query) {
+                $query->where('payment_status', 'paid');
+            })
+            ->when($request->has('closed') && $request->closed === 'true', function ($query) {
+                $query->where('payment_status', 'paid')->where('fulfillment_status', 'fulfilled');
+            })
+            ->latest()
+            ->paginate(20);
+    
         return OrderResource::collection($orders);
     }
+    
 
     /**
      * Store a newly created resource in storage.
