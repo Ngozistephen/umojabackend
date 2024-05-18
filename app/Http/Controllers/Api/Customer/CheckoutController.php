@@ -161,6 +161,10 @@ class CheckoutController extends Controller
     
         try {
             $user = Auth::user();
+            if (!$user) {
+                throw new \Exception('User not authenticated');
+            }
+    
             $user->createOrGetStripeCustomer();
             $paymentMethodId = $request->input('payment_method_id');
             $paymentMethod = PaymentMethod::findOrFail($paymentMethodId);
@@ -180,6 +184,9 @@ class CheckoutController extends Controller
             );
     
             $paymentIntent = $payment->asStripePaymentIntent();
+            if (!$paymentIntent) {
+                throw new \Exception('Payment intent is null');
+            }
     
             \Log::info('paymentIntent: ' . json_encode($paymentIntent));
     
@@ -212,6 +219,10 @@ class CheckoutController extends Controller
                     ]);
     
                     $productModel = Product::find($product['id']);
+                    if (!$productModel) {
+                        \Log::error("Product with ID {$product['id']} not found");
+                        throw new \Exception("Product with ID {$product['id']} not found");
+                    }
                     $productModel->decrement('unit_per_item', $product['quantity']);
                 }
     
@@ -225,10 +236,27 @@ class CheckoutController extends Controller
                 throw new \Exception('Order is null after transaction');
             }
     
+            $defaultPaymentMethod = $user->defaultPaymentMethod();
+            if (!$defaultPaymentMethod || !$defaultPaymentMethod->card) {
+                throw new \Exception('Default payment method or card information is missing');
+            }
+    
             return response()->json([
                 'client_secret' => $paymentIntent->client_secret,
-                'last_four_digits' => Auth::user()->defaultPaymentMethod()->card->last4,
-                'order' => new OrderResource($order),
+                'last_four_digits' => $defaultPaymentMethod->card->last4,
+                'order' => [
+                    'id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'tracking_number' => $order->tracking_number,
+                    'sub_total' => $order->sub_total,
+                    'delivery_charge' => $order->delivery_charge,
+                    'discount_code_id' => $order->discount_code_id,
+                    'total_amount' => $order->total_amount,
+                    'transaction_id' => $order->transaction_id,
+                    'paid_at' => $order->paid_at,
+                    'payment_status' => $order->payment_status,
+                    'products' => $order->products, // Ensure this returns the products correctly
+                ],
                 'success' => 'Order placed successfully'
             ], 200);
         } catch (ApiErrorException $exception) {
@@ -239,6 +267,7 @@ class CheckoutController extends Controller
             return response()->json(['error' => 'Error: ' . $exception->getMessage()], 500);
         }
     }
+    
     
 
 
