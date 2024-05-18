@@ -31,10 +31,11 @@ class OrderResource extends JsonResource
             'discount' => $this->discount_code?->discount_amount,
             'delivery_price' => $this->delivery_charge,
             'sub_total' => $this->sub_total,
-            'payment_status' => [
-                'is_paid' => $this->payment_status->isPaid(),
-                'is_pending' => $this->payment_status->isPending(),
-            ],
+            // 'payment_status' => [
+            //     'is_paid' => $this->payment_status->isPaid(),
+            //     'is_pending' => $this->payment_status->isPending(),
+            // ],
+            'payment_status' => $this->payment_status,
             // 'items' => $this->products->map(function ($product) use ($vendorId) {
             //     if ($product->pivot->vendor_id == $vendorId) {
             //         return [
@@ -65,23 +66,12 @@ class OrderResource extends JsonResource
                 
                 ];
             }),
-            // 'items' => $this->products->map(function ($product) {
-            //     return [
-            //         'id' => $product->id,
-            //         'name' => $product->name,
-            //         'qty' => $product->pivot->qty, 
-            //         'photo' => $product->photo,
-            //         'cost_per_item' => $product->cost_per_item,
-            //         'colors' => $product->colors,
-            //         'price' => $product->pivot->price, 
-                    
-            //     ];
-            // }),
-            'fulfillment_status' => [
-                'is_fulfilled' => $this->fulfillment_status->isFulfilled(),
-                'is_unfulfilled' => $this->fulfillment_status->isUnfulfilled(),
-                'is_cancelled' => $this->fulfillment_status->isCancelled(),
-            ],
+            // 'fulfillment_status' => [
+            //     'is_fulfilled' => $this->fulfillment_status->isFulfilled(),
+            //     'is_unfulfilled' => $this->fulfillment_status->isUnfulfilled(),
+            //     'is_cancelled' => $this->fulfillment_status->isCancelled(),
+            // ],
+            'fulfillment_status'=>$this->fulfillment_status,  
             'delivery_method' => $this->shippingMethod?->type,
             'delivery_duration' => $this->shippingMethod?->duration,
             'customer_email' => $this->shippingAddress?->shipping_email,
@@ -91,11 +81,7 @@ class OrderResource extends JsonResource
             'customer_region' => $this->shippingAddress?->shipping_region,
             'customer_postal_code' => $this->shippingAddress?->shipping_postal_code,
             'customer_country' => $this->shippingAddress?->shipping_country,
-            // 'billing_address' => $this->billingAddress?->billing_address,
-            // 'billing_city' => $this->billingAddress?->billing_city,
-            // 'billing_region' => $this->billingAddress?->billing_region,
-            // 'billing_postal_code' => $this->billingAddress?->billing_postal_code,
-            // 'billing_country' => $this->billingAddress?->billing_country,
+           
            
 
             
