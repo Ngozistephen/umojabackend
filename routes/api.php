@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Public\UserController;
+use App\Http\Controllers\Api\Vendor\PostController;
 use App\Http\Controllers\Api\Vendor\OrderController;
 use App\Http\Controllers\Api\Customer\CartController;
 use App\Http\Controllers\Api\Vendor\VendorController;
@@ -108,7 +109,9 @@ Route::middleware('auth:api')->group(function () {
          Route::apiResource('products.variations', ProductVariationController::class)->except(['create', 'edit']);
          Route::post('/import/products', [ProductController::class, 'import']);
          Route::get('/export/products', [ProductController::class, 'export']);   
-         Route::apiResource('orders', OrderController::class, );   
+         Route::apiResource('orders', OrderController::class);  
+         Route::apiResource('posts', PostController::class); 
+         Route::post('posts/upload', [PostController::class, 'upload']); 
     });
     Route::prefix('customer')->group(function () {
         Route::post('products/{product}/addcart', [CartController::class, 'addCart']);

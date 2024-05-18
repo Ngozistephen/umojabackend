@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Post;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\CartItem;
@@ -93,6 +94,11 @@ class Product extends Model
     public function order(): BelongsToMany
     {
         return $this->belongsToMany(Order::class)->withPivot(['qty', 'tracking_id']);
+    }
+
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class, 'post_product');
     }
 
    

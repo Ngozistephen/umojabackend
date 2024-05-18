@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Post;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Order;
@@ -40,6 +41,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
         public function orders(): HasMany
         {
             return $this->hasMany(Order::class);
+        }
+
+
+        public function posts()
+        {
+            return $this->hasMany(Post::class);
         }
         
     
