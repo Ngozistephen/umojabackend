@@ -40,7 +40,7 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         $vendorId = Auth::user()->vendor->id;
-        if ($order->products()->where('vendor_id', $vendorId)->exists()) {
+        if ($order->products()->where('order_product.vendor_id', $vendorId)->exists()) {
             $order->update(['read' => true]);   
             return new OrderResource($order);
         } else {
