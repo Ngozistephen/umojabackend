@@ -35,20 +35,35 @@ class OrderResource extends JsonResource
                 'is_paid' => $this->payment_status->isPaid(),
                 'is_pending' => $this->payment_status->isPending(),
             ],
-            'items' => $this->products->filter(function ($product) use ($vendorId) {
-                return $product->pivot->vendor_id == $vendorId;
-            })->map(function ($product) {
-                return [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'qty' => $product->pivot->qty,
-                    'photo' => $product->photo,
-                    'cost_per_item' => $product->cost_per_item,
-                    'colors' => $product->colors,
-                    'price' => $product->pivot->price,
-                    // Add other fields you want to include
-                ];
-            }),
+            'items' => $this->products->map(function ($product) use ($vendorId) {
+                if ($product->pivot->vendor_id == $vendorId) {
+                    return [
+                        'id' => $product->id,
+                        'name' => $product->name,
+                        'qty' => $product->pivot->qty,
+                        'photo' => $product->photo,
+                        'cost_per_item' => $product->cost_per_item,
+                        'colors' => $product->colors,
+                        'price' => $product->pivot->price,
+                        'vendor_id' => $product->pivot->vendor_id
+                        // Add other fields you want to include
+                    ];
+                }
+            })->filter(),
+            // 'items' => $this->products->filter(function ($product) use ($vendorId) {
+            //     return $product->pivot->vendor_id == $vendorId;
+            // })->map(function ($product) {
+            //     return [
+            //         'id' => $product->id,
+            //         'name' => $product->name,
+            //         'qty' => $product->pivot->qty,
+            //         'photo' => $product->photo,
+            //         'cost_per_item' => $product->cost_per_item,
+            //         'colors' => $product->colors,
+            //         'price' => $product->pivot->price,
+            //         // Add other fields you want to include
+            //     ];
+            // }),
             // 'items' => $this->products->map(function ($product) {
             //     return [
             //         'id' => $product->id,
