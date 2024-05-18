@@ -89,7 +89,7 @@ class CheckoutController extends Controller
 
             \Log::info('paymentIntent: ' . json_encode($paymentIntent));
 
-            DB::transaction(function () use ($products, $request, $orderNumber, $trackingNumber, $subTotal, $totalAmount, $paymentIntent, $user, &$order) {
+            $order = DB::transaction(function () use ($products, $request, $orderNumber, $trackingNumber, $subTotal, $totalAmount, $paymentIntent, $user) {
                 $order = $user->orders()->create([
                     // 'vendor_id' => $vendorID,
                     'shipping_address_id' => $request->shipping_address_id,
@@ -118,6 +118,8 @@ class CheckoutController extends Controller
                 }
 
                 $order->update(['paid_at' => now(), 'payment_status' => 'paid']);
+                
+                return $order;
             });
 
             return response()->json([
