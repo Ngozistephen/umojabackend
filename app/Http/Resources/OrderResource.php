@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderResource extends JsonResource
@@ -14,6 +15,7 @@ class OrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $vendorId = Auth::user()->vendor->id;
         return [
             // 'data' => $this->makeHidden([
             //     'change_amount', 'distance', 'duration', 'grand_total',
@@ -33,15 +35,15 @@ class OrderResource extends JsonResource
                 'is_paid' => $this->payment_status->isPaid(),
                 'is_pending' => $this->payment_status->isPending(),
             ],
-            'items' => $this->products->map(function ($product) {
+            'items' => $this->products->where('pivot.vendor_id', $vendorId)->map(function ($product) {
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
-                    'qty' => $product->pivot->qty, // Accessing qty from pivot table
-                    'photo' => $product->photo, // Accessing qty from pivot table
+                    'qty' => $product->pivot->qty,
+                    'photo' => $product->photo,
                     'cost_per_item' => $product->cost_per_item,
-                    'colors' => $product->colors, // Accessing qty from pivot table
-                    'price' => $product->pivot->price, // Accessing qty from pivot table
+                    'colors' => $product->colors,
+                    'price' => $product->pivot->price,
                     // Add other fields you want to include
                 ];
             }),

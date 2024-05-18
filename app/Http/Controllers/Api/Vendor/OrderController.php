@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Vendor;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -14,11 +15,13 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-         // Fetch orders associated with the logged-in vendor, ordered by the latest
-         $Orders = Auth::user()->vendor->orders()->latest()->paginate(20);
-         
-         // Format orders using the resource class
-         return OrderResource::collection($Orders);
+        $vendorId = Auth::user()->vendor->id;
+        $orders = Order::whereHas('products', function ($query) use ($vendorId) {
+                    $query->where('vendor_id', $vendorId);
+                })->latest()->paginate(20);
+    
+        // Format orders using the resource class
+        return OrderResource::collection($orders);
     }
 
     /**
