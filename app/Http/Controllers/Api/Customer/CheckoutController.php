@@ -124,6 +124,7 @@ class CheckoutController extends Controller
                 'client_secret' => $paymentIntent->client_secret,
                 'last_four_digits' => Auth::user()->defaultPaymentMethod()->card->last4,
                 'success' => 'Order placed successfully',
+                'Order' => new OrderResource($order)
             ], 200);
         } catch (ApiErrorException $exception) {
             return response()->json(['error' => 'Error processing payment'], 500);
