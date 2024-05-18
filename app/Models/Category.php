@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Post;
 use App\Models\Product;
 use App\Models\SubCategory;
 use Illuminate\Support\Str;
@@ -33,6 +34,11 @@ class Category extends Model
     public function subcategories()
     {
         return $this->hasMany(SubCategory::class);
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
     }
 
     // public function products()

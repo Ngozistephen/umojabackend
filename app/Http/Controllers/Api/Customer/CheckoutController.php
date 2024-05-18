@@ -89,9 +89,9 @@ class CheckoutController extends Controller
 
             \Log::info('paymentIntent: ' . json_encode($paymentIntent));
 
-            DB::transaction(function () use ($products, $vendorID, $request, $orderNumber, $trackingNumber, $subTotal, $totalAmount, $paymentIntent, $user) {
+            DB::transaction(function () use ($products, $request, $orderNumber, $trackingNumber, $subTotal, $totalAmount, $paymentIntent, $user) {
                 $order = $user->orders()->create([
-                    'vendor_id' => $vendorID,
+                    // 'vendor_id' => $vendorID,
                     'shipping_address_id' => $request->shipping_address_id,
                     'payment_method_id' => $request->payment_method_id,
                     'shipping_method_id' => $request->shipping_method_id,
