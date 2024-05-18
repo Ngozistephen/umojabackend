@@ -104,10 +104,7 @@ class CheckoutController extends Controller
                     'transaction_id' => $paymentIntent->id,
                 ]);
 
-                if (!$order) {
-                    \Log::error('Order creation failed');
-                    throw new \Exception('Order creation failed');
-                }
+                
 
                 foreach ($products as $product) {
                     $randomCode = rand(1000000, 9999999);
@@ -126,11 +123,6 @@ class CheckoutController extends Controller
 
                 return $order;
             });
-
-            if (!$order) {
-                \Log::error('Order is null after transaction');
-                throw new \Exception('Order is null after transaction');
-            }
 
             return response()->json([
                 'client_secret' => $paymentIntent->client_secret,
