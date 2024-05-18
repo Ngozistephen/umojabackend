@@ -228,8 +228,8 @@ class CheckoutController extends Controller
             return response()->json([
                 'client_secret' => $paymentIntent->client_secret,
                 'last_four_digits' => Auth::user()->defaultPaymentMethod()->card->last4,
-                'success' => 'Order placed successfully',
-                'order' => new OrderResource($order)
+                'order' => new OrderResource($order),
+                'success' => 'Order placed successfully'
             ], 200);
         } catch (ApiErrorException $exception) {
             \Log::error('Stripe API error: ' . $exception->getMessage());
