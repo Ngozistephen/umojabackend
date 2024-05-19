@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Vendor;
 
+use Log;
 use App\Models\Post;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $vendor = Auth::user();
+        $vendor = Auth::user()->vendor;
         $posts = Post::where('vendor_id', $vendor->id)->with('products')->get();
         return PostResource::collection($posts);
     }
@@ -27,20 +28,23 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+ 
     public function store(StorePostRequest $request)
     {
-        $vendor = Auth::user();
+        $vendor = Auth::user()->vendor;
 
         $validatedData = $request->validated();
         $validatedData['vendor_id'] = $vendor->id;
+
+        $validatedData['published_at'] = now();
 
         $post = Post::create($validatedData);
 
         if ($request->has('product_ids')) {
             $productIds = $request->input('product_ids');
 
-            foreach ($productIds as $productId) {
-                $product = Product::findOrFail($productId);
+            $products = Product::whereIn('id', $productIds)->get();
+            foreach ($products as $product) {
                 if ($product->vendor_id !== $vendor->id) {
                     return response()->json(['message' => 'Unauthorized'], 403);
                 }
@@ -48,26 +52,29 @@ class PostController extends Controller
 
             $post->products()->attach($productIds);
         }
+
         $uploadedFiles = $this->upload($request);
 
         return response()->json([
             'message' => 'Post created successfully',
             'post' => new PostResource($post->load('products'))
         ], 201);
-       
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(Post $post)
     {
-        $vendor = Auth::user();
+        $this->authorize('product-manage');
+        $vendor = Auth::user()->vendor;
         if ($vendor->id !== $post->vendor_id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        return new PostResource($post->load('products'));
+        $post->load('products');
+        return new PostResource($post);
     }
 
 
@@ -76,12 +83,13 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $vendor = Auth::user();
+        $vendor = Auth::user()->vendor;
         if ($vendor->id !== $post->vendor_id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $validatedData = $request->validated();
+        // $validatedData['published_at'] = now();
 
         if ($request->has('product_ids')) {
             $productIds = $request->input('product_ids');
@@ -106,7 +114,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        $vendor = Auth::user();
+        $vendor = Auth::user()->vendor;
         if ($vendor->id !== $post->vendor_id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }

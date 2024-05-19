@@ -39,9 +39,18 @@ class Post extends Model
 
         static::updating(function($post) {
             if ($post->isDirty('title')) {
-                $post->slug = Str::slug($post->name);
+                $post->slug = Str::slug($post->title);
             }
         });
+    }
+
+    public function update(array $attributes = [], array $options = [])
+    {
+        if (array_key_exists('title', $attributes)) {
+            $attributes['slug'] = Str::slug($attributes['title']);
+        }
+
+        return parent::update($attributes, $options);
     }
 
     protected $dates = ['scheduled_at', 'published_at'];
@@ -61,10 +70,7 @@ class Post extends Model
         $this->update(['published_at' => Carbon::now()]);
     }
 
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'post_product');
-    }
+   
 
     public function category()
     {
