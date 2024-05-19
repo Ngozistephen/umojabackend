@@ -17,34 +17,25 @@ class OrderSearchController extends Controller
     {
         $vendorId = Auth::user()->vendor->id;
 
-    $ordersQuery = Order::whereHas('products', function ($query) use ($vendorId) {
-            $query->where('order_product.vendor_id', $vendorId);
-        })
-        ->with(['products' => function ($query) use ($vendorId) {
-            $query->where('order_product.vendor_id', $vendorId);
-        }])
-        ->when($request->search_global, function ($query) use ($request) {
-            $searchTerm = '%' . $request->search_global . '%';
-            $query->where(function ($q) use ($request, $searchTerm) {
-                $q->where('id', $request->search_global)
-                    ->orWhere('order_number', 'like', $searchTerm)
-                    ->orWhereHas('shippingAddress', function ($q) use ($searchTerm) {
-                        $q->where('shipping_full_name', 'like', $searchTerm);
-                    });
-                    // ->orWhereHas('subCategory', function ($q) use ($searchTerm) {
-                    //     $q->where('name', 'like', $searchTerm);
-                    // })
-                    // ->orWhere('price', 'like', $searchTerm)
-                    // ->orWhere('description', 'like', $searchTerm)
-                    // ->orWhere('sku', 'like', $searchTerm);
-            });
-        })->get();
-        // ->latest()
-        // ->paginate(10);
+        $ordersQuery = Order::whereHas('products', function ($query) use ($vendorId) {
+                $query->where('order_product.vendor_id', $vendorId);
+            })
+            ->with(['products' => function ($query) use ($vendorId) {
+                $query->where('order_product.vendor_id', $vendorId);
+            }])
+            ->when($request->search_global, function ($query) use ($request) {
+                $searchTerm = '%' . $request->search_global . '%';$
+                $query->where(function ($q) use ($request,$searchTerm) { 
+                    $q->where('id', $request->search_global)
+                        ->orWhere('order_number', 'like', $searchTerm)
+                        ->orWhereHas('shippingAddress', function ($q) use ($searchTerm) {
+                            $q->where('shipping_full_name', 'like', $searchTerm);
+                        });
+                });
+            })
+            ->latest()
+            ->paginate(20); // Adjust the pagination limit as needed
 
-        return [
-            'orders' => OrderSearchResource::collection( $ordersQuery )->response()->getData(true),
-            // If you have other data to return, you can add it here
-        ];
+        return OrderSearchResource::collection($ordersQuery);
     }
 }
