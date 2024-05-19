@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -219,45 +220,52 @@ class PostController extends Controller
         ], 200);
     }
 
-    public function view(Post $post)
+    public function view(Request $request, Post $post)
     {
+        $ipAddress = $request->ip();
+        $cacheKey = 'view_post_' . $post->id . '_ip_' . $ipAddress;
+        $cacheExpiration = now()->addDay(); 
+
+    
+        if (Cache::has($cacheKey)) {
+            return response()->json([
+                'message' => 'You have already viewed this post today'
+            ], 403);
+        }
+
         $post->increment('views');
+
+        Cache::put($cacheKey, true, $cacheExpiration);
+
         return response()->json([
             'message' => 'Post view count incremented successfully',
             'post' => new PostResource($post)
         ], 200);
     }
 
-    public function like(Post $post)
+    public function like(Request $request, Post $post)
     {
+        $ipAddress = $request->ip();
+        $cacheKey = 'like_post_' . $post->id . '_ip_' . $ipAddress;
+        $cacheExpiration = now()->addDay(); 
+    
+        if (Cache::has($cacheKey)) {
+            return response()->json([
+                'message' => 'You have already liked this post today'
+            ], 403);
+        }
         $post->increment('likes');
+    
+        Cache::put($cacheKey, true, $cacheExpiration);
+    
         return response()->json([
             'message' => 'Post like count incremented successfully',
             'post' => new PostResource($post)
         ], 200);
     }
 
-    public function unview(Post $post)
-    {
-        if ($post->views > 0) {
-            $post->decrement('views');
-        }
-        return response()->json([
-            'message' => 'Post view count decremented successfully',
-            'post' => new PostResource($post)
-        ], 200);
-    }
+   
 
-    public function unlike(Post $post)
-    {
-        if ($post->likes > 0) {
-            $post->decrement('likes');
-        }
-        return response()->json([
-            'message' => 'Post like count decremented successfully',
-            'post' => new PostResource($post)
-        ], 200);
-    }
 
 
     public function upload(Request $request)

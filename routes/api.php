@@ -119,8 +119,7 @@ Route::middleware('auth:api')->group(function () {
          Route::post('posts/{post}/publish', [PostController::class, 'publish']);
          Route::post('posts/{post}/like', [PostController::class, 'like']);
          Route::post('posts/{post}/view', [PostController::class, 'view']);
-         Route::post('posts/{post}/unlike', [PostController::class, 'unlike']);
-         Route::post('posts/{post}/unview', [PostController::class, 'unview']);
+        
     });
     Route::prefix('customer')->group(function () {
         Route::post('products/{product}/addcart', [CartController::class, 'addCart']);
