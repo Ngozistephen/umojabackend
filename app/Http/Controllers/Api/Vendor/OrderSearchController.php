@@ -23,14 +23,23 @@ class OrderSearchController extends Controller
             ->with(['products' => function ($query) use ($vendorId) {
                 $query->where('order_product.vendor_id', $vendorId);
             }])
+            // ->when($request->search_global, function ($query) use ($request) {
+            //     $searchTerm = '%' . $request->search_global . '%';$
+            //     $query->where(function ($q) use ($request,$searchTerm) { 
+            //         $q->where('id', $request->search_global)
+            //             ->orWhere('order_number', 'like', $searchTerm)
+            //             ->orWhereHas('shippingAddress', function ($q) use ($searchTerm) {
+            //                 $q->where('shipping_full_name', 'like', $searchTerm);
+            //             });
+            //     });
+            // })
             ->when($request->search_global, function ($query) use ($request) {
-                $searchTerm = '%' . $request->search_global . '%';$
-                $query->where(function ($q) use ($request,$searchTerm) { 
-                    $q->where('id', $request->search_global)
-                        ->orWhere('order_number', 'like', $searchTerm)
-                        ->orWhereHas('shippingAddress', function ($q) use ($searchTerm) {
-                            $q->where('shipping_full_name', 'like', $searchTerm);
-                        });
+                $searchTerm = '%' . $request->search_global . '%';
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('order_number', 'like', $searchTerm)
+                      ->orWhereHas('shippingAddress', function ($q) use ($searchTerm) {
+                          $q->where('shipping_full_name', 'like', $searchTerm);
+                      });
                 });
             })
             ->latest()
