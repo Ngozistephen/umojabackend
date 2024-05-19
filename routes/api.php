@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\Auth\VerificationController;
 use App\Http\Controllers\Api\Customer\CheckoutController;
 use App\Http\Controllers\Api\Admin\DiscountCodeController;
 use App\Http\Controllers\Api\Auth\CustomerLoginController;
+use App\Http\Controllers\Api\Vendor\OrderSearchController;
 use App\Http\Controllers\Api\Auth\SocialRegisterController;
 use App\Http\Controllers\Api\Auth\VendorRegisterController;
 use App\Http\Controllers\Api\Customer\AllProductController;
@@ -109,7 +110,8 @@ Route::middleware('auth:api')->group(function () {
          Route::apiResource('products.variations', ProductVariationController::class)->except(['create', 'edit']);
          Route::post('/import/products', [ProductController::class, 'import']);
          Route::get('/export/products', [ProductController::class, 'export']);   
-         Route::apiResource('orders', OrderController::class);  
+         Route::apiResource('orders', OrderController::class); 
+         Route::get('orders/search', [OrderSearchController::class, '__invoke']); 
          Route::apiResource('posts', PostController::class); 
          Route::post('posts/upload', [PostController::class, 'upload']); 
     });
