@@ -32,25 +32,8 @@ class OrderSearchResource extends JsonResource
             'discount' => $this->discount_code?->discount_amount,
             'delivery_price' => $this->delivery_charge,
             'sub_total' => $this->sub_total,
-            'payment_status' => $this->payment_status,
-            // 'items' => $this->products->map(function ($product) use ($vendorId) {
-            //     if ($product->pivot->vendor_id == $vendorId) {
-            //         return [
-            //             'id' => $product->id,
-            //             'name' => $product->name,
-            //             'qty' => $product->pivot->qty,
-            //             'photo' => $product->photo,
-            //             'cost_per_item' => $product->cost_per_item,
-            //             'colors' => $product->colors,
-            //             'price' => $product->pivot->price,
-            //             'vendor_id' => $product->pivot->vendor_id
-            //             // Add other fields you want to include
-            //         ];
-            //     }
-            // })->filter(),
-            'items' => $this->products->filter(function ($product) use ($vendorId) {
-                return $product->pivot->vendor_id == $vendorId;
-            })->map(function ($product) {
+            'payment_status' => $this->payment_status,        
+            'items' => $this->products->where('pivot.vendor_id', $vendorId)->map(function ($product) {
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
@@ -60,9 +43,23 @@ class OrderSearchResource extends JsonResource
                     'colors' => $product->colors,
                     'price' => $product->pivot->price,
                     'vendor_id' => $product->pivot->vendor_id
-                
                 ];
             }),
+            // 'items' => $this->products->filter(function ($product) use ($vendorId) {
+            //     return $product->pivot->vendor_id == $vendorId;
+            // })->map(function ($product) {
+            //     return [
+            //         'id' => $product->id,
+            //         'name' => $product->name,
+            //         'qty' => $product->pivot->qty,
+            //         'photo' => $product->photo,
+            //         'cost_per_item' => $product->cost_per_item,
+            //         'colors' => $product->colors,
+            //         'price' => $product->pivot->price,
+            //         'vendor_id' => $product->pivot->vendor_id
+                
+            //     ];
+            // }),
             'fulfillment_status'=>$this->fulfillment_status,  
             'delivery_method' => $this->shippingMethod?->type,
             'delivery_duration' => $this->shippingMethod?->duration,
