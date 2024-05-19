@@ -96,6 +96,12 @@ class PostController extends Controller
         $validatedData = $request->validated();
         // $validatedData['published_at'] = now();
 
+        $isDraft = $validatedData['is_draft'] ?? false;
+
+        if (empty($validatedData['scheduled_at']) && !$isDraft) {
+            $validatedData['published_at'] = now();
+        }
+
         if ($request->has('product_ids')) {
             $productIds = $request->input('product_ids');
 
