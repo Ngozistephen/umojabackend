@@ -23,8 +23,8 @@ class UpdatePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'nullable|string|max:100',
-            'description' => 'nullable|string|min:25',
+            'title' => 'sometimes|nullable|string|max:100',
+            'description' => 'sometimes|nullable|string|min:25',
             'slug' => 'nullable|string|unique:posts,slug',
             'views' => 'nullable|integer|min:0',
             'likes' => 'nullable|boolean',
@@ -33,8 +33,9 @@ class UpdatePostRequest extends FormRequest
             'product_ids' => 'array',
             'product_ids.*' => 'exists:products,id',
             'vendor_id' => 'nullable|integer|exists:vendors,id',
-            'category_id' => 'nullable|exists:categories,id',
-            'scheduled_at' => 'nullable|date',
+            'is_draft' => 'sometimes|required|boolean',
+            'category_id' => 'sometimes|nullable|exists:categories,id',
+            'scheduled_at' => 'nullable|date|after_or_equal:now',
             'published_at' => 'nullable|date',
         ];
 

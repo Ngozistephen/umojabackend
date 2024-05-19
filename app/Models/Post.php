@@ -26,6 +26,7 @@ class Post extends Model
         'category_id',
         'scheduled_at',
         'published_at',
+        'is_draft',
         'updated_at'
     ];
 

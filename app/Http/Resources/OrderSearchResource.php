@@ -38,6 +38,7 @@ class OrderSearchResource extends JsonResource
                     'id' => $product->id,
                     'name' => $product->name,
                     'qty' => $product->pivot->qty,
+                    'size' => $product->sizes,
                     'photo' => $product->photo,
                     'cost_per_item' => $product->cost_per_item,
                     'colors' => $product->colors,

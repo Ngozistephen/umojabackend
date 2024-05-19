@@ -32,9 +32,10 @@ class StorePostRequest extends FormRequest
             'location' => 'nullable|string',
             'product_ids' => 'array',
             'product_ids.*' => 'exists:products,id',
+            'is_draft' => 'nullable|boolean',
             'vendor_id' => 'nullable|integer|exists:vendors,id',
             'category_id' => 'required|exists:categories,id',
-            'scheduled_at' => 'nullable|date',
+            'scheduled_at' => 'nullable|date|after_or_equal:now',
             'published_at' => 'nullable|date',
         ];
     }

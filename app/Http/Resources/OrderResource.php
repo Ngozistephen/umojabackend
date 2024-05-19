@@ -54,6 +54,7 @@ class OrderResource extends JsonResource
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
+                    'size' => $product->sizes,
                     'qty' => $product->pivot->qty,
                     'photo' => $product->photo,
                     'cost_per_item' => $product->cost_per_item,

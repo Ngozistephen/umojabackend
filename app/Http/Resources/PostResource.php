@@ -29,6 +29,7 @@ class PostResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'vendor_id' => $this->vendor_id,
+            'is_draft' => $this->is_draft,
             'category_id' => $this->category_id,
             'category_name' => $this->category?->name,
             'products' => ProductResource::collection($this->whenLoaded('products')), // Nested resource for products

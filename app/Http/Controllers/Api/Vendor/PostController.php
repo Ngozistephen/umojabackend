@@ -6,6 +6,7 @@ use Log;
 use App\Models\Post;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +37,10 @@ class PostController extends Controller
         $validatedData = $request->validated();
         $validatedData['vendor_id'] = $vendor->id;
 
-        $validatedData['published_at'] = now();
+        if (empty($validatedData['scheduled_at']) && (!isset($validatedData['is_draft']) || !$validatedData['is_draft'])) {
+            $validatedData['published_at'] = now();
+        }
+
 
         $post = Post::create($validatedData);
 
@@ -104,6 +108,10 @@ class PostController extends Controller
             $post->products()->sync($productIds);
         }
 
+        if (empty($validatedData['scheduled_at']) && !$validatedData['is_draft']) {
+            $validatedData['published_at'] = now();
+        }
+    
         $post->update($validatedData);
 
         return response()->json(['message' => 'Product updated successfully', 'post' => new PostResource($post->load('products'))], 200);
@@ -122,6 +130,133 @@ class PostController extends Controller
         $post->delete();
 
         return response()->json(['message' => 'Post deleted successfully'], 204);
+    }
+
+    public function draft(StorePostRequest $request)
+    {
+        $vendor = Auth::user()->vendor;
+        $validatedData = $request->validated();
+        $validatedData['vendor_id'] = $vendor->id;
+        $validatedData['is_draft'] = true; 
+        $validatedData['published_at'] = null; 
+
+        $post = Post::create($validatedData);
+
+        if ($request->has('product_ids')) {
+            $productIds = $request->input('product_ids');
+            $products = Product::whereIn('id', $productIds)->get();
+            foreach ($products as $product) {
+                if ($product->vendor_id !== $vendor->id) {
+                    return response()->json(['message' => 'Unauthorized'], 403);
+                }
+            }
+            $post->products()->attach($productIds);
+        }
+
+        $uploadedFiles = $this->upload($request);
+
+        return response()->json([
+            'message' => 'Post saved as draft successfully',
+            'post' => new PostResource($post->load('products'))
+        ], 201);
+    }
+
+    public function schedule(StorePostRequest $request)
+    {
+        $vendor = Auth::user()->vendor;
+        $validatedData = $request->validated();
+        $validatedData['vendor_id'] = $vendor->id;
+        $validatedData['is_draft'] = false; 
+
+        
+        if (empty($validatedData['scheduled_at'])) {
+            return response()->json(['message' => 'The scheduled_at field is required for scheduling.'], 422);
+        }
+
+        $validatedData['published_at'] = null; 
+
+        $post = Post::create($validatedData);
+
+        if ($request->has('product_ids')) {
+            $productIds = $request->input('product_ids');
+            $products = Product::whereIn('id', $productIds)->get();
+            foreach ($products as $product) {
+                if ($product->vendor_id !== $vendor->id) {
+                    return response()->json(['message' => 'Unauthorized'], 403);
+                }
+            }
+            $post->products()->attach($productIds);
+        }
+
+        $uploadedFiles = $this->upload($request);
+
+        return response()->json([
+            'message' => 'Post scheduled successfully',
+            'post' => new PostResource($post->load('products'))
+        ], 201);
+    }
+
+    public function publish(Request $request, Post $post)
+    {
+        $vendor = Auth::user()->vendor;
+
+        if ($vendor->id !== $post->vendor_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $post->is_draft = false;
+
+    
+        if (!$post->scheduled_at) {
+            $post->published_at = Carbon::now();
+        }
+
+        $post->save();
+
+        return response()->json([
+            'message' => 'Post published successfully',
+            'post' => new PostResource($post->load('products'))
+        ], 200);
+    }
+
+    public function view(Post $post)
+    {
+        $post->increment('views');
+        return response()->json([
+            'message' => 'Post view count incremented successfully',
+            'post' => new PostResource($post)
+        ], 200);
+    }
+
+    public function like(Post $post)
+    {
+        $post->increment('likes');
+        return response()->json([
+            'message' => 'Post like count incremented successfully',
+            'post' => new PostResource($post)
+        ], 200);
+    }
+
+    public function unview(Post $post)
+    {
+        if ($post->views > 0) {
+            $post->decrement('views');
+        }
+        return response()->json([
+            'message' => 'Post view count decremented successfully',
+            'post' => new PostResource($post)
+        ], 200);
+    }
+
+    public function unlike(Post $post)
+    {
+        if ($post->likes > 0) {
+            $post->decrement('likes');
+        }
+        return response()->json([
+            'message' => 'Post like count decremented successfully',
+            'post' => new PostResource($post)
+        ], 200);
     }
 
 
