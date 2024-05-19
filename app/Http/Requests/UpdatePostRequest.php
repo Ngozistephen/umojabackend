@@ -33,7 +33,7 @@ class UpdatePostRequest extends FormRequest
             'product_ids' => 'array',
             'product_ids.*' => 'exists:products,id',
             'vendor_id' => 'nullable|integer|exists:vendors,id',
-            'is_draft' => 'sometimes|required|boolean',
+            'is_draft' => 'sometimes|nullable|boolean',
             'category_id' => 'sometimes|nullable|exists:categories,id',
             'scheduled_at' => 'nullable|date|after_or_equal:now',
             'published_at' => 'nullable|date',
