@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Vendor;
 
+use Log;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -45,6 +46,11 @@ class OrderSearchController extends Controller
             ->latest()
             ->paginate(20); // Adjust the pagination limit as needed
 
+            if ($ordersQuery->isEmpty()) {
+                Log::info('No orders found for search term: ' . $request->search_global);
+            } else {
+                \Log::info('Orders found for search term: ' . $request->search_global);
+            }
         return OrderSearchResource::collection($ordersQuery);
     }
 }
