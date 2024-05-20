@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Vendor;
 
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ArticleResource;
@@ -40,10 +41,19 @@ class ArticleController extends Controller
     public function store(StoreArticleRequest $request)
     {
         $vendor = Auth::user()->vendor;
+        if (!$vendor) {
+            return response()->json(['error' => 'Vendor not found for the authenticated user'], 404);
+        }
         $validatedData = $request->validated();
         $validatedData['vendor_id'] = $vendor->id;
 
+        if (!isset($validatedData['published_at'])) {
+            $validatedData['published_at'] = now();
+        }
         $article = Article::create($validatedData);
+
+      
+
         $uploadedFiles = $this->upload($request);
 
         return response()->json([
@@ -54,6 +64,8 @@ class ArticleController extends Controller
 
 
     }
+
+   
 
     /**
      * Display the specified resource.
@@ -102,7 +114,7 @@ class ArticleController extends Controller
 
     public function upload(Request $request)
     {
-        $folder = 'article_cover_images';
+        $folder = 'article_cover_image';
     
         if ($request->hasFile('cover_image')) {
             $file = $request->file('cover_image');
@@ -125,4 +137,45 @@ class ArticleController extends Controller
             return response()->json(['error' => 'No file uploaded'], 400);
         }
     }
+
+    // public function upload(Request $request)
+    // {
+    //     $folder = 'article_cover_image';
+        
+    //     \Log::info('folder: ' . $folder);
+
+    //     \Log::info('request: ' .  $request);
+    //     if ($request->hasFile('cover_image')) {
+    //         $file = $request->file('cover_image');
+            
+    //         \Log::info('folder: ' .  $file);
+
+    //         request()->validate([
+    //             'cover_image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:6048',
+    //         ]);
+
+
+    //         try {
+    //             $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
+    //                 'folder' => $folder,
+    //                 'transformation' => [
+    //                     ['width' => 400, 'height' => 400, 'crop' => 'fit'],
+    //                     ['quality' => 'auto', 'fetch_format' => 'auto']
+    //                 ]
+    //             ]);
+
+    //             $secureUrl = $cloudinaryResponse->getSecurePath();
+
+    //             Log::info('File uploaded to Cloudinary', ['secure_url' => $secureUrl]);
+
+    //             return response()->json(['secure_url' => $secureUrl], 200);
+    //         } catch (\Exception $e) {
+    //             Log::error('Error uploading file to Cloudinary', ['error' => $e->getMessage()]);
+    //             return response()->json(['error' => 'Failed to upload file'], 500);
+    //         }
+    //     } else {
+    //         Log::warning('No file detected in the request');
+    //         return response()->json(['error' => 'No file uploaded'], 400);
+    //     }
+    // }
 }

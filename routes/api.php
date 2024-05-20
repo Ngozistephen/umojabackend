@@ -126,6 +126,7 @@ Route::middleware('auth:api')->group(function () {
          Route::post('posts/{post}/unlike', [PostController::class, 'unlike']);
         //  Route::post('posts/{post}/unview', [PostController::class, 'unview']);
          Route::apiResource('articles', ArticleController::class);
+         Route::post('articles/upload', [ArticleController::class, 'upload']); 
         
     });
     Route::prefix('customer')->group(function () {
