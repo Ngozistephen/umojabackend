@@ -23,7 +23,14 @@ class PostController extends Controller
     public function index()
     {
         $vendor = Auth::user()->vendor;
-        $posts = Post::where('vendor_id', $vendor->id)->with('products')->get();
+        $posts = Post::where('vendor_id', $vendor->id)->with('products')->orderBy('published_at', 'desc')->get();
+        return PostResource::collection($posts);
+    }
+
+    public function allposts()
+    {
+        // $vendor = Auth::user()->vendor;
+        $posts = Post::with('products')->orderBy('published_at', 'desc')->get();
         return PostResource::collection($posts);
     }
 
@@ -160,7 +167,7 @@ class PostController extends Controller
 
         $post->update($validatedData);
 
-        return response()->json(['message' => 'Product updated successfully', 'post' => new PostResource($post->load('products'))], 200);
+        return response()->json(['message' => 'Post updated successfully', 'post' => new PostResource($post->load('products'))], 200);
     }
 
 
@@ -310,6 +317,37 @@ class PostController extends Controller
         ], 200);
     }
 
+    // public function like(Post $post)
+    // {
+    //     $post->increment('likes');
+    //     return response()->json([
+    //         'message' => 'Post like count incremented successfully',
+    //         'post' => new PostResource($post)
+    //     ], 200);
+    // }
+
+
+    // public function view(Post $post)
+    // {
+    //     $post->increment('views');
+    //     return response()->json([
+    //         'message' => 'Post view count incremented successfully',
+    //         'post' => new PostResource($post)
+    //     ], 200);
+    // }
+
+   
+
+    public function unlike(Post $post)
+    {
+        if ($post->likes > 0) {
+            $post->decrement('likes');
+        }
+        return response()->json([
+            'message' => 'Post like count decremented successfully',
+            'post' => new PostResource($post)
+        ], 200);
+    }
    
 
 

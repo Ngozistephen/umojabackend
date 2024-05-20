@@ -27,7 +27,7 @@ class UpdateArticleRequest extends FormRequest
             'content' => 'sometimes|nullable|string|min:25',
             'slug' => 'nullable|string|unique:articles,slug',
             'cover_image' => 'nullable',
-            'vendor_id' => 'nullable|integer|exists:vendors,id',
+            // 'vendor_id' => 'nullable|integer|exists:vendors,id',
             'category_id' => 'sometimes|nullable|exists:categories,id',
             'published_at' => 'nullable|date',
         ];

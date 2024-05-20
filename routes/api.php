@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Vendor\OrderController;
 use App\Http\Controllers\Api\Customer\CartController;
 use App\Http\Controllers\Api\Vendor\VendorController;
 use App\Http\Controllers\Api\Admin\CategoryController;
+use App\Http\Controllers\Api\Vendor\ArticleController;
 use App\Http\Controllers\Api\Vendor\ProductController;
 use App\Http\Controllers\Api\Admin\VariationController;
 use App\Http\Controllers\Api\Auth\SocialLoginController;
@@ -77,6 +78,9 @@ Route::prefix('auth')->group(function () {
 });
 Route::get('search', [ProductSearchController::class, '__invoke']);
 Route::get('allproducts', [AllProductController::class, '__invoke']);
+Route::get('allarticles', [ArticleController::class, 'allarticles']);
+Route::get('allposts', [PostController::class, 'allposts']);
+
 Route::middleware('auth:api')->group(function () {
     Route::get('users/{user}', [UserController::class, 'show']);
     // still working on the edit part 
@@ -119,6 +123,9 @@ Route::middleware('auth:api')->group(function () {
          Route::post('posts/{post}/publish', [PostController::class, 'publish']);
          Route::post('posts/{post}/like', [PostController::class, 'like']);
          Route::post('posts/{post}/view', [PostController::class, 'view']);
+         Route::post('posts/{post}/unlike', [PostController::class, 'unlike']);
+        //  Route::post('posts/{post}/unview', [PostController::class, 'unview']);
+         Route::apiResource('articles', ArticleController::class);
         
     });
     Route::prefix('customer')->group(function () {
