@@ -138,44 +138,5 @@ class ArticleController extends Controller
         }
     }
 
-    // public function upload(Request $request)
-    // {
-    //     $folder = 'article_cover_image';
-        
-    //     \Log::info('folder: ' . $folder);
-
-    //     \Log::info('request: ' .  $request);
-    //     if ($request->hasFile('cover_image')) {
-    //         $file = $request->file('cover_image');
-            
-    //         \Log::info('folder: ' .  $file);
-
-    //         request()->validate([
-    //             'cover_image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:6048',
-    //         ]);
-
-
-    //         try {
-    //             $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
-    //                 'folder' => $folder,
-    //                 'transformation' => [
-    //                     ['width' => 400, 'height' => 400, 'crop' => 'fit'],
-    //                     ['quality' => 'auto', 'fetch_format' => 'auto']
-    //                 ]
-    //             ]);
-
-    //             $secureUrl = $cloudinaryResponse->getSecurePath();
-
-    //             Log::info('File uploaded to Cloudinary', ['secure_url' => $secureUrl]);
-
-    //             return response()->json(['secure_url' => $secureUrl], 200);
-    //         } catch (\Exception $e) {
-    //             Log::error('Error uploading file to Cloudinary', ['error' => $e->getMessage()]);
-    //             return response()->json(['error' => 'Failed to upload file'], 500);
-    //         }
-    //     } else {
-    //         Log::warning('No file detected in the request');
-    //         return response()->json(['error' => 'No file uploaded'], 400);
-    //     }
-    // }
+    
 }

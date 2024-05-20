@@ -22,6 +22,7 @@ class PostResource extends JsonResource
             'slug' => $this->slug,
             'views' => $this->views,
             'likes' => $this->likes,
+            'Islike' => $this->Islike,
             'featured_img' => $this->featured_img,
             'location' => $this->location,
             'scheduled_at' => $this->scheduled_at,
