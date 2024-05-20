@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Article;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\OrderItem;
@@ -47,6 +48,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
         public function posts()
         {
             return $this->hasMany(Post::class);
+        }
+        
+
+        public function articles()
+        {
+            return $this->hasMany(Article::class);
         }
         
     

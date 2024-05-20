@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePostRequest extends FormRequest
+class UpdateArticleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,19 +23,12 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'nullable|string|max:100',
-            'description' => 'required|string|min:25',
-            'slug' => 'nullable|string|unique:posts,slug,',
-            'views' => 'nullable|integer|min:0',
-            'likes' => 'nullable|boolean',
-            'featured_img' => 'nullable',
-            'location' => 'nullable|string',
-            'product_ids' => 'array',
-            'product_ids.*' => 'exists:products,id',
-            'is_draft' => 'nullable|boolean',
+            'title' => 'sometimes|nullable|string|max:255',
+            'content' => 'sometimes|nullable|string|min:25',
+            'slug' => 'nullable|string|unique:articles,slug',
+            'cover_image' => 'nullable',
             'vendor_id' => 'nullable|integer|exists:vendors,id',
-            'category_id' => 'required|exists:categories,id',
-            'scheduled_at' => 'nullable|date|after_or_equal:now',
+            'category_id' => 'sometimes|nullable|exists:categories,id',
             'published_at' => 'nullable|date',
         ];
     }
