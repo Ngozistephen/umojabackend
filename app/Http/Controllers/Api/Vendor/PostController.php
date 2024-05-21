@@ -296,35 +296,36 @@ class PostController extends Controller
         ], 200);
     }
 
-    public function like(Request $request, Post $post)
-    {
-        $ipAddress = $request->ip();
-        $cacheKey = 'like_post_' . $post->id . '_ip_' . $ipAddress;
-        $cacheExpiration = now()->addDay(); 
-    
-        if (Cache::has($cacheKey)) {
-            return response()->json([
-                'message' => 'You have already liked this post today'
-            ], 403);
-        }
-        $post->increment('likes');
-    
-        Cache::put($cacheKey, true, $cacheExpiration);
-    
-        return response()->json([
-            'message' => 'Post like count incremented successfully',
-            'post' => new PostResource($post)
-        ], 200);
-    }
-
-    // public function like(Post $post)
+    // public function like(Request $request, Post $post)
     // {
+    //     $ipAddress = $request->ip();
+    //     $cacheKey = 'like_post_' . $post->id . '_ip_' . $ipAddress;
+    //     $cacheExpiration = now()->addDay(); 
+    
+    //     if (Cache::has($cacheKey)) {
+    //         return response()->json([
+    //             'message' => 'You have already liked this post today'
+    //         ], 403);
+    //     }
     //     $post->increment('likes');
+    
+    //     Cache::put($cacheKey, true, $cacheExpiration);
+    
     //     return response()->json([
     //         'message' => 'Post like count incremented successfully',
     //         'post' => new PostResource($post)
     //     ], 200);
     // }
+
+    public function like(Post $post)
+    {
+        $user = Auth::user();
+        $post->increment('likes');
+        return response()->json([
+            'message' => 'Post like count incremented successfully',
+            'post' => new PostResource($post)
+        ], 200);
+    }
 
 
     // public function view(Post $post)
