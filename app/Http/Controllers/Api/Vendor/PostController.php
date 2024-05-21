@@ -29,8 +29,8 @@ class PostController extends Controller
 
     public function allposts()
     {
-        // $vendor = Auth::user()->vendor;
-        $posts = Post::with('products')->orderBy('published_at', 'desc')->get();
+        // $vendor = Auth::user()->vendor;     
+        $posts = Post::with('products')->orderBy('published_at', 'desc')->paginate(10);
         return PostResource::collection($posts);
     }
 
@@ -41,7 +41,6 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         $vendor = Auth::user()->vendor;
-
         $validatedData = $request->validated();
         $validatedData['vendor_id'] = $vendor->id;
 
@@ -273,54 +272,60 @@ class PostController extends Controller
         ], 200);
     }
 
-    public function view(Request $request, Post $post)
-    {
-        $ipAddress = $request->ip();
-        $cacheKey = 'view_post_' . $post->id . '_ip_' . $ipAddress;
-        $cacheExpiration = now()->addDay(); 
-
-    
-        if (Cache::has($cacheKey)) {
-            return response()->json([
-                'message' => 'You have already viewed this post today'
-            ], 403);
-        }
-
-        $post->increment('views');
-
-        Cache::put($cacheKey, true, $cacheExpiration);
-
-        return response()->json([
-            'message' => 'Post view count incremented successfully',
-            'post' => new PostResource($post)
-        ], 200);
-    }
-
-    // public function like(Request $request, Post $post)
+    // public function view(Request $request, Post $post)
     // {
     //     $ipAddress = $request->ip();
-    //     $cacheKey = 'like_post_' . $post->id . '_ip_' . $ipAddress;
+    //     $cacheKey = 'view_post_' . $post->id . '_ip_' . $ipAddress;
     //     $cacheExpiration = now()->addDay(); 
+
     
     //     if (Cache::has($cacheKey)) {
     //         return response()->json([
-    //             'message' => 'You have already liked this post today'
+    //             'message' => 'You have already viewed this post today'
     //         ], 403);
     //     }
-    //     $post->increment('likes');
-    
+
+    //     $post->increment('views');
+
     //     Cache::put($cacheKey, true, $cacheExpiration);
-    
+
+    //     return response()->json([
+    //         'message' => 'Post view count incremented successfully',
+    //         'post' => new PostResource($post)
+    //     ], 200);
+    // }
+
+  
+
+    // public function like(Post $post)
+    // {
+    //     $user = Auth::user();
+    //     $post->increment('likes');
     //     return response()->json([
     //         'message' => 'Post like count incremented successfully',
     //         'post' => new PostResource($post)
     //     ], 200);
     // }
 
-    public function like(Post $post)
+    public function like(Request $request, Post $post)
     {
         $user = Auth::user();
+
+        // Check if the user has already liked the post
+        if ($user->hasLiked($post)) {
+            return response()->json([
+                'message' => 'You have already liked this post',
+            ], 409); // Conflict status code
+        }
+
+        // Log the like action
+        // Log::info('User liked a post', ['user_id' => $user->id, 'post_id' => $post->id]);
+
+        // Increment the like count
         $post->increment('likes');
+
+        $user->likes()->attach($post->id);
+
         return response()->json([
             'message' => 'Post like count incremented successfully',
             'post' => new PostResource($post)
@@ -339,16 +344,41 @@ class PostController extends Controller
 
    
 
-    public function unlike(Post $post)
+    // public function unlike(Post $post)
+    // {
+    //     if ($post->likes > 0) {
+    //         $post->decrement('likes');
+    //     }
+    //     return response()->json([
+    //         'message' => 'Post like count decremented successfully',
+    //         'post' => new PostResource($post)
+    //     ], 200);
+    // }
+
+    public function unlike(Request $request, Post $post)
     {
-        if ($post->likes > 0) {
-            $post->decrement('likes');
+        $user = Auth::user();
+
+        // Check if the user has liked the post
+        if (!$user->hasLiked($post)) {
+            return response()->json([
+                'message' => 'You have not liked this post yet',
+            ], 409); // Conflict status code
         }
+
+        // Log the unlike action
+        // Log::info('User unliked a post', ['user_id' => $user->id, 'post_id' => $post->id]);
+
+        $post->decrement('likes');
+
+        $user->likes()->detach($post->id);
+
         return response()->json([
             'message' => 'Post like count decremented successfully',
             'post' => new PostResource($post)
         ], 200);
     }
+
    
 
 

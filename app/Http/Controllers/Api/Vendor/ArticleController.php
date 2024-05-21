@@ -28,8 +28,11 @@ class ArticleController extends Controller
 
     public function allarticles()
     {
-        // $vendor = Auth::user()->vendor;
-        $articles = Article::with(['vendor', 'category'])->orderBy('created_at', 'desc')->get();
+       
+        // $articles = Article::with(['vendor', 'category'])->orderBy('created_at', 'desc')->get();
+        // return ArticleResource::collection($articles);
+    
+        $articles = Article::with(['vendor', 'category'])->orderBy('created_at', 'desc')->paginate(10);
         return ArticleResource::collection($articles);
 
        

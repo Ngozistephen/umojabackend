@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Post;
 use App\Models\Role;
 use App\Models\Order;
 use App\Models\Vendor;
@@ -135,6 +136,15 @@ class User extends Authenticatable
         return $this->hasMany(PaymentMethod::class);
     }
     
+    public function hasLiked(Post $post)
+    {
+        return $this->likes()->where('post_id', $post->id)->exists();
+    }
+
+    public function likes()
+    {
+        return $this->belongsToMany(Post::class, 'user_likes', 'user_id', 'post_id');
+    }
 
 
 }
