@@ -332,6 +332,15 @@ class PostController extends Controller
         ], 200);
     }
 
+    public function hasLiked(Request $request, Post $post)
+    {
+        $user = Auth::user();
+        $hasLiked = $user->hasLiked($post);
+        return response()->json([
+            'has_liked' => $hasLiked,
+        ], 200);
+    }
+
 
     // public function view(Post $post)
     // {
