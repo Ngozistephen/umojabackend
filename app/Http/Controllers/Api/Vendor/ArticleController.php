@@ -93,7 +93,6 @@ class ArticleController extends Controller
             abort(401, 'Unauthorized action.');
         }
 
-        $article->load('products');
         return new ArticleResource($article);
     }
 
