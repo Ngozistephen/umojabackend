@@ -23,7 +23,7 @@ class PostController extends Controller
     public function index()
     {
         $vendor = Auth::user()->vendor;
-        $posts = Post::where('vendor_id', $vendor->id)->with('products')->orderBy('published_at', 'desc')->get();
+        $posts = Post::where('vendor_id', $vendor->id)->with('products')->orderBy('published_at', 'desc')->paginate(10);
         return PostResource::collection($posts);
     }
 
@@ -82,6 +82,18 @@ class PostController extends Controller
         $vendor = Auth::user()->vendor;
         if ($vendor->id !== $post->vendor_id) {
             return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $post->load('products');
+        return new PostResource($post);
+    }
+
+
+    public function showPost(Post $post)
+    {
+       ;
+        if (!Auth::check()) {
+            abort(401, 'Unauthorized action.');
         }
 
         $post->load('products');

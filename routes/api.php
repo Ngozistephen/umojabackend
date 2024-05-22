@@ -121,13 +121,15 @@ Route::middleware('auth:api')->group(function () {
          Route::post('posts/draft', [PostController::class, 'draft']);
          Route::post('posts/schedule', [PostController::class, 'schedule']);
          Route::post('posts/{post}/publish', [PostController::class, 'publish']);
+         Route::get('posts/{post}/show_post', [PostController::class, 'showPost']);
          Route::post('posts/{post}/like', [PostController::class, 'like']);
          Route::post('posts/{post}/view', [PostController::class, 'view']);
          Route::post('posts/{post}/unlike', [PostController::class, 'unlike']);
          Route::get('posts/{post}/has_liked', [PostController::class, 'hasLiked']); 
         //  Route::post('posts/{post}/unview', [PostController::class, 'unview']);
          Route::apiResource('articles', ArticleController::class);
-         Route::post('articles/upload', [ArticleController::class, 'upload']); 
+         Route::post('articles/upload', [ArticleController::class, 'upload']);
+         Route::get('articles/{article}/show_article', [ArticleController::class, 'showArticle']); 
         
     });
     Route::prefix('customer')->group(function () {

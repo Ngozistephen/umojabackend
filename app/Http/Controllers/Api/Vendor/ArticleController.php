@@ -22,7 +22,7 @@ class ArticleController extends Controller
     public function index()
      {
          $vendor = Auth::user()->vendor;
-         $articles = Article::where('vendor_id', $vendor->id)->orderBy('created_at', 'desc')->get();
+         $articles = Article::where('vendor_id', $vendor->id)->orderBy('created_at', 'desc')->paginate(10);
          return ArticleResource::collection($articles);
      }
 
@@ -81,6 +81,19 @@ class ArticleController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
+        return new ArticleResource($article);
+    }
+
+    
+    
+    public function showArticle(Article $article)
+    {
+      
+        if (!Auth::check()) {
+            abort(401, 'Unauthorized action.');
+        }
+
+        $article->load('products');
         return new ArticleResource($article);
     }
 
