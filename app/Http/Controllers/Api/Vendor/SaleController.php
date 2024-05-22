@@ -17,7 +17,7 @@ class SaleController extends Controller
         $dayOfWeek = $request->input('day_of_week', null); // Sunday=0, Monday=1, ..., Saturday=6
 
         // Query to get the top 3 highest selling products
-        $productsQuery = Product::select('products.id', 'products.name', DB::raw('SUM(order_product.price * order_product.quantity) as total_amount'), DB::raw('COUNT(order_product.id) as sales_count'))
+        $productsQuery = Product::select('products.id', 'products.name', DB::raw('SUM(order_product.price * order_product.qty) as total_amount'), DB::raw('COUNT(order_product.id) as sales_count'))
             ->join('order_product', 'products.id', '=', 'order_product.product_id')
             ->join('orders', 'order_product.order_id', '=', 'orders.id')
             ->where('products.user_id', $vendor->id);
