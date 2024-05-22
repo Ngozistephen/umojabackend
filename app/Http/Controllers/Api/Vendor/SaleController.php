@@ -133,11 +133,11 @@ class SaleController extends Controller
     public function topCategories(Request $request)
     {
         $vendor = Auth::user()->vendor;
-        $topCategories = Category::select('categories.id', 'categories.name', DB::raw('SUM(order_product.price * order_product.quantity) as total_amount'))
+        $topCategories = Category::select('categories.id', 'categories.name', DB::raw('SUM(order_product.price * order_product.qty) as total_amount'))
             ->join('products', 'categories.id', '=', 'products.category_id')
             ->join('order_product', 'products.id', '=', 'order_product.product_id')
             ->join('orders', 'order_product.order_id', '=', 'orders.id')
-            ->where('products.user_id', $vendor->id)
+            ->where('products.vendor_id', $vendor->id)
             ->groupBy('categories.id', 'categories.name')
             ->orderBy('total_amount', 'desc')
             ->take(4)
@@ -148,7 +148,7 @@ class SaleController extends Controller
 
         foreach ($topCategories as $category) {
             $monthlyData = DB::table('categories')
-                ->select(DB::raw('MONTH(orders.created_at) as month'), DB::raw('SUM(order_product.price * order_product.quantity) as total_amount'))
+                ->select(DB::raw('MONTH(orders.created_at) as month'), DB::raw('SUM(order_product.price * order_product.qty) as total_amount'))
                 ->join('products', 'categories.id', '=', 'products.category_id')
                 ->join('order_product', 'products.id', '=', 'order_product.product_id')
                 ->join('orders', 'order_product.order_id', '=', 'orders.id')
