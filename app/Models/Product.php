@@ -91,9 +91,14 @@ class Product extends Model
     //     $this->addMediaConversion('thumbnail')->width(800);
     // }
 
+    // public function order(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Order::class)->withPivot(['qty', 'tracking_id', 'price']);
+    // }
+
     public function order(): BelongsToMany
     {
-        return $this->belongsToMany(Order::class)->withPivot(['qty', 'tracking_id', 'price']);
+        return $this->belongsToMany(Order::class, 'order_product')->withPivot(['qty', 'tracking_id', 'price']);
     }
 
     public function posts()
