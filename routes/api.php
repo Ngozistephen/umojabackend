@@ -39,6 +39,7 @@ use App\Http\Controllers\Api\Customer\ShippingAddressController;
 use App\Http\Controllers\Api\Auth\ForgetVendorPasswordController;
 use App\Http\Controllers\Api\Auth\ResetPasswordCustomerController;
 use App\Http\Controllers\Api\Auth\ForgetCustomerPasswordController;
+use App\Http\Controllers\Api\Vendor\SaleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -130,6 +131,10 @@ Route::middleware('auth:api')->group(function () {
          Route::apiResource('articles', ArticleController::class);
          Route::post('articles/upload', [ArticleController::class, 'upload']);
          Route::get('articles/{article}/show_article', [ArticleController::class, 'showArticle']); 
+         Route::get('sold_products', [SaleController::class, 'soldProducts']); 
+         Route::get('top_categories',[SaleController::class, 'topCategories']); 
+
+
         
     });
     Route::prefix('customer')->group(function () {
