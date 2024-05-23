@@ -70,7 +70,7 @@ class SaleController extends Controller
         $year = $request->input('year', null); // Year e.g., 2024
     
         // Log the vendor ID for debugging
-        Log::info('Vendor ID:', ['id' => $vendor->id]);
+        // Log::info('Vendor ID:', ['id' => $vendor->id]);
     
         // Query to get the top 3 highest selling products
         $productsQuery = Product::select(
@@ -97,7 +97,7 @@ class SaleController extends Controller
         }
     
         // Log the constructed query
-        Log::info('Constructed Query:', ['query' => $productsQuery->toSql()]);
+        // Log::info('Constructed Query:', ['query' => $productsQuery->toSql()]);
     
         $products = $productsQuery->groupBy('products.id', 'products.name', 'products.photo')
             ->orderBy('sales_count', 'desc')
@@ -105,7 +105,7 @@ class SaleController extends Controller
             ->get();
     
         // Log the query results
-        Log::info('Query Results:', ['products' => $products]);
+        // Log::info('Query Results:', ['products' => $products]);
     
         // Prepare the data for each product by day of the week
         $productsData = [];
@@ -321,27 +321,48 @@ class SaleController extends Controller
     {
         $vendor = Auth::user()->vendor;
         $monthsToShow = $request->input('months', 12); 
-
-      
-        $startDate = now()->subMonths($monthsToShow)->startOfMonth();
-        $endDate = now()->endOfMonth();
-
+        $filterType = $request->input('filter', 'month'); // default to 'month'
+    
+        $startDate = now();
+        $endDate = now();
+    
+        switch ($filterType) {
+            case '24hours':
+                $startDate = now()->subDay();
+                break;
+            case 'days':
+                $daysToShow = $request->input('days', 30); // default to 30 days
+                $startDate = now()->subDays($daysToShow);
+                break;
+            case 'month':
+                $startDate = now()->subMonths($monthsToShow)->startOfMonth();
+                $endDate = now()->endOfMonth();
+                break;
+            case 'year':
+                $startDate = now()->startOfYear();
+                $endDate = now()->endOfYear();
+                break;
+            default:
+                $startDate = now()->subMonths($monthsToShow)->startOfMonth();
+                $endDate = now()->endOfMonth();
+                break;
+        }
+    
         $monthlyRevenue = DB::table('order_product')
-        ->join('products', 'order_product.product_id', '=', 'products.id')
-        ->join('orders', 'order_product.order_id', '=', 'orders.id')
-        ->where('products.vendor_id', $vendor->id)
-        ->whereBetween('orders.created_at', [$startDate, $endDate])
-        ->select(
-            DB::raw('YEAR(orders.created_at) as year'),
-            DB::raw('MONTH(orders.created_at) as month'),
-            DB::raw('SUM(order_product.price * order_product.qty) as total_amount')
-        )
-        ->groupBy('year', 'month')
-        ->orderBy('year')
-        ->orderBy('month')
-        ->get();
-
-       
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->join('orders', 'order_product.order_id', '=', 'orders.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->select(
+                DB::raw('YEAR(orders.created_at) as year'),
+                DB::raw('MONTH(orders.created_at) as month'),
+                DB::raw('SUM(order_product.price * order_product.qty) as total_amount')
+            )
+            ->groupBy('year', 'month')
+            ->orderBy('year')
+            ->orderBy('month')
+            ->get();
+    
         $responseData = $monthlyRevenue->map(function($item) {
             return [
                 'year' => $item->year,
@@ -349,7 +370,8 @@ class SaleController extends Controller
                 'total_amount' => $item->total_amount,
             ];
         });
-
+    
         return response()->json($responseData);
     }
+    
 }
