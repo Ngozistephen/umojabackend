@@ -88,7 +88,7 @@ class SaleController extends Controller
         // Log the constructed query
         Log::info('Constructed Query:', ['query' => $productsQuery->toSql()]);
 
-        $products = $productsQuery->groupBy('products.id', 'products.name')
+        $products = $productsQuery->groupBy('products.id', 'products.name', 'products.photo')
             ->orderBy('sales_count', 'desc')
             ->take(3)
             ->get();
