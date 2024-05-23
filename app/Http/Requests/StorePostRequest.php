@@ -27,7 +27,6 @@ class StorePostRequest extends FormRequest
             'description' => 'required|string|min:25',
             'slug' => 'nullable|string|unique:posts,slug,',
             'views' => 'nullable|integer|min:0',
-            'Islike' => 'nullable|boolean',
             'likes' => 'nullable|integer|min:0',
             'featured_img' => 'nullable',
             'location' => 'nullable|string',
