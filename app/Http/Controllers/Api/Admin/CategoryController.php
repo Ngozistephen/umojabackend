@@ -31,19 +31,25 @@ class CategoryController extends Controller
      *
      * 
      */
+
     // public function index(Request $request)
     // {
-    //     $categories = Category::paginate($request->get('per_page', 10));
+    //     $perPage = $request->get('per_page', 20);
+    //     $cacheKey = 'categories_' . $perPage . '_' . $request->page;
+
+    //     $categories = Cache::remember($cacheKey, Carbon::now()->addDay(), function () use ($perPage) {
+    //         return Category::paginate($perPage);
+    //     });
+
     //     return CategoryResource::collection($categories);
     // }
 
     public function index(Request $request)
     {
-        $perPage = $request->get('per_page', 10);
-        $cacheKey = 'categories_' . $perPage . '_' . $request->page;
+        $cacheKey = 'categories_';
 
-        $categories = Cache::remember($cacheKey, Carbon::now()->addDay(), function () use ($perPage) {
-            return Category::paginate($perPage);
+        $categories = Cache::remember($cacheKey, Carbon::now()->addDay(), function () {
+            return Category::orderBy('id', 'desc')->take(4)->get();
         });
 
         return CategoryResource::collection($categories);
