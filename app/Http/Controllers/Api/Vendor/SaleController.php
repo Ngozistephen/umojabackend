@@ -185,20 +185,20 @@ class SaleController extends Controller
         $startDate = now()->subMonths($monthsToShow)->startOfMonth();
         $endDate = now()->endOfMonth();
 
-        // Calculate monthly revenue for the specified period
         $monthlyRevenue = DB::table('order_product')
-            ->join('products', 'order_product.product_id', '=', 'products.id')
-            ->join('orders', 'order_product.order_id', '=', 'orders.id')
-            ->where('products.vendor_id', $vendor->id)
-            ->whereBetween('orders.created_at', [$startDate, $endDate])
-            ->select(
-                DB::raw('YEAR(orders.created_at) as year'),
-                DB::raw('MONTH(orders.created_at) as month'),
-                DB::raw('SUM(order_product.price * order_product.qty) as total_amount')
-            )
-            ->groupBy(DB::raw('YEAR(orders.created_at)'), DB::raw('MONTH(orders.created_at)'))
-            ->orderBy(DB::raw('YEAR(orders.created_at)'), DB::raw('MONTH(orders.created_at)'))
-            ->get();
+        ->join('products', 'order_product.product_id', '=', 'products.id')
+        ->join('orders', 'order_product.order_id', '=', 'orders.id')
+        ->where('products.vendor_id', $vendor->id)
+        ->whereBetween('orders.created_at', [$startDate, $endDate])
+        ->select(
+            DB::raw('YEAR(orders.created_at) as year'),
+            DB::raw('MONTH(orders.created_at) as month'),
+            DB::raw('SUM(order_product.price * order_product.qty) as total_amount')
+        )
+        ->groupBy('year', 'month')
+        ->orderBy('year')
+        ->orderBy('month')
+        ->get();
 
         // Prepare the response data
         $responseData = $monthlyRevenue->map(function($item) {
