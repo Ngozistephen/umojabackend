@@ -133,6 +133,7 @@ Route::middleware('auth:api')->group(function () {
          Route::get('articles/{article}/show_article', [ArticleController::class, 'showArticle']); 
          Route::get('sold_products', [SaleController::class, 'soldProducts']); 
          Route::get('top_categories',[SaleController::class, 'topCategories']); 
+         Route::get('revenue_growth',[SaleController::class, 'monthlyRevenue']); 
 
 
         

@@ -173,4 +173,42 @@ class SaleController extends Controller
 
         return response()->json($categoriesData);
     }
+
+
+
+    public function monthlyRevenue(Request $request)
+    {
+        $vendor = Auth::user()->vendor;
+        $monthsToShow = $request->input('months', 12); // Default to last 12 months
+
+        // Define the starting point (months ago from now)
+        $startDate = now()->subMonths($monthsToShow)->startOfMonth();
+        $endDate = now()->endOfMonth();
+
+        // Calculate monthly revenue for the specified period
+        $monthlyRevenue = DB::table('order_product')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->join('orders', 'order_product.order_id', '=', 'orders.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->select(
+                DB::raw('YEAR(orders.created_at) as year'),
+                DB::raw('MONTH(orders.created_at) as month'),
+                DB::raw('SUM(order_product.price * order_product.qty) as total_amount')
+            )
+            ->groupBy(DB::raw('YEAR(orders.created_at)'), DB::raw('MONTH(orders.created_at)'))
+            ->orderBy(DB::raw('YEAR(orders.created_at)'), DB::raw('MONTH(orders.created_at)'))
+            ->get();
+
+        // Prepare the response data
+        $responseData = $monthlyRevenue->map(function($item) {
+            return [
+                'year' => $item->year,
+                'month' => $item->month,
+                'total_amount' => $item->total_amount,
+            ];
+        });
+
+        return response()->json($responseData);
+    }
 }
