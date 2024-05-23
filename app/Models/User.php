@@ -7,9 +7,7 @@ use App\Models\Post;
 use App\Models\Role;
 use App\Models\Order;
 use App\Models\Vendor;
-use App\Models\CartItem;
 use App\Models\Category;
-use App\Models\OrderItem;
 use App\Models\Variation;
 use App\Models\PaymentMethod;
 use Laravel\Cashier\Billable;
@@ -111,16 +109,6 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
-
-    
-    public function cartItems()
-    {
-        return $this->hasMany(CartItem::class);
-    }
 
     public function shippingAddresses(): HasMany
     {
