@@ -48,7 +48,7 @@ class UpdateProductRequest extends FormRequest
             'tax_charge_on_product' => 'nullable|boolean',
             'cost_per_item' => 'nullable|numeric', 
             'profit' => 'nullable|numeric',
-            'margin' => 'nullable|numeric', 
+            'margin' => 'nullable|integer', 
             'sales_count' => 'nullable|numeric', 
             'track_quantity' => 'nullable|boolean',
             'made_with_ghana_leather' => 'nullable|numeric',

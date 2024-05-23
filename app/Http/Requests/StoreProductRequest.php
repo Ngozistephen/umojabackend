@@ -48,7 +48,7 @@ class StoreProductRequest extends FormRequest
             'tax_charge_on_product' => 'nullable|boolean',
             'cost_per_item' => 'required|numeric', 
             'profit' => 'required|numeric',
-            'margin' => 'nullable|numeric', 
+            'margin' => 'nullable|integer', 
             'sales_count' => 'nullable|numeric', 
             'track_quantity' => 'required|boolean',
             'made_with_ghana_leather' => 'nullable|numeric',
