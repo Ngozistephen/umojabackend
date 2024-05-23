@@ -156,28 +156,66 @@ class SaleController extends Controller
     public function topCategories(Request $request)
     {
         $vendor = Auth::user()->vendor;
-        $topCategories = Category::select('categories.id', 'categories.name', DB::raw('SUM(order_product.price * order_product.qty) as total_amount'))
+        $dayOfWeek = $request->input('day_of_week', null); // Sunday=0, Monday=1, ..., Saturday=6
+        $month = $request->input('month', null); // January=1, February=2, ..., December=12
+        $year = $request->input('year', null); // Year e.g., 2024
+    
+        // Query to get the top 4 highest selling categories
+        $categoriesQuery = Category::select(
+            'categories.id',
+            'categories.name',
+            DB::raw('SUM(order_product.price * order_product.qty) as total_amount')
+        )
             ->join('products', 'categories.id', '=', 'products.category_id')
             ->join('order_product', 'products.id', '=', 'order_product.product_id')
             ->join('orders', 'order_product.order_id', '=', 'orders.id')
-            ->where('products.vendor_id', $vendor->id)
-            ->groupBy('categories.id', 'categories.name')
+            ->where('products.vendor_id', $vendor->id);
+    
+        if (!is_null($dayOfWeek)) {
+            $categoriesQuery->whereRaw('DAYOFWEEK(orders.created_at) = ?', [$dayOfWeek + 1]);
+        }
+    
+        if (!is_null($month)) {
+            $categoriesQuery->whereRaw('MONTH(orders.created_at) = ?', [$month]);
+        }
+    
+        if (!is_null($year)) {
+            $categoriesQuery->whereRaw('YEAR(orders.created_at) = ?', [$year]);
+        }
+    
+        $topCategories = $categoriesQuery->groupBy('categories.id', 'categories.name')
             ->orderBy('total_amount', 'desc')
             ->take(4)
             ->get();
-
+    
         // Prepare the data for each category by month
         $categoriesData = [];
-
+    
         foreach ($topCategories as $category) {
-            $monthlyData = DB::table('categories')
-                ->select(DB::raw('MONTH(orders.created_at) as month'), DB::raw('SUM(order_product.price * order_product.qty) as total_amount'))
+            $monthlyDataQuery = DB::table('categories')
+                ->select(
+                    DB::raw('MONTH(orders.created_at) as month'),
+                    DB::raw('SUM(order_product.price * order_product.qty) as total_amount')
+                )
                 ->join('products', 'categories.id', '=', 'products.category_id')
                 ->join('order_product', 'products.id', '=', 'order_product.product_id')
                 ->join('orders', 'order_product.order_id', '=', 'orders.id')
                 ->where('categories.id', $category->id)
-                ->where('products.user_id', $vendor->id)
-                ->groupBy(DB::raw('MONTH(orders.created_at)'))
+                ->where('products.vendor_id', $vendor->id);
+    
+            if (!is_null($dayOfWeek)) {
+                $monthlyDataQuery->whereRaw('DAYOFWEEK(orders.created_at) = ?', [$dayOfWeek + 1]);
+            }
+    
+            if (!is_null($month)) {
+                $monthlyDataQuery->whereRaw('MONTH(orders.created_at) = ?', [$month]);
+            }
+    
+            if (!is_null($year)) {
+                $monthlyDataQuery->whereRaw('YEAR(orders.created_at) = ?', [$year]);
+            }
+    
+            $monthlyData = $monthlyDataQuery->groupBy(DB::raw('MONTH(orders.created_at)'))
                 ->orderBy(DB::raw('MONTH(orders.created_at)'))
                 ->get()
                 ->map(function($item) {
@@ -186,16 +224,60 @@ class SaleController extends Controller
                         'total_amount' => $item->total_amount
                     ];
                 });
-
+    
             $categoriesData[] = [
                 'category_id' => $category->id,
                 'category_name' => $category->name,
                 'monthly_data' => $monthlyData
             ];
         }
-
+    
         return response()->json($categoriesData);
     }
+    
+    // public function topCategories(Request $request)
+    // {
+    //     $vendor = Auth::user()->vendor;
+    //     $topCategories = Category::select('categories.id', 'categories.name', DB::raw('SUM(order_product.price * order_product.qty) as total_amount'))
+    //         ->join('products', 'categories.id', '=', 'products.category_id')
+    //         ->join('order_product', 'products.id', '=', 'order_product.product_id')
+    //         ->join('orders', 'order_product.order_id', '=', 'orders.id')
+    //         ->where('products.vendor_id', $vendor->id)
+    //         ->groupBy('categories.id', 'categories.name')
+    //         ->orderBy('total_amount', 'desc')
+    //         ->take(4)
+    //         ->get();
+
+    //     // Prepare the data for each category by month
+    //     $categoriesData = [];
+
+    //     foreach ($topCategories as $category) {
+    //         $monthlyData = DB::table('categories')
+    //             ->select(DB::raw('MONTH(orders.created_at) as month'), DB::raw('SUM(order_product.price * order_product.qty) as total_amount'))
+    //             ->join('products', 'categories.id', '=', 'products.category_id')
+    //             ->join('order_product', 'products.id', '=', 'order_product.product_id')
+    //             ->join('orders', 'order_product.order_id', '=', 'orders.id')
+    //             ->where('categories.id', $category->id)
+    //             ->where('products.user_id', $vendor->id)
+    //             ->groupBy(DB::raw('MONTH(orders.created_at)'))
+    //             ->orderBy(DB::raw('MONTH(orders.created_at)'))
+    //             ->get()
+    //             ->map(function($item) {
+    //                 return [
+    //                     'month' => $item->month,
+    //                     'total_amount' => $item->total_amount
+    //                 ];
+    //             });
+
+    //         $categoriesData[] = [
+    //             'category_id' => $category->id,
+    //             'category_name' => $category->name,
+    //             'monthly_data' => $monthlyData
+    //         ];
+    //     }
+
+    //     return response()->json($categoriesData);
+    // }
 
 
 
