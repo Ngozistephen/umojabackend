@@ -148,7 +148,6 @@ Route::middleware('auth:api')->group(function () {
         Route::post('apply_discount', [DiscountCodeController::class, 'applyDiscount']);
         Route::apiResource('shippingAddresses', ShippingAddressController::class);
         Route::apiResource('paymentMethods', PaymentMethodController::class);
-        // still working on 
         Route::post('checkout', [CheckoutController::class, 'checkout']);
       
        

@@ -173,7 +173,7 @@ class VendorController extends Controller
 
             $secureUrl = $cloudinaryResponse->getSecurePath();
 
-            return $secureUrl;
+            return ['cover_image' => $secureUrl];
         }
 
         return null;
