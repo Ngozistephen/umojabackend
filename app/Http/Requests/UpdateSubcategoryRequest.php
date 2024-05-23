@@ -23,7 +23,7 @@ class UpdateSubcategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|unique:sub_categories,name',
+            'name' => 'nullable|string|max:255|unique:sub_categories,name',
             'category_id' => 'required|exists:categories,id', 
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
         ];
