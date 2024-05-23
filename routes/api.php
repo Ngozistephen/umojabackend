@@ -104,6 +104,7 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('vendor')->group(function () {
         Route::post('setup/{userId}', [VendorController::class, 'setupAccount']);
         Route::post('upload', [VendorController::class, 'upload']);
+        Route::post('upload/cover_image', [VendorController::class, 'uploadCoverImage']);
         // Route::get('subscribe/{plan?}', [SubscriptionController::class, 'subscribe']);
         Route::post('subscribe', [SubscriptionController::class, 'subscribe']);
         Route::get('subscribe/success', [SubscriptionController::class, 'success'])->name('vendor.subscription_success');
