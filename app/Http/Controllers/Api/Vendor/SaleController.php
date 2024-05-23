@@ -66,39 +66,40 @@ class SaleController extends Controller
     {
         $vendor = Auth::user()->vendor;
         $dayOfWeek = $request->input('day_of_week', null); // Sunday=0, Monday=1, ..., Saturday=6
-
+    
         // Log the vendor ID for debugging
         Log::info('Vendor ID:', ['id' => $vendor->id]);
-
+    
         // Query to get the top 3 highest selling products
         $productsQuery = Product::select(
             'products.id',
             'products.name',
+            'products.photo', // Add photo to the select statement
             DB::raw('SUM(order_product.price * order_product.qty) as total_amount'),
             DB::raw('COUNT(order_product.id) as sales_count')
         )
             ->join('order_product', 'products.id', '=', 'order_product.product_id')
             ->join('orders', 'order_product.order_id', '=', 'orders.id')
             ->where('products.vendor_id', $vendor->id);
-
+    
         if (!is_null($dayOfWeek)) {
             $productsQuery->whereRaw('DAYOFWEEK(orders.created_at) = ?', [$dayOfWeek + 1]);
         }
-
+    
         // Log the constructed query
         Log::info('Constructed Query:', ['query' => $productsQuery->toSql()]);
-
+    
         $products = $productsQuery->groupBy('products.id', 'products.name', 'products.photo')
             ->orderBy('sales_count', 'desc')
             ->take(3)
             ->get();
-
+    
         // Log the query results
         Log::info('Query Results:', ['products' => $products]);
-
+    
         // Prepare the data for each product by day of the week
         $productsData = [];
-
+    
         foreach ($products as $product) {
             $dailyData = DB::table('order_product')
                 ->select(
@@ -116,7 +117,7 @@ class SaleController extends Controller
                         'total_amount' => $item->total_amount
                     ];
                 });
-
+    
             $productsData[] = [
                 'product_id' => $product->id,
                 'product_name' => $product->name,
@@ -126,9 +127,10 @@ class SaleController extends Controller
                 'daily_data' => $dailyData
             ];
         }
-
+    
         return response()->json($productsData);
     }
+    
 
 
     public function topCategories(Request $request)
