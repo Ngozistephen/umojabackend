@@ -120,6 +120,7 @@ class SaleController extends Controller
             $productsData[] = [
                 'product_id' => $product->id,
                 'product_name' => $product->name,
+                'product_photo' => $product->photo,
                 'total_amount' => $product->total_amount,
                 'sales_count' => $product->sales_count,
                 'daily_data' => $dailyData
@@ -176,12 +177,48 @@ class SaleController extends Controller
 
 
 
+    // is working
+    // public function monthlyRevenue(Request $request)
+    // {
+    //     $vendor = Auth::user()->vendor;
+    //     $monthsToShow = $request->input('months', 12); 
+
+      
+    //     $startDate = now()->subMonths($monthsToShow)->startOfMonth();
+    //     $endDate = now()->endOfMonth();
+
+    //     $monthlyRevenue = DB::table('order_product')
+    //     ->join('products', 'order_product.product_id', '=', 'products.id')
+    //     ->join('orders', 'order_product.order_id', '=', 'orders.id')
+    //     ->where('products.vendor_id', $vendor->id)
+    //     ->whereBetween('orders.created_at', [$startDate, $endDate])
+    //     ->select(
+    //         DB::raw('YEAR(orders.created_at) as year'),
+    //         DB::raw('MONTH(orders.created_at) as month'),
+    //         DB::raw('SUM(order_product.price * order_product.qty) as total_amount')
+    //     )
+    //     ->groupBy('year', 'month')
+    //     ->orderBy('year')
+    //     ->orderBy('month')
+    //     ->get();
+
+       
+    //     $responseData = $monthlyRevenue->map(function($item) {
+    //         return [
+    //             'year' => $item->year,
+    //             'month' => $item->month,
+    //             'total_amount' => $item->total_amount,
+    //         ];
+    //     });
+
+    //     return response()->json($responseData);
+    // }
     public function monthlyRevenue(Request $request)
     {
         $vendor = Auth::user()->vendor;
-        $monthsToShow = $request->input('months', 12); // Default to last 12 months
+        $monthsToShow = $request->input('months', 12); 
 
-        // Define the starting point (months ago from now)
+      
         $startDate = now()->subMonths($monthsToShow)->startOfMonth();
         $endDate = now()->endOfMonth();
 
@@ -200,7 +237,7 @@ class SaleController extends Controller
         ->orderBy('month')
         ->get();
 
-        // Prepare the response data
+       
         $responseData = $monthlyRevenue->map(function($item) {
             return [
                 'year' => $item->year,
