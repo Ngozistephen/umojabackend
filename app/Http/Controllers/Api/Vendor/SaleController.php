@@ -66,6 +66,8 @@ class SaleController extends Controller
     {
         $vendor = Auth::user()->vendor;
         $dayOfWeek = $request->input('day_of_week', null); // Sunday=0, Monday=1, ..., Saturday=6
+        $month = $request->input('month', null); // January=1, February=2, ..., December=12
+        $year = $request->input('year', null); // Year e.g., 2024
     
         // Log the vendor ID for debugging
         Log::info('Vendor ID:', ['id' => $vendor->id]);
@@ -86,6 +88,14 @@ class SaleController extends Controller
             $productsQuery->whereRaw('DAYOFWEEK(orders.created_at) = ?', [$dayOfWeek + 1]);
         }
     
+        if (!is_null($month)) {
+            $productsQuery->whereRaw('MONTH(orders.created_at) = ?', [$month]);
+        }
+    
+        if (!is_null($year)) {
+            $productsQuery->whereRaw('YEAR(orders.created_at) = ?', [$year]);
+        }
+    
         // Log the constructed query
         Log::info('Constructed Query:', ['query' => $productsQuery->toSql()]);
     
@@ -101,14 +111,23 @@ class SaleController extends Controller
         $productsData = [];
     
         foreach ($products as $product) {
-            $dailyData = DB::table('order_product')
+            $dailyDataQuery = DB::table('order_product')
                 ->select(
                     DB::raw('DAYOFWEEK(orders.created_at) as day_of_week'),
                     DB::raw('SUM(order_product.price * order_product.qty) as total_amount')
                 )
                 ->join('orders', 'order_product.order_id', '=', 'orders.id')
-                ->where('order_product.product_id', $product->id)
-                ->groupBy(DB::raw('DAYOFWEEK(orders.created_at)'))
+                ->where('order_product.product_id', $product->id);
+    
+            if (!is_null($month)) {
+                $dailyDataQuery->whereRaw('MONTH(orders.created_at) = ?', [$month]);
+            }
+    
+            if (!is_null($year)) {
+                $dailyDataQuery->whereRaw('YEAR(orders.created_at) = ?', [$year]);
+            }
+    
+            $dailyData = $dailyDataQuery->groupBy(DB::raw('DAYOFWEEK(orders.created_at)'))
                 ->orderBy(DB::raw('DAYOFWEEK(orders.created_at)'))
                 ->get()
                 ->map(function($item) {
@@ -130,6 +149,7 @@ class SaleController extends Controller
     
         return response()->json($productsData);
     }
+    
     
 
 
