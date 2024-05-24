@@ -6,9 +6,11 @@ namespace App\Models;
 use App\Models\Post;
 use App\Models\Role;
 use App\Models\Order;
+use App\Models\Review;
 use App\Models\Vendor;
 use App\Models\Category;
 use App\Models\Variation;
+use App\Models\ReviewLike;
 use App\Models\PaymentMethod;
 use Laravel\Cashier\Billable;
 use App\Models\ShippingMethod;
@@ -134,5 +136,15 @@ class User extends Authenticatable
         return $this->belongsToMany(Post::class, 'user_likes', 'user_id', 'post_id');
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 
+    public function likedReviews()
+    {
+        return $this->belongsToMany(Review::class, 'review_likes');
+    }
+
+    
 }

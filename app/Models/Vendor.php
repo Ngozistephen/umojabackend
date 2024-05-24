@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Review;
 use App\Models\Article;
 use App\Models\Product;
 use App\Models\Category;
@@ -54,6 +55,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
         public function articles()
         {
             return $this->hasMany(Article::class);
+        }
+
+        public function reviews()
+        {
+            return $this->hasMany(Review::class);
         }
         
     

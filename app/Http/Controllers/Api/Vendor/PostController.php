@@ -91,7 +91,7 @@ class PostController extends Controller
 
     public function showPost(Post $post)
     {
-       ;
+       
         if (!Auth::check()) {
             abort(401, 'Unauthorized action.');
         }
@@ -411,7 +411,7 @@ class PostController extends Controller
         if ($request->hasFile('featured_img')) {
             $file = $request->file('featured_img');
             request()->validate([
-                'featured_img. *' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:6048',
+                'featured_img. *' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                
             ]);
     

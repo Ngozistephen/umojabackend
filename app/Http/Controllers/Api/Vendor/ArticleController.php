@@ -134,7 +134,7 @@ class ArticleController extends Controller
         if ($request->hasFile('cover_image')) {
             $file = $request->file('cover_image');
             request()->validate([
-                'cover_image. *' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:6048',
+                'cover_image. *' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                
             ]);
     

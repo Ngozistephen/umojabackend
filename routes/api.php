@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Public\UserController;
 use App\Http\Controllers\Api\Vendor\PostController;
+use App\Http\Controllers\Api\Vendor\SaleController;
 use App\Http\Controllers\Api\Vendor\OrderController;
 use App\Http\Controllers\Api\Customer\CartController;
 use App\Http\Controllers\Api\Vendor\VendorController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Vendor\ArticleController;
 use App\Http\Controllers\Api\Vendor\ProductController;
 use App\Http\Controllers\Api\Admin\VariationController;
+use App\Http\Controllers\Api\Customer\ReviewController;
 use App\Http\Controllers\Api\Auth\SocialLoginController;
 use App\Http\Controllers\Api\Auth\VendorLoginController;
 use App\Http\Controllers\Api\Admin\SubcategoryController;
@@ -21,6 +23,7 @@ use App\Http\Controllers\Api\Auth\VerificationController;
 use App\Http\Controllers\Api\Customer\CheckoutController;
 use App\Http\Controllers\Api\Admin\DiscountCodeController;
 use App\Http\Controllers\Api\Auth\CustomerLoginController;
+use App\Http\Controllers\Api\Customer\SeeReviewController;
 use App\Http\Controllers\Api\Vendor\OrderSearchController;
 use App\Http\Controllers\Api\Auth\SocialRegisterController;
 use App\Http\Controllers\Api\Auth\VendorRegisterController;
@@ -39,7 +42,6 @@ use App\Http\Controllers\Api\Customer\ShippingAddressController;
 use App\Http\Controllers\Api\Auth\ForgetVendorPasswordController;
 use App\Http\Controllers\Api\Auth\ResetPasswordCustomerController;
 use App\Http\Controllers\Api\Auth\ForgetCustomerPasswordController;
-use App\Http\Controllers\Api\Vendor\SaleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -149,6 +151,14 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('shippingAddresses', ShippingAddressController::class);
         Route::apiResource('paymentMethods', PaymentMethodController::class);
         Route::post('checkout', [CheckoutController::class, 'checkout']);
+        Route::apiResource('reviews', ReviewController::class);
+        // Route::get('reviews/all', [ReviewController::class, 'allreview']);
+        Route::post('reviews/{review}/reply', [ReviewController::class, 'reply']);
+        Route::put('reviews/{review}/reply', [ReviewController::class, 'editReply']);
+        Route::delete('reviews/{review}/reply', [ReviewController::class, 'deleteReply']);
+        Route::post('reviews/{review}/like', [ReviewController::class, 'like']);
+        Route::post('reviews/{review}/unlike', [ReviewController::class, 'unlike']);
+        Route::get('allreviews', [SeeReviewController::class, '__invoke']); 
       
        
         

@@ -124,11 +124,11 @@ class VendorController extends Controller
                 $file = $request->file($field);
 
                 $validatedData = $request->validate([
-                    $field . '.*' => 'nullable|image|mimes:jpeg,png,JPG,jpg,gif,svg|max:6048',
+                    $field . '.*' => 'nullable|image|mimes:jpeg,png,JPG,jpg,gif,svg|max:5120',
                 ], [
                     $field . '.*.image' => 'The ' . $field . ' must be an image.',
                     $field . '.*.mimes' => 'Unsupported file format for ' . $field . '. Supported formats are JPEG, PNG, GIF, and SVG.',
-                    $field . '.*.max' => 'The ' . $field . ' may not be greater than 6 MB in size.',
+                    $field . '.*.max' => 'The ' . $field . ' may not be greater than 5 MB in size.',
                 ]);
 
                 $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
@@ -155,11 +155,11 @@ class VendorController extends Controller
 
             // Validate the uploaded file
             $validatedData = $request->validate([
-                'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10048', // Allowing larger size for high-resolution
+                'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:6048', // Allowing larger size for high-resolution
             ], [
                 'cover_image.image' => 'The cover image must be an image.',
                 'cover_image.mimes' => 'Unsupported file format for cover image. Supported formats are JPEG, PNG, GIF, and SVG.',
-                'cover_image.max' => 'The cover image may not be greater than 10 MB in size.', // Increased max size
+                'cover_image.max' => 'The cover image may not be greater than 6 MB in size.', // Increased max size
             ]);
 
             // Upload the file to Cloudinary with higher resolution settings
