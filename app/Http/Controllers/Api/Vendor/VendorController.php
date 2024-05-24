@@ -51,61 +51,58 @@ class VendorController extends Controller
     {
         //
     }
-    // public function setupAccount(VendorProfileRequest $request, $token)
+   
+    public function setupAccount(VendorProfileRequest $request, $userId)
+    {
+        $user = User::findOrFail($userId);
+
+        $vendor = $user->vendor ?? new Vendor();
+        $vendor->fill($request->validated());
+        $user->vendor()->save($vendor);
+
+        // Process cover image upload
+        $coverImageUrl = $this->uploadCoverImage($request);
+
+        // Process other file uploads
+        $uploadedFiles = $this->upload($request);
+
+        if ($coverImageUrl) {
+            $uploadedFiles['cover_image'] = $coverImageUrl;
+        }
+
+        return response()->json([
+            'message' => 'Vendor profile setup successfully',
+            'user' => $user,
+            'vendor' => new VendorResource($vendor),
+            'uploadedFiles' => $uploadedFiles
+        ], 200);
+    }
+
+    // public function setupAccount(VendorProfileRequest $request, $userId)
     // {
-    //      // Fetch the user by the provided $userId
-    //      $user = User::where('password_setup_token', $token)->first();
-    //      if (! $user) {
-    //          return response()->json(['error' => 'Invalid token'], 404);
-    //         }
-            
-    //         $user->password_setup_token = null; 
-    //         $vendorData = $request->validated();
-    //         // Create or update the vendor profile
-    //         $vendor = $user->vendor ?? new Vendor();
-    //         $vendor->fill($vendorData);
-    //         $user->vendor()->save($vendor);
-    //      $uploadedFiles = $this->upload($request);
+      
+    //     $user = User::findOrFail($userId);
+      
+    //     $vendor = $user->vendor ?? new Vendor();
+    //     $vendor->fill($request->validated());
+    //     $user->vendor()->save($vendor);
+
+    //     // Process file uploads
+    //     $uploadedFiles = $this->upload($request);
+           
 
 
     //      return response()->json([
     //         'message' => 'Vendor profile Setup successfully',
     //         'user' => $user,
-    //         'vendor' => $vendor,
-    //         'uploadedFiles' => $uploadedFiles
+    //         'vendor' => new VendorResource($vendor),
+    //         // 'uploadedFiles' => $uploadedFiles
     //     ], 200);
 
 
 
      
     // }
-
-
-    public function setupAccount(VendorProfileRequest $request, $userId)
-    {
-      
-        $user = User::findOrFail($userId);
-      
-        $vendor = $user->vendor ?? new Vendor();
-        $vendor->fill($request->validated());
-        $user->vendor()->save($vendor);
-
-        // Process file uploads
-        $uploadedFiles = $this->upload($request);
-           
-
-
-         return response()->json([
-            'message' => 'Vendor profile Setup successfully',
-            'user' => $user,
-            'vendor' => new VendorResource($vendor),
-            // 'uploadedFiles' => $uploadedFiles
-        ], 200);
-
-
-
-     
-    }
 
     
 
@@ -119,7 +116,7 @@ class VendorController extends Controller
             'picture_vendor_id_number' => 'picture_vendor_id_number',
             'utility_photo' => 'utility_photo',
             'business_number_photo' => 'business_number_photo',
-            'cover_image' => 'cover_image'
+            // 'cover_image' => 'cover_image'
         ];
 
         foreach ($fileFields as $field => $folder) {
@@ -150,4 +147,37 @@ class VendorController extends Controller
 
         return $uploadedFiles;
     }
+
+    public function uploadCoverImage(Request $request)
+    {
+        if ($request->hasFile('cover_image')) {
+            $file = $request->file('cover_image');
+
+            // Validate the uploaded file
+            $validatedData = $request->validate([
+                'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10048', // Allowing larger size for high-resolution
+            ], [
+                'cover_image.image' => 'The cover image must be an image.',
+                'cover_image.mimes' => 'Unsupported file format for cover image. Supported formats are JPEG, PNG, GIF, and SVG.',
+                'cover_image.max' => 'The cover image may not be greater than 10 MB in size.', // Increased max size
+            ]);
+
+            // Upload the file to Cloudinary with higher resolution settings
+            $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
+                'folder' => 'cover_image',
+                'transformation' => [
+                    ['width' => 1920, 'height' => 1080, 'crop' => 'fit'], // High resolution dimensions
+                    ['quality' => 'auto:best', 'fetch_format' => 'auto'] // Best quality setting
+                ]
+            ]);
+
+            $secureUrl = $cloudinaryResponse->getSecurePath();
+
+            return ['cover_image' => $secureUrl];
+        }
+
+        return null;
+    }
+
+
 }

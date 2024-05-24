@@ -104,6 +104,7 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('vendor')->group(function () {
         Route::post('setup/{userId}', [VendorController::class, 'setupAccount']);
         Route::post('upload', [VendorController::class, 'upload']);
+        Route::post('upload/cover_image', [VendorController::class, 'uploadCoverImage']);
         // Route::get('subscribe/{plan?}', [SubscriptionController::class, 'subscribe']);
         Route::post('subscribe', [SubscriptionController::class, 'subscribe']);
         Route::get('subscribe/success', [SubscriptionController::class, 'success'])->name('vendor.subscription_success');
@@ -147,7 +148,6 @@ Route::middleware('auth:api')->group(function () {
         Route::post('apply_discount', [DiscountCodeController::class, 'applyDiscount']);
         Route::apiResource('shippingAddresses', ShippingAddressController::class);
         Route::apiResource('paymentMethods', PaymentMethodController::class);
-        // still working on 
         Route::post('checkout', [CheckoutController::class, 'checkout']);
       
        
