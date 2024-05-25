@@ -18,25 +18,73 @@ class ReviewController extends Controller
     /**
      * Display a listing of the resource.
      */
+    // public function index()
+    // {
+    //       $vendor = Auth::user()->vendor;
+        
+    //     if (!$vendor) {
+    //         return response()->json(['message' => 'No associated vendor found for the authenticated user'], 404);
+    //     }
+
+    //     $reviews = Review::where('vendor_id', $vendor->id)
+    //         ->with(['product', 'user', 'vendor'])
+    //         ->orderBy('created_at', 'desc')
+    //         ->paginate(10);
+
+    //     if ($reviews->isEmpty()) {
+    //         return response()->json(['message' => 'No reviews found for this vendor'], 404);
+    //     }
+
+    //     return ReviewResource::collection($reviews);
+    // }
+
     public function index()
     {
-          $vendor = Auth::user()->vendor;
+        $vendor = Auth::user()->vendor;
         
         if (!$vendor) {
             return response()->json(['message' => 'No associated vendor found for the authenticated user'], 404);
         }
 
-        $reviews = Review::where('vendor_id', $vendor->id)
+        $reviewsQuery = Review::where('vendor_id', $vendor->id)
             ->with(['product', 'user', 'vendor'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->orderBy('created_at', 'desc');
+
+        $reviews = $reviewsQuery->paginate(10);
 
         if ($reviews->isEmpty()) {
             return response()->json(['message' => 'No reviews found for this vendor'], 404);
         }
 
-        return ReviewResource::collection($reviews);
+        $averageRating = $reviewsQuery->avg('rating');
+        $totalReviews = $reviewsQuery->count();
+
+        // Count the number of each rating
+        $ratingsCount = Review::where('vendor_id', $vendor->id)
+            ->selectRaw('rating, COUNT(*) as count')
+            ->groupBy('rating')
+            ->pluck('count', 'rating');
+
+        // Initialize all possible ratings with 0 counts
+        $allRatingsCount = [
+            1 => 0,
+            2 => 0,
+            3 => 0,
+            4 => 0,
+            5 => 0,
+        ];
+
+        // Merge the counts from the query into the initialized array
+        $ratingsCount = $allRatingsCount + $ratingsCount->toArray();
+
+        return response()->json([
+            'data' => ReviewResource::collection($reviews),
+            'average_rating' => $averageRating,
+            'total_reviews' => $totalReviews,
+            'ratings_count' => $ratingsCount
+        ]);
     }
+
 
     
 
