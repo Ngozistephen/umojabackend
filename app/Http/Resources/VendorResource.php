@@ -26,6 +26,11 @@ class VendorResource extends JsonResource
         })->count();
         $productCount = Product::where('vendor_id', $this->id)->count();
         $reviewCount = Review::where('vendor_id', $this->id)->count();
+
+        $promoCount = Product::where('vendor_id', $this->id)
+                    ->whereNotNull('compare_at_price')
+                    ->where('compare_at_price', '>', 0)
+                    ->count();
         return [
             // 'language' => $this->language,
             // 'gender' => $this->gender,   
@@ -71,6 +76,7 @@ class VendorResource extends JsonResource
             'order_count' => $orderCount,
             'product_count' => $productCount,
             'review_count' => $reviewCount,
+            'promo_count' =>  $promoCount,
            
         ];
     }

@@ -44,7 +44,7 @@ class StoreProductRequest extends FormRequest
             'ust_index' => 'nullable|string', 
             'price' => 'required|numeric', 
             'commission' => 'required|numeric', 
-            'compare_at_price' => 'required|numeric',
+            'compare_at_price' => 'nullable|numeric',
             'tax_charge_on_product' => 'nullable|boolean',
             'cost_per_item' => 'required|numeric', 
             'profit' => 'required|numeric',

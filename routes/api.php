@@ -1,6 +1,7 @@
 <?php
 
 
+use Laravel\Cashier\PromotionCode;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\Auth\LogoutController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Api\Public\UserController;
 use App\Http\Controllers\Api\Vendor\PostController;
 use App\Http\Controllers\Api\Vendor\SaleController;
 use App\Http\Controllers\Api\Vendor\OrderController;
+use App\Http\Controllers\Api\Vendor\PromoController;
 use App\Http\Controllers\Api\Customer\CartController;
 use App\Http\Controllers\Api\Vendor\VendorController;
 use App\Http\Controllers\Api\Admin\CategoryController;
@@ -115,6 +117,7 @@ Route::middleware('auth:api')->group(function () {
          Route::put('products/{product_id}/restore', [ProductController::class, 'restore']);
          Route::apiResource('products', ProductController::class);
          Route::post('products/upload', [ProductController::class, 'upload']);
+         Route::get('discount_price', [PromoController::class, '__invoke']);
          Route::apiResource('products.variations', ProductVariationController::class)->except(['create', 'edit']);
          Route::post('/import/products', [ProductController::class, 'import']);
          Route::get('/export/products', [ProductController::class, 'export']);   
