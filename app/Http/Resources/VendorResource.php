@@ -2,6 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Post;
+use App\Models\Order;
+use App\Models\Review;
+use App\Models\Article;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,6 +19,13 @@ class VendorResource extends JsonResource
      */
     public function toArray($request): array
     {
+        $postCount = Post::where('vendor_id', $this->id)->count();
+        $articleCount = Article::where('vendor_id', $this->id)->count();
+        $orderCount = Order::whereHas('products', function ($query) {
+            $query->where('order_product.vendor_id', $this->id);
+        })->count();
+        $productCount = Product::where('vendor_id', $this->id)->count();
+        $reviewCount = Review::where('vendor_id', $this->id)->count();
         return [
             // 'language' => $this->language,
             // 'gender' => $this->gender,   
@@ -54,6 +66,11 @@ class VendorResource extends JsonResource
             // 'sort_code' => $this->sort_code,
             // 'swift_code' => $this->swift_code,
             // 'iban' => $this->iban,
+            'post_count' => $postCount,
+            'article_count' => $articleCount,
+            'order_count' => $orderCount,
+            'product_count' => $productCount,
+            'review_count' => $reviewCount,
            
         ];
     }
