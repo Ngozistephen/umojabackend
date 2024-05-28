@@ -85,7 +85,7 @@ class AllProductController extends Controller
 
     public function __invoke(Request $request)
     {
-        $products = Product::with('variations')
+        $products = Product::with('variations', 'category', 'subCategory', 'user.vendor', 'reviews')
 
             // Search Global
             ->when($request->search_global, function ($query) use ($request) {
@@ -140,7 +140,9 @@ class AllProductController extends Controller
 
             // Filter by product_rating
             ->when($request->product_rating, function ($query) use ($request) {
-                $query->where('rating', '>=', $request->product_rating);
+                $query->whereHas('reviews', function ($q) use ($request) {
+                    $q->where('rating', '>=', $request->product_rating);
+                });
             })
 
             // Filter by compare_at_price
@@ -149,14 +151,14 @@ class AllProductController extends Controller
             })
 
             // Filter by status
-            // ->when($request->status, function ($query) use ($request) {
-            //     $query->where('status', $request->status);
-            // })
+            ->when($request->status, function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
 
             // Filter by archive
-            // ->when($request->archive, function ($query) {
-            //     $query->onlyTrashed();
-            // })
+            ->when($request->archive, function ($query) {
+                $query->onlyTrashed();
+            })
 
             // Sort by price and name
             ->when($request->sortBy && $request->sortOrder, function ($query) use ($request) {
@@ -168,5 +170,6 @@ class AllProductController extends Controller
 
         return ProductResource::collection($products);
     }
+
 
 }
