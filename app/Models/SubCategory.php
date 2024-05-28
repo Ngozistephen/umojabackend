@@ -14,7 +14,7 @@ class SubCategory extends Model
     protected $fillable = ['name', 'category_id', 'photo','neted_subcategories']; 
 
     protected $casts = [
-        'neted_subcategories' => 'json',
+        'neted_subcategories' => 'array',
     ];
 
     public function category()
