@@ -13,7 +13,10 @@ class SubCategory extends Model
 
     protected $fillable = ['name', 'category_id', 'photo']; 
 
-   
+    protected $casts = [
+        'neted_subcategories' => 'json',
+    ];
+
     public function category()
     {
         return $this->belongsTo(Category::class);
