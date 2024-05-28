@@ -27,6 +27,9 @@ class UpdateSubcategoryRequest extends FormRequest
             // 'name' => 'nullable|string|max:255|unique:sub_categories,name',
             'category_id' => 'nullable|exists:categories,id', 
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
+            'neted_subcategories' => 'nullable|array', 
+            'neted_subcategories.*' => 'string',
+            
         ];
     }
 }

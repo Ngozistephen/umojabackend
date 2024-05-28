@@ -28,6 +28,8 @@ class SubcategoryRequest extends FormRequest
             // 'name' => 'required|string|max:255|unique:sub_categories,name',
             'category_id' => 'required|exists:categories,id', 
             'photo' => 'nullable', 
+            'neted_subcategories' => 'nullable|array', 
+            'neted_subcategories.*' => 'string',
         ];
     }
 

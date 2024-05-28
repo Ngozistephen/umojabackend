@@ -20,6 +20,7 @@ class SubcategoryResource extends JsonResource
             'category' => $this->category?->name,
             'photo' => $this->photo,
             'category_id' => $this->category?->id,
+            'neted_subcategories' => $this->neted_subcategories,
         ];
     }
 }
