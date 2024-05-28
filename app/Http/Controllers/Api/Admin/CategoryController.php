@@ -44,25 +44,26 @@ class CategoryController extends Controller
     //     return CategoryResource::collection($categories);
     // }
 
-    // public function index(Request $request)
-    // {
-    //     $cacheKey = 'categories_';
-
-    //     $categories = Cache::remember($cacheKey, Carbon::now()->addDay(), function () {
-    //         return Category::orderBy('id', 'desc')->take(4)->get();
-    //     });
-
-    //     return CategoryResource::collection($categories);
-    // }
-
-
     public function index(Request $request)
     {
-        $categories = Category::orderBy('created_at', 'desc')->take(4)->get();
+        $cacheKey = 'categories_';
 
-      
+        $categories = Cache::remember($cacheKey, Carbon::now()->addDay(), function () {
+            return Category::orderBy('id', 'desc')->get();
+        });
+
         return CategoryResource::collection($categories);
     }
+
+
+    // public function index(Request $request)
+    // {
+    //     $categories = Category::orderBy('created_at', 'desc')->take(4)->get();
+    //     // $categories = Category::orderBy('created_at', 'desc')->take(4)->get();
+
+      
+    //     return CategoryResource::collection($categories);
+    // }
    /**
      * POST Categories
      *
