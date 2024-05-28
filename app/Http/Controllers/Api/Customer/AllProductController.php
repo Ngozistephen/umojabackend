@@ -149,9 +149,9 @@ class AllProductController extends Controller
             // })
             ->when($request->compare_at_price, function ($query) use ($request) {
                 // Convert percentage to actual value
-                $compareAtPrice = $request->compare_at_price / 100;
-                // Apply filter
-                $query->where('compare_at_price', '>=', $compareAtPrice);
+                $percentage = $request->compare_at_price / 100;
+                // Apply filter based on the calculated compare_at_price
+                $query->whereRaw('(price + (price * ?)) >= compare_at_price', [$percentage]);
             })
 
             // Filter by status
