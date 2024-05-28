@@ -134,7 +134,7 @@ class AllProductController extends Controller
             // Filter by sizes
             ->when($request->sizes, function ($query) use ($request) {
                 $query->whereHas('sizes', function ($q) use ($request) {
-                    $q->where('name', $request->sizes);
+                    $q->whereIn('name', $request->sizes);
                 });
             })
 
