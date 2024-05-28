@@ -24,10 +24,8 @@ class UpdateCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            // 'name' => 'required|string|max:255|unique:categories,name',
-            'slug' => 'nullable|string|max:255',
-            // 'slug' => 'nullable|string|max:255|unique:categories',
+            'name' => 'required|string|max:255|unique:categories,name',
+            'slug' => 'nullable|string|max:255|unique:categories',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
         ];
     }

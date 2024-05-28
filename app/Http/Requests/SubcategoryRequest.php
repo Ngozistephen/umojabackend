@@ -24,8 +24,8 @@ class SubcategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            // 'name' => 'required|string|max:255|unique:sub_categories,name',
+            
+            'name' => 'required|string|max:255|unique:sub_categories,name',
             'category_id' => 'required|exists:categories,id', 
             'photo' => 'nullable', 
             'neted_subcategories' => 'nullable|array', 
