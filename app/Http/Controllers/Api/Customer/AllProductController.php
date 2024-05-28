@@ -133,9 +133,7 @@ class AllProductController extends Controller
 
             // Filter by sizes
             ->when($request->sizes, function ($query) use ($request) {
-                $query->whereHas('sizes', function ($q) use ($request) {
-                    $q->whereIn('name', $request->sizes);
-                });
+                $query->whereJsonContains('sizes', $request->sizes);
             })
 
             // Filter by product_rating
