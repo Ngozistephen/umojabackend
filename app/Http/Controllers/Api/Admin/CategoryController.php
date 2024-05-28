@@ -49,7 +49,7 @@ class CategoryController extends Controller
         $cacheKey = 'categories_';
 
         $categories = Cache::remember($cacheKey, Carbon::now()->addDay(), function () {
-            return Category::orderBy('id', 'desc')->get();
+            return Category::orderBy('id', 'desc')->take(4)->get();
         });
 
         return CategoryResource::collection($categories);
