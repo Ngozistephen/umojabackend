@@ -144,8 +144,14 @@ class AllProductController extends Controller
             })
 
             // Filter by compare_at_price
+            // ->when($request->compare_at_price, function ($query) use ($request) {
+            //     $query->where('compare_at_price', '>=', $request->compare_at_price * 100);
+            // })
             ->when($request->compare_at_price, function ($query) use ($request) {
-                $query->where('compare_at_price', '>=', $request->compare_at_price * 100);
+                // Convert percentage to actual value
+                $compareAtPrice = $request->compare_at_price / 100;
+                // Apply filter
+                $query->where('compare_at_price', '>=', $compareAtPrice);
             })
 
             // Filter by status
