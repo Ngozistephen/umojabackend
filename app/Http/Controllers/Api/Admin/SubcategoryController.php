@@ -34,6 +34,15 @@ class SubcategoryController extends Controller
         return SubcategoryResource::collection($subCategories);
     }
 
+    public function bysubcategory($subcategoryId) 
+    {
+        $subCategories = SubCategory::where('subcategory_id', $subcategoryId)
+                                      ->with('category')
+                                      ->paginate(10);
+        
+        return SubcategoryResource::collection($subCategories);
+    }
+
     /**
      * Store a newly created resource in storage.
      *

@@ -97,6 +97,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('categories/upload', [CategoryController::class, 'upload']);
         Route::apiResource('sub_categories', SubcategoryController::class);
         Route::get('sub_categories/category/{category_id}', [SubcategoryController::class, 'bycategory']);
+        Route::get('sub_categories/category/{subcategory_id}', [SubcategoryController::class, 'bysubcategory']);
         Route::post('sub_categories/upload', [SubcategoryController::class, 'upload']); 
         Route::apiResource('variations', VariationController::class);
         Route::apiResource('variations_option', VariationOptionController::class);
