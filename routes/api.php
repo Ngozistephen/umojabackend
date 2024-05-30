@@ -89,6 +89,11 @@ Route::get('allarticles', [ArticleController::class, 'allarticles']);
 Route::get('allposts', [PostController::class, 'allposts']);
 Route::get('sub_categories/category/{category_id}', [SubcategoryController::class, 'bycategory']);
 Route::get('allcategory', [CategoryController::class, 'allcategory']);
+Route::get('{vendorId}/articles', [VendorPageController::class, 'vendors_article']);
+Route::get('{vendorId}/posts', [VendorPageController::class, 'vendors_posts']);
+Route::get('{vendorId}/promos', [VendorPageController::class, 'vendors_promos']);
+Route::get('{vendorId}/products', [VendorPageController::class, 'vendors_products']);
+Route::get('{vendorId}/details', [VendorPageController::class, 'vendors_details']);
 
 
 Route::middleware('auth:api')->group(function () {
@@ -175,11 +180,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('allreviews', [SeeReviewController::class, '__invoke']); 
         Route::get('following_count', [CustomerController::class, 'getFollowingCount']);
         Route::get('following_vendors', [CustomerController::class, 'getFollowedVendors']);
-        Route::get('{vendorId}/articles', [VendorPageController::class, 'vendors_article']);
-        Route::get('{vendorId}/posts', [VendorPageController::class, 'vendors_posts']);
-        Route::get('{vendorId}/promos', [VendorPageController::class, 'vendors_promos']);
-        Route::get('{vendorId}/products', [VendorPageController::class, 'vendors_products']);
-        Route::get('{vendorId}/details', [VendorPageController::class, 'vendors_details']);
+       
       
        
         
