@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Vendor;
 
+use DB;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -86,7 +87,11 @@ class CustomerController extends Controller
             ->where('last_active_at', '>=', Carbon::now()->subDays(7))
             ->count();
 
-        $totalOrderUsers = $vendor->orders()->distinct('user_id')->count('user_id');
+            $totalOrderUsers = DB::table('orders')
+                    ->join('order_product', 'orders.id', '=', 'order_product.order_id')
+                    ->where('order_product.vendor_id', $vendorId)
+                    ->distinct('orders.user_id')
+                    ->count('orders.user_id');
         // test it on production level
 
         return response()->json([
