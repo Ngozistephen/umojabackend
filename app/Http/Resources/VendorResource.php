@@ -69,6 +69,7 @@ class VendorResource extends JsonResource
             'bank_name' => $this->bank_name,
             'bank_account_number' => $this->bank_account_number,
             'name_on_account' => $this->name_on_account,
+            'created_at' => $this->created_at,
             // 'sort_code' => $this->sort_code,
             // 'swift_code' => $this->swift_code,
             // 'iban' => $this->iban,
