@@ -105,11 +105,11 @@ class AllProductController extends Controller
             })
 
             // Filter by price range
-            ->when($request->priceFrom, function ($query) use ($request) {
-                $query->where('price', '>=', $request->priceFrom * 100);
+            ->when($request->priceMinimum, function ($query) use ($request) {
+                $query->where('price', '>=', $request->priceMinimum * 100);
             })
-            ->when($request->priceTo, function ($query) use ($request) {
-                $query->where('price', '<=', $request->priceTo * 100);
+            ->when($request->priceMaximum, function ($query) use ($request) {
+                $query->where('price', '<=', $request->priceMaximum * 100);
             })
 
             // Filter by gender
