@@ -156,6 +156,11 @@ class User extends Authenticatable
         return $this->followingVendors()->count();
     }
 
+    public function hasFollowed(Vendor $vendor)
+    {
+        return $this->followingVendors()->where('vendor_id', $vendor->id)->exists();
+    }
+
 
     
 }

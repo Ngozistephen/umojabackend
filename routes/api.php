@@ -180,6 +180,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('allreviews', [SeeReviewController::class, '__invoke']); 
         Route::get('following_count', [CustomerController::class, 'getFollowingCount']);
         Route::get('following_vendors', [CustomerController::class, 'getFollowedVendors']);
+        Route::get('has_followed/{vendor}', [CustomerController::class, 'hasFollowed']);
        
       
        

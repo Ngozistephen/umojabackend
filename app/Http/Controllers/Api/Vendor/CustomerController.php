@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\VendorResource;
 
 class CustomerController extends Controller
@@ -101,6 +102,15 @@ class CustomerController extends Controller
             'followers' => UserResource::collection($followers),
         ]);
 
+    }
+
+    public function hasFollowed(Request $request, Vendor $vendor)
+    {
+        $user = Auth::user();
+        $hasFollowed = $user->hasFollowed($vendor);
+        return response()->json([
+            'has_followed' => $hasFollowed,
+        ], 200);
     }
 
 }
