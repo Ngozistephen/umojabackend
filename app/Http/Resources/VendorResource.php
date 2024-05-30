@@ -32,6 +32,7 @@ class VendorResource extends JsonResource
                     ->where('compare_at_price', '>', 0)
                     ->count();
         return [
+            'id' => $this->id,
             // 'language' => $this->language,
             // 'gender' => $this->gender,   
             'country_name' => $this->country_name,
@@ -77,6 +78,7 @@ class VendorResource extends JsonResource
             'product_count' => $productCount,
             'review_count' => $reviewCount,
             'promo_count' =>  $promoCount,
+            'followers_count' => $this->followersCount(),
            
         ];
     }

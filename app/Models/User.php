@@ -146,5 +146,16 @@ class User extends Authenticatable
         return $this->belongsToMany(Review::class, 'review_likes');
     }
 
+    public function followingVendors()
+    {
+        return $this->belongsToMany(Vendor::class, 'user_vendor_follow', 'user_id', 'vendor_id');
+    }
+
+    public function followingCount()
+    {
+        return $this->followingVendors()->count();
+    }
+
+
     
 }

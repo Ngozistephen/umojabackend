@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\Vendor\ArticleController;
 use App\Http\Controllers\Api\Vendor\ProductController;
 use App\Http\Controllers\Api\Admin\VariationController;
 use App\Http\Controllers\Api\Customer\ReviewController;
+use App\Http\Controllers\Api\Vendor\CustomerController;
 use App\Http\Controllers\Api\Auth\SocialLoginController;
 use App\Http\Controllers\Api\Auth\VendorLoginController;
 use App\Http\Controllers\Api\Admin\SubcategoryController;
@@ -140,6 +141,11 @@ Route::middleware('auth:api')->group(function () {
          Route::get('sold_products', [SaleController::class, 'soldProducts']); 
          Route::get('top_categories',[SaleController::class, 'topCategories']); 
          Route::get('revenue_growth',[SaleController::class, 'monthlyRevenue']); 
+         Route::post('{vendorId}/follow', [CustomerController::class, 'followVendor']);
+         Route::post('{vendorId}/unfollow', [CustomerController::class, 'unfollowVendor']);
+         Route::get('{vendorId}/followers_count', [CustomerController::class, 'getVendorFollowersCount']);
+         Route::get('{vendorId}/followers', [CustomerController::class, 'getVendorFollowers']);
+         
 
 
         
@@ -162,6 +168,8 @@ Route::middleware('auth:api')->group(function () {
         Route::post('reviews/{review}/like', [ReviewController::class, 'like']);
         Route::post('reviews/{review}/unlike', [ReviewController::class, 'unlike']);
         Route::get('allreviews', [SeeReviewController::class, '__invoke']); 
+        Route::get('following_count', [CustomerController::class, 'getFollowingCount']);
+        Route::get('following_vendors', [CustomerController::class, 'getFollowedVendors']);
       
        
         

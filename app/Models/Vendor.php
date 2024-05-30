@@ -61,6 +61,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
         {
             return $this->hasMany(Review::class);
         }
+
+
+        public function followers()
+        {
+            return $this->belongsToMany(User::class, 'user_vendor_follow', 'vendor_id', 'user_id');
+        }
+
+        public function followersCount()
+        {
+            return $this->followers()->count();
+        }
         
     
 
