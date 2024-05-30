@@ -96,7 +96,8 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('users/{user}', [UserController::class, 'destroy']);
 
     Route::prefix('admin')->group(function () {
-        Route::apiResource('categories', CategoryController::class);
+        // Route::apiResource('categories', CategoryController::class);
+        Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
         Route::post('categories/upload', [CategoryController::class, 'upload']);
         Route::apiResource('sub_categories', SubcategoryController::class);
         Route::post('sub_categories/upload', [SubcategoryController::class, 'upload']); 
