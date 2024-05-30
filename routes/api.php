@@ -88,7 +88,8 @@ Route::get('allproducts', [AllProductController::class, '__invoke']);
 Route::get('allarticles', [ArticleController::class, 'allarticles']);
 Route::get('allposts', [PostController::class, 'allposts']);
 Route::get('sub_categories/category/{category_id}', [SubcategoryController::class, 'bycategory']);
-Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
+Route::get('allcategory', [CategoryController::class, 'allcategory']);
+
 
 Route::middleware('auth:api')->group(function () {
     Route::get('users/{user}', [UserController::class, 'show']);
@@ -97,8 +98,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('users/{user}', [UserController::class, 'destroy']);
 
     Route::prefix('admin')->group(function () {
-        // Route::apiResource('categories', CategoryController::class);
-        Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
+        Route::apiResource('categories', CategoryController::class);
         Route::post('categories/upload', [CategoryController::class, 'upload']);
         Route::apiResource('sub_categories', SubcategoryController::class);
         Route::post('sub_categories/upload', [SubcategoryController::class, 'upload']); 
