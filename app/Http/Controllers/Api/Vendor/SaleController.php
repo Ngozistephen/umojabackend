@@ -594,14 +594,16 @@ class SaleController extends Controller
             DB::raw('SUM(order_product.price * order_product.qty) as total_revenue'),
             DB::raw('COUNT(DISTINCT reviews.id) as total_ratings'),
             DB::raw('COUNT(DISTINCT order_product.order_id) as total_orders'), // Count distinct orders
-            'order_product.price as price' // Select price directly
+            'order_product.price as price',// Select price directly
+            'products.created_at', // Select created_at
+            'products.updated_at' // Select updated_at for last changed date
         )
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->leftJoin('order_product', 'products.id', '=', 'order_product.product_id')
             ->leftJoin('orders', 'order_product.order_id', '=', 'orders.id')
             ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
             ->where('products.vendor_id', $vendor->id)
-            ->groupBy('products.id', 'products.name', 'products.photo', 'categories.name', 'order_product.price')
+            ->groupBy('products.id', 'products.name', 'products.photo', 'categories.name', 'order_product.price', 'products.created_at', 'products.updated_at')
             ->orderBy('total_revenue', 'desc')
             ->get();
 
@@ -622,7 +624,9 @@ class SaleController extends Controller
                 'total_revenue' => $product->total_revenue,
                 'total_ratings' => $product->total_ratings,
                 'total_orders' => $product->total_orders,
-                'price' => $product->price
+                'price' => $product->price,
+                'created_at' => $product->created_at, // Add created_at
+                'last_changed' => $product->updated_at // Add last changed date
             ];
         }
 
