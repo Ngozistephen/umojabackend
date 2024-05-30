@@ -179,6 +179,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('{vendorId}/posts', [VendorPageController::class, 'vendors_posts']);
         Route::get('{vendorId}/promos', [VendorPageController::class, 'vendors_promos']);
         Route::get('{vendorId}/products', [VendorPageController::class, 'vendors_products']);
+        Route::get('{vendorId}/details', [VendorPageController::class, 'vendors_details']);
       
        
         

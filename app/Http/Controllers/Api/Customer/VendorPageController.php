@@ -12,6 +12,7 @@ use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ArticleResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\VendorResource;
 
 class VendorPageController extends Controller
 {
@@ -71,6 +72,14 @@ class VendorPageController extends Controller
                     ->paginate(10);
 
         return ProductResource::collection($products);
+    }
+    
+    public function vendors_details(Request $request, $vendorId)
+    {
+        $user = Auth::user();
+        $vendor = Vendor::findOrFail($vendorId);
+
+        return VendorResource::collection($vendor);
     }
 
 
