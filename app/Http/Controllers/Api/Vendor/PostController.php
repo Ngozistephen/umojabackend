@@ -104,43 +104,7 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    // public function update(UpdatePostRequest $request, Post $post)
-    // {
-    //     $vendor = Auth::user()->vendor;
-    //     if ($vendor->id !== $post->vendor_id) {
-    //         return response()->json(['message' => 'Unauthorized'], 403);
-    //     }
 
-    //     $validatedData = $request->validated();
-    //     // $validatedData['published_at'] = now();
-
-    //     $isDraft = $validatedData['is_draft'] ?? false;
-
-    //     if (empty($validatedData['scheduled_at']) && !$isDraft) {
-    //         $validatedData['published_at'] = now();
-    //     }
-
-    //     if ($request->has('product_ids')) {
-    //         $productIds = $request->input('product_ids');
-
-    //         foreach ($productIds as $productId) {
-    //             $product = Product::findOrFail($productId);
-    //             if ($product->vendor_id !== $vendor->id) {
-    //                 return response()->json(['message' => 'Unauthorized'], 403);
-    //             }
-    //         }
-
-    //         $post->products()->sync($productIds);
-    //     }
-
-    //     if (empty($validatedData['scheduled_at']) && !$validatedData['is_draft']) {
-    //         $validatedData['published_at'] = now();
-    //     }
-    
-    //     $post->update($validatedData);
-
-    //     return response()->json(['message' => 'Product updated successfully', 'post' => new PostResource($post->load('products'))], 200);
-    // }
 
     public function update(UpdatePostRequest $request, Post $post)
     {
