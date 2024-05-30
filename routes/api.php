@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\Vendor\OrderSearchController;
 use App\Http\Controllers\Api\Auth\SocialRegisterController;
 use App\Http\Controllers\Api\Auth\VendorRegisterController;
 use App\Http\Controllers\Api\Customer\AllProductController;
+use App\Http\Controllers\Api\Customer\VendorPageController;
 use App\Http\Controllers\Api\Vendor\SubscriptionController;
 use App\Http\Controllers\Api\Admin\ShippingMethodController;
 use App\Http\Controllers\Api\Public\ProductSearchController;
@@ -86,6 +87,7 @@ Route::get('search', [ProductSearchController::class, '__invoke']);
 Route::get('allproducts', [AllProductController::class, '__invoke']);
 Route::get('allarticles', [ArticleController::class, 'allarticles']);
 Route::get('allposts', [PostController::class, 'allposts']);
+Route::get('sub_categories/category/{category_id}', [SubcategoryController::class, 'bycategory']);
 
 Route::middleware('auth:api')->group(function () {
     Route::get('users/{user}', [UserController::class, 'show']);
@@ -97,7 +99,6 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('categories', CategoryController::class);
         Route::post('categories/upload', [CategoryController::class, 'upload']);
         Route::apiResource('sub_categories', SubcategoryController::class);
-        Route::get('sub_categories/category/{category_id}', [SubcategoryController::class, 'bycategory']);
         Route::post('sub_categories/upload', [SubcategoryController::class, 'upload']); 
         Route::apiResource('variations', VariationController::class);
         Route::apiResource('variations_option', VariationOptionController::class);
@@ -172,6 +173,8 @@ Route::middleware('auth:api')->group(function () {
         Route::get('allreviews', [SeeReviewController::class, '__invoke']); 
         Route::get('following_count', [CustomerController::class, 'getFollowingCount']);
         Route::get('following_vendors', [CustomerController::class, 'getFollowedVendors']);
+        Route::get('{vendorId}/articles', [VendorPageController::class, 'vendors_article']);
+        Route::get('{vendorId}/posts', [VendorPageController::class, 'vendors_posts']);
       
        
         
