@@ -88,6 +88,7 @@ Route::get('allproducts', [AllProductController::class, '__invoke']);
 Route::get('allarticles', [ArticleController::class, 'allarticles']);
 Route::get('allposts', [PostController::class, 'allposts']);
 Route::get('sub_categories/category/{category_id}', [SubcategoryController::class, 'bycategory']);
+Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
 
 Route::middleware('auth:api')->group(function () {
     Route::get('users/{user}', [UserController::class, 'show']);

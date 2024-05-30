@@ -23,11 +23,11 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 class CategoryController extends Controller
 {
 
-    public function __construct()
-    {
-        // Apply 'auth:api' middleware to all methods except 'index' and 'show'
-        $this->middleware('auth:api')->except(['index', 'show']);
-    }
+    // public function __construct()
+    // {
+    //     // Apply 'auth:api' middleware to all methods except 'index' and 'show'
+    //     $this->middleware('auth:api')->except(['index', 'show']);
+    // }
     /**
      * GET Categories
      *
