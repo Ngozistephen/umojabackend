@@ -142,6 +142,7 @@ Route::middleware('auth:api')->group(function () {
          Route::get('top_categories',[SaleController::class, 'topCategories']); 
          Route::get('revenue_growth',[SaleController::class, 'monthlyRevenue']); 
          Route::get('purchased_catgeory',[SaleController::class, 'allCategories']); 
+         Route::get('popular_products',[SaleController::class, 'popularProducts']); 
          Route::post('{vendorId}/follow', [CustomerController::class, 'followVendor']);
          Route::post('{vendorId}/unfollow', [CustomerController::class, 'unfollowVendor']);
          Route::get('{vendorId}/followers_count', [CustomerController::class, 'getVendorFollowersCount']);
