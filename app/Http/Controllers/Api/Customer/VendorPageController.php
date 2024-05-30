@@ -18,7 +18,7 @@ class VendorPageController extends Controller
 {
     public function vendors_article(Request $request, $vendorId)
     {
-        $user = Auth::user();
+    
         $vendor = Vendor::findOrFail($vendorId);  
         $articles = Article::where('vendor_id', $vendor->id)->orderBy('created_at', 'desc')->paginate(10);
         return ArticleResource::collection($articles);
@@ -26,7 +26,7 @@ class VendorPageController extends Controller
 
     public function vendors_posts(Request $request, $vendorId)
     {   
-        $user = Auth::user();
+      
         $vendor = Vendor::findOrFail($vendorId);
         
         $posts = Post::where('vendor_id', $vendor->id)
@@ -37,7 +37,7 @@ class VendorPageController extends Controller
     }
     public function vendors_promos(Request $request, $vendorId)
     {   
-        $user = Auth::user();
+     
         $vendor = Vendor::findOrFail($vendorId);
         
         $totalProductsWithCompareAtPrice = Product::where('vendor_id', $vendor->id)
@@ -63,7 +63,7 @@ class VendorPageController extends Controller
 
     public function vendors_products(Request $request, $vendorId)
     {
-        $user = Auth::user();
+      
         $vendor = Vendor::findOrFail($vendorId);
 
         $products = Product::where('vendor_id', $vendor->id)
@@ -76,10 +76,8 @@ class VendorPageController extends Controller
     
     public function vendors_details(Request $request, $vendorId)
     {
-        $user = Auth::user();
         $vendor = Vendor::findOrFail($vendorId);
-
-        return VendorResource::collection($vendor);
+        return new VendorResource($vendor);
     }
 
 
