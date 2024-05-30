@@ -489,5 +489,52 @@ class SaleController extends Controller
         return response()->json($responseData);
     }
 
+
+    public function AllCategories(Request $request)
+    {
+        $vendor = Auth::user()->vendor;
+
+        // Query to get categories with required details
+        $categoriesQuery = Category::select(
+            'categories.id',
+            'categories.name',
+            DB::raw('SUM(order_product.price * order_product.qty) as total_revenue'),
+            DB::raw('COUNT(DISTINCT reviews.id) as total_ratings'),
+            DB::raw('MIN(order_product.price) as min_price'),
+            DB::raw('MAX(order_product.price) as max_price')
+        )
+            ->join('products', 'categories.id', '=', 'products.category_id')
+            ->leftJoin('order_product', 'products.id', '=', 'order_product.product_id')
+            ->leftJoin('orders', 'order_product.order_id', '=', 'orders.id')
+            ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
+            ->where('products.vendor_id', $vendor->id)
+            ->groupBy('categories.id', 'categories.name')
+            ->orderBy('total_revenue', 'desc')
+            ->get();
+
+        if ($categoriesQuery->isEmpty()) {
+            return response()->json(['message' => 'No categories found.'], 404);
+        }
+
+        // Prepare the response data
+        $categoriesData = [];
+
+        foreach ($categoriesQuery  as $category) {
+            $categoriesData[] = [
+                'category_id' => $category->id,
+                'category_name' => $category->name,
+                'total_revenue' => $category->total_revenue,
+                'total_ratings' => $category->total_ratings,
+                'price_range' => [
+                    'min_price' => $category->min_price,
+                    'max_price' => $category->max_price
+                ]
+            ];
+        }
+
+        return response()->json($categoriesData);
+    }
+
+
     
 }
