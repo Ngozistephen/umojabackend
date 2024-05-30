@@ -490,7 +490,7 @@ class SaleController extends Controller
     }
 
 
-    public function AllCategories(Request $request)
+    public function allCategories(Request $request)
     {
         $vendor = Auth::user()->vendor;
 

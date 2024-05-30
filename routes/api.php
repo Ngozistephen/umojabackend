@@ -141,7 +141,7 @@ Route::middleware('auth:api')->group(function () {
          Route::get('sold_products', [SaleController::class, 'soldProducts']); 
          Route::get('top_categories',[SaleController::class, 'topCategories']); 
          Route::get('revenue_growth',[SaleController::class, 'monthlyRevenue']); 
-         Route::get('revenue_growth',[SaleController::class, 'monthlyRevenue']); 
+         Route::get('purchased_catgeory',[SaleController::class, 'allCategories']); 
          Route::post('{vendorId}/follow', [CustomerController::class, 'followVendor']);
          Route::post('{vendorId}/unfollow', [CustomerController::class, 'unfollowVendor']);
          Route::get('{vendorId}/followers_count', [CustomerController::class, 'getVendorFollowersCount']);
