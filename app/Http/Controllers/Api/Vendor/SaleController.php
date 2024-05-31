@@ -689,8 +689,7 @@ class SaleController extends Controller
         $month = $request->query('month');
         $day = $request->query('day');
         $rating = $request->query('rating');
-        $minPrice = $request->query('min_price');
-        $maxPrice = $request->query('max_price');
+        $price = $request->query('price');
         $order = $request->query('order', 'total_revenue');  // Default order by total_revenue
         $productName = $request->query('product_name');    // Product name filter
 
@@ -730,12 +729,9 @@ class SaleController extends Controller
             $productsQuery->having(DB::raw('AVG(reviews.rating)'), '>=', $rating);
         }
 
-        // Apply price filters
-        if ($minPrice) {
-            $productsQuery->having('price', '>=', $minPrice);
-        }
-        if ($maxPrice) {
-            $productsQuery->having('price', '<=', $maxPrice);
+        // Apply price filter
+        if ($price) {
+            $productsQuery->where('products.price', $price);
         }
 
         // Apply product name filter
