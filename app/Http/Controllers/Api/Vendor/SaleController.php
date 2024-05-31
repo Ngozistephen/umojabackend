@@ -490,11 +490,66 @@ class SaleController extends Controller
     }
 
 
+    // public function allCategories(Request $request)
+    // {
+    //     $vendor = Auth::user()->vendor;
+
+    //     // Query to get categories with required details
+    //     $categoriesQuery = Category::select(
+    //         'categories.id',
+    //         'categories.name',
+    //         DB::raw('SUM(order_product.price * order_product.qty) as total_revenue'),
+    //         DB::raw('COUNT(DISTINCT reviews.id) as total_ratings'),
+    //         DB::raw('MIN(order_product.price) as min_price'),
+    //         DB::raw('MAX(order_product.price) as max_price')
+    //     )
+    //         ->join('products', 'categories.id', '=', 'products.category_id')
+    //         ->leftJoin('order_product', 'products.id', '=', 'order_product.product_id')
+    //         ->leftJoin('orders', 'order_product.order_id', '=', 'orders.id')
+    //         ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
+    //         ->where('products.vendor_id', $vendor->id)
+    //         ->groupBy('categories.id', 'categories.name')
+    //         ->orderBy('total_revenue', 'desc')
+    //         ->get();
+
+    //     if ($categoriesQuery->isEmpty()) {
+    //         return response()->json(['message' => 'No categories found.'], 404);
+    //     }
+
+    //     // Prepare the response data
+    //     $categoriesData = [];
+
+    //     foreach ($categoriesQuery  as $category) {
+    //         $categoriesData[] = [
+    //             'category_id' => $category->id,
+    //             'category_name' => $category->name,
+    //             'total_revenue' => $category->total_revenue,
+    //             'total_ratings' => $category->total_ratings,
+    //             'price_range' => [
+    //                 'min_price' => $category->min_price,
+    //                 'max_price' => $category->max_price
+    //             ]
+    //         ];
+    //     }
+
+    //     return response()->json($categoriesData);
+    // }
+
     public function allCategories(Request $request)
     {
         $vendor = Auth::user()->vendor;
 
-        // Query to get categories with required details
+        // Get filter parameters from the request
+        $year = $request->query('year');
+        $month = $request->query('month');
+        $day = $request->query('day');
+        $rating = $request->query('rating');
+        $minPrice = $request->query('min_price');
+        $maxPrice = $request->query('max_price');
+        $order = $request->query('order', 'total_revenue');  // Default order by total_revenue
+        $categoryName = $request->query('category_name');    // Category name filter
+
+        // Start building the query
         $categoriesQuery = Category::select(
             'categories.id',
             'categories.name',
@@ -503,14 +558,48 @@ class SaleController extends Controller
             DB::raw('MIN(order_product.price) as min_price'),
             DB::raw('MAX(order_product.price) as max_price')
         )
-            ->join('products', 'categories.id', '=', 'products.category_id')
-            ->leftJoin('order_product', 'products.id', '=', 'order_product.product_id')
-            ->leftJoin('orders', 'order_product.order_id', '=', 'orders.id')
-            ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
-            ->where('products.vendor_id', $vendor->id)
-            ->groupBy('categories.id', 'categories.name')
-            ->orderBy('total_revenue', 'desc')
-            ->get();
+        ->join('products', 'categories.id', '=', 'products.category_id')
+        ->leftJoin('order_product', 'products.id', '=', 'order_product.product_id')
+        ->leftJoin('orders', 'order_product.order_id', '=', 'orders.id')
+        ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
+        ->where('products.vendor_id', $vendor->id)
+        ->groupBy('categories.id', 'categories.name');
+
+        // Apply date filters
+        if ($year) {
+            $categoriesQuery->whereYear('orders.created_at', $year);
+        }
+        if ($month) {
+            $categoriesQuery->whereMonth('orders.created_at', $month);
+        }
+        if ($day) {
+            $categoriesQuery->whereDay('orders.created_at', $day);
+        }
+
+        // Apply rating filter
+        if ($rating) {
+            $categoriesQuery->having(DB::raw('AVG(reviews.rating)'), '>=', $rating);
+        }
+
+        // Apply price filters
+        if ($minPrice) {
+            $categoriesQuery->having('min_price', '>=', $minPrice);
+        }
+        if ($maxPrice) {
+            $categoriesQuery->having('max_price', '<=', $maxPrice);
+        }
+
+        // Apply category name filter
+        if ($categoryName) {
+            $categoriesQuery->where('categories.name', 'like', '%' . $categoryName . '%');
+        }
+
+        // Apply ordering
+        if ($order == 'total_revenue' || $order == 'total_ratings' || $order == 'min_price' || $order == 'max_price') {
+            $categoriesQuery->orderBy($order, 'desc');
+        }
+
+        $categoriesQuery = $categoriesQuery->get();
 
         if ($categoriesQuery->isEmpty()) {
             return response()->json(['message' => 'No categories found.'], 404);
@@ -519,7 +608,7 @@ class SaleController extends Controller
         // Prepare the response data
         $categoriesData = [];
 
-        foreach ($categoriesQuery  as $category) {
+        foreach ($categoriesQuery as $category) {
             $categoriesData[] = [
                 'category_id' => $category->id,
                 'category_name' => $category->name,
@@ -534,6 +623,8 @@ class SaleController extends Controller
 
         return response()->json($categoriesData);
     }
+
+
 
     // public function popularProducts(Request $request)
     // {
