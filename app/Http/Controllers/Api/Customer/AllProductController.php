@@ -179,7 +179,7 @@ class AllProductController extends Controller
             })
 
             ->latest()
-            ->paginate(60);
+            ->paginate(20);
 
         return ProductResource::collection($products);
     }
