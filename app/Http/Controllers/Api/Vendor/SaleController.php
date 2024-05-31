@@ -626,6 +626,8 @@ class SaleController extends Controller
 
 
 
+
+
     // public function popularProducts(Request $request)
     // {
     //     $vendor = Auth::user()->vendor;
@@ -638,14 +640,17 @@ class SaleController extends Controller
     //         'categories.name as category_name',
     //         DB::raw('SUM(order_product.price * order_product.qty) as total_revenue'),
     //         DB::raw('COUNT(DISTINCT reviews.id) as total_ratings'),
-    //         'order_product.price as price' // Select price directly
+    //         DB::raw('COUNT(DISTINCT order_product.order_id) as total_orders'), // Count distinct orders
+    //         'order_product.price as price',// Select price directly
+    //         'products.created_at', // Select created_at
+    //         'products.updated_at' // Select updated_at for last changed date
     //     )
     //         ->join('categories', 'products.category_id', '=', 'categories.id')
     //         ->leftJoin('order_product', 'products.id', '=', 'order_product.product_id')
     //         ->leftJoin('orders', 'order_product.order_id', '=', 'orders.id')
     //         ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
     //         ->where('products.vendor_id', $vendor->id)
-    //         ->groupBy('products.id', 'products.name', 'products.photo', 'categories.name', 'order_product.price')
+    //         ->groupBy('products.id', 'products.name', 'products.photo', 'categories.name', 'order_product.price', 'products.created_at', 'products.updated_at')
     //         ->orderBy('total_revenue', 'desc')
     //         ->get();
 
@@ -665,7 +670,10 @@ class SaleController extends Controller
     //             'category_name' => $product->category_name,
     //             'total_revenue' => $product->total_revenue,
     //             'total_ratings' => $product->total_ratings,
-    //             'price' => $product->price
+    //             'total_orders' => $product->total_orders,
+    //             'price' => $product->price,
+    //             'created_at' => $product->created_at, // Add created_at
+    //             'last_changed' => $product->updated_at // Add last changed date
     //         ];
     //     }
 
@@ -676,7 +684,17 @@ class SaleController extends Controller
     {
         $vendor = Auth::user()->vendor;
 
-        // Query to get products with required details
+        // Get filter parameters from the request
+        $year = $request->query('year');
+        $month = $request->query('month');
+        $day = $request->query('day');
+        $rating = $request->query('rating');
+        $minPrice = $request->query('min_price');
+        $maxPrice = $request->query('max_price');
+        $order = $request->query('order', 'total_revenue');  // Default order by total_revenue
+        $productName = $request->query('product_name');    // Product name filter
+
+        // Start building the query
         $productsQuery = Product::select(
             'products.id',
             'products.name',
@@ -689,14 +707,48 @@ class SaleController extends Controller
             'products.created_at', // Select created_at
             'products.updated_at' // Select updated_at for last changed date
         )
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->leftJoin('order_product', 'products.id', '=', 'order_product.product_id')
-            ->leftJoin('orders', 'order_product.order_id', '=', 'orders.id')
-            ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
-            ->where('products.vendor_id', $vendor->id)
-            ->groupBy('products.id', 'products.name', 'products.photo', 'categories.name', 'order_product.price', 'products.created_at', 'products.updated_at')
-            ->orderBy('total_revenue', 'desc')
-            ->get();
+        ->join('categories', 'products.category_id', '=', 'categories.id')
+        ->leftJoin('order_product', 'products.id', '=', 'order_product.product_id')
+        ->leftJoin('orders', 'order_product.order_id', '=', 'orders.id')
+        ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
+        ->where('products.vendor_id', $vendor->id)
+        ->groupBy('products.id', 'products.name', 'products.photo', 'categories.name', 'order_product.price', 'products.created_at', 'products.updated_at');
+
+        // Apply date filters
+        if ($year) {
+            $productsQuery->whereYear('orders.created_at', $year);
+        }
+        if ($month) {
+            $productsQuery->whereMonth('orders.created_at', $month);
+        }
+        if ($day) {
+            $productsQuery->whereDay('orders.created_at', $day);
+        }
+
+        // Apply rating filter
+        if ($rating) {
+            $productsQuery->having(DB::raw('AVG(reviews.rating)'), '>=', $rating);
+        }
+
+        // Apply price filters
+        if ($minPrice) {
+            $productsQuery->having('price', '>=', $minPrice);
+        }
+        if ($maxPrice) {
+            $productsQuery->having('price', '<=', $maxPrice);
+        }
+
+        // Apply product name filter
+        if ($productName) {
+            $productsQuery->where('products.name', 'like', '%' . $productName . '%');
+        }
+
+        // Apply ordering
+        if ($order == 'total_revenue' || $order == 'total_ratings' || $order == 'total_orders' || $order == 'price') {
+            $productsQuery->orderBy($order, 'desc');
+        }
+
+        $productsQuery = $productsQuery->get();
 
         // Check if the query returned results
         if ($productsQuery->isEmpty()) {
@@ -723,6 +775,7 @@ class SaleController extends Controller
 
         return response()->json($productsData);
     }
+
 
 
 
