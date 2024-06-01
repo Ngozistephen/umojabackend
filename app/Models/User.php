@@ -51,6 +51,13 @@ class User extends Authenticatable
         'business_profile_complete',
         'is_verified',
         'complete_setup',
+        'user_bio',
+        'user_country',
+        'user_city',
+        'user_state',
+        'user_postal_code',
+        'user_tax_id',
+
         
     ];
     /**

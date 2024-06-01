@@ -101,6 +101,47 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function topWeeklyTransactions(Request $request)
+    {
+        $vendor = Auth::user()->vendor;
+
+        $startDate = now()->subDays(7)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        $topTransactions = DB::table('order_product')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->join('orders', 'order_product.order_id', '=', 'orders.id')
+            ->join('users', 'orders.user_id', '=', 'users.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->select(
+                'users.first_name as user_first_name',
+                'users.last_name as user_last_name',
+                'users.profile_photo as user_profile_photo',
+                'users.user_country as user_country',
+                'products.name as product_name',
+                'orders.created_at as transaction_date',
+                DB::raw('order_product.price * order_product.qty as purchase_amount')
+            )
+            ->orderBy('purchase_amount', 'desc')
+            ->limit(5) // Adjust the limit to the number of top transactions you need
+            ->get();
+
+        $responseData = $topTransactions->map(function($item) {
+            return [
+                'user_firstname' => $item->user_first_name,
+                'user_lastname' => $item->user_last_name,
+                'user_country' => $item->user_country,
+                'product_name' => $item->product_name,
+                'transaction_date' => $item->transaction_date,
+                'purchase_amount' => $item->purchase_amount,
+            ];
+        });
+
+        return response()->json($responseData);
+    }
+
+
 
 
 }

@@ -150,6 +150,7 @@ Route::middleware('auth:api')->group(function () {
          Route::get('total_revenue', [DashboardController::class, 'weeklyTotalRevenue']);
          Route::get('weekly_transactions', [DashboardController::class, 'weeklyTotalTransactions']);
          Route::get('weekly_products_sold', [DashboardController::class, 'weeklyTotalProductsSold']);
+         Route::get('top_weekly_transactions', [DashboardController::class, 'topWeeklyTransactions']);
          
 
 
