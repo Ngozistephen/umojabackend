@@ -151,7 +151,7 @@ Route::middleware('auth:api')->group(function () {
          Route::get('weekly_transactions', [DashboardController::class, 'weeklyTotalTransactions']);
          Route::get('weekly_products_sold', [DashboardController::class, 'weeklyTotalProductsSold']);
          Route::get('top_weekly_transactions', [DashboardController::class, 'topWeeklyTransactions']);
-         Route::get('recent_weekly_orders', [DashboardController::class, 'recentWeeklyOrders']);
+         Route::get('top_weekly_products', [DashboardController::class, 'topWeeklyProducts']);
          
 
 

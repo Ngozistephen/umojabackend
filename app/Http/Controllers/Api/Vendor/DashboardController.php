@@ -124,7 +124,7 @@ class DashboardController extends Controller
                 DB::raw('order_product.price * order_product.qty as purchase_amount')
             )
             ->orderBy('purchase_amount', 'desc')
-            ->limit(5) // Adjust the limit to the number of top transactions you need
+            ->limit(5)
             ->get();
 
         $responseData = $topTransactions->map(function($item) {
@@ -181,6 +181,42 @@ class DashboardController extends Controller
 
         return response()->json($responseData);
     }
+
+    public function topWeeklyProducts(Request $request)
+    {
+        $vendor = Auth::user()->vendor;
+
+        $startDate = now()->subDays(7)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        $topProducts = DB::table('order_product')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->join('orders', 'order_product.order_id', '=', 'orders.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->select(
+                'products.name as product_name',
+                'products.photo_url as product_photo',
+                DB::raw('SUM(order_product.qty) as total_quantity_sold'),
+                DB::raw('SUM(order_product.price * order_product.qty) as total_sales')
+            )
+            ->groupBy('products.id', 'products.name', 'products.photo_url')
+            ->orderBy('total_sales', 'desc')
+            ->limit(5) 
+            ->get();
+
+        $responseData = $topProducts->map(function($item) {
+            return [
+                'product_name' => $item->product_name,
+                'product_photo' => $item->product_photo,
+                'total_quantity_sold' => $item->total_quantity_sold,
+                'total_sales' => $item->total_sales,
+            ];
+        });
+
+        return response()->json($responseData);
+    }
+
 
 
 
