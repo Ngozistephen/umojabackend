@@ -260,10 +260,10 @@ class DashboardController extends Controller
             ->where('products.vendor_id', $vendor->id)
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->select(
-                'users.country',
+                'users.user_country',
                 DB::raw('COUNT(DISTINCT users.id) as user_count')
             )
-            ->groupBy('users.country')
+            ->groupBy('users.user_country')
             ->get();
 
         $totalUsers = $ordersByCountry->sum('user_count');
@@ -271,7 +271,7 @@ class DashboardController extends Controller
         $responseData = $ordersByCountry->map(function($item) use ($totalUsers) {
             $percentage = ($totalUsers > 0) ? ($item->user_count / $totalUsers) * 100 : 0;
             return [
-                'country' => $item->country,
+                'country' => $item->user_country,
                 'user_count' => $item->user_count,
                 'percentage' => round($percentage, 2),
             ];
