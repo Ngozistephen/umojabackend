@@ -196,11 +196,11 @@ class DashboardController extends Controller
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->select(
                 'products.name as product_name',
-                'products.photo_url as product_photo',
+                'products.photo as product_photo',
                 DB::raw('SUM(order_product.qty) as total_quantity_sold'),
                 DB::raw('SUM(order_product.price * order_product.qty) as total_sales')
             )
-            ->groupBy('products.id', 'products.name', 'products.photo_url')
+            ->groupBy('products.id', 'products.name', 'products.photo')
             ->orderBy('total_sales', 'desc')
             ->limit(5) 
             ->get();
