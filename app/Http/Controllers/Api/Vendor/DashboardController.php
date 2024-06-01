@@ -142,6 +142,45 @@ class DashboardController extends Controller
         return response()->json($responseData);
     }
 
+    public function recentWeeklyOrders(Request $request)
+    {
+        $vendor = Auth::user()->vendor;
+
+        $startDate = now()->subDays(7)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        $recentOrders = DB::table('order_product')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->join('orders', 'order_product.order_id', '=', 'orders.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->select(
+                'products.name as product_name',
+                'categories.name as category_name',
+                'order_product.qty as product_quantity',
+                'order_product.price as sales_price',
+                DB::raw('order_product.price * order_product.qty as total_price'),
+                'orders.created_at as order_date'
+            )
+            ->orderBy('orders.created_at', 'desc')
+            ->get();
+
+        $responseData = $recentOrders->map(function($item) {
+            return [
+                'product_name' => $item->product_name,
+                'category_name' => $item->category_name,
+                'product_quantity' => $item->product_quantity,
+                'sales_price' => $item->sales_price,
+                'total_price' => $item->total_price,
+                'order_date' => $item->order_date,
+            ];
+        });
+
+        return response()->json($responseData);
+    }
+
+
 
 
 
