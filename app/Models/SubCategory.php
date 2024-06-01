@@ -11,7 +11,7 @@ class SubCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'category_id', 'photo','neted_subcategories']; 
+    protected $fillable = ['name', 'category_id', 'photo','neted_subcategories', 'gender_subcategory']; 
 
     protected $casts = [
         'neted_subcategories' => 'array',

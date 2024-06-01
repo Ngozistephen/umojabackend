@@ -29,6 +29,7 @@ class UpdateSubcategoryRequest extends FormRequest
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
             'neted_subcategories' => 'nullable|array', 
             'neted_subcategories.*' => 'string',
+            'gender_subcategory' => 'nullable|string',
             
         ];
     }

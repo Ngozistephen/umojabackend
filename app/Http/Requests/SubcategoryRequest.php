@@ -30,6 +30,8 @@ class SubcategoryRequest extends FormRequest
             'photo' => 'nullable', 
             'neted_subcategories' => 'nullable|array', 
             'neted_subcategories.*' => 'string',
+            'gender_subcategory' => 'nullable|string',
+          
         ];
     }
 
