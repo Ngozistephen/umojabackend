@@ -81,5 +81,26 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function weeklyTotalProductsSold(Request $request)
+    {
+        $vendor = Auth::user()->vendor;
+
+        $startDate = now()->subDays(7)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        $totalProductsSold = DB::table('order_product')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->join('orders', 'order_product.order_id', '=', 'orders.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->sum('order_product.qty');
+
+
+        return response()->json([
+            'total_products_sold' => $totalProductsSold,
+        ]);
+    }
+
+
 
 }
