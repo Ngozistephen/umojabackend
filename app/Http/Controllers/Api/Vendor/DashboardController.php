@@ -131,6 +131,7 @@ class DashboardController extends Controller
             return [
                 'user_firstname' => $item->user_first_name,
                 'user_lastname' => $item->user_last_name,
+                'user_photo' => $item->user_profile_photo,
                 'user_country' => $item->user_country,
                 'product_name' => $item->product_name,
                 'transaction_date' => $item->transaction_date,
