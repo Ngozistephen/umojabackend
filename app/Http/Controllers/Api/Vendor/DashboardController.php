@@ -280,6 +280,24 @@ class DashboardController extends Controller
         return response()->json($responseData);
     }
 
+    public function weeklyVendorTotalUsers(Request $request)
+    {
+        $vendor = Auth::user()->vendor;
+    
+        $startDate = now()->subDays(7)->startOfDay();
+        $endDate = now()->endOfDay();
+    
+        $totalUsers = DB::table('orders')
+            ->join('order_product', 'orders.id', '=', 'order_product.order_id')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->distinct('orders.user_id')
+            ->count('orders.user_id');
+    
+        return response()->json(['total_users' => $totalUsers]);
+    }
+
 
 
 

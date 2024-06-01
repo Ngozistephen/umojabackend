@@ -154,6 +154,7 @@ Route::middleware('auth:api')->group(function () {
          Route::get('top_weekly_products', [DashboardController::class, 'topWeeklyProducts']);
          Route::get('weekly_out_of_stock_products', [DashboardController::class, 'weeklyOutOfStockProducts']);
          Route::get('weekly_orders_by_country', [DashboardController::class, 'weeklyOrdersByCountry']);
+         Route::get('weekly_total_users', [DashboardController::class, 'weeklyVendorTotalUsers']);
          
 
 
