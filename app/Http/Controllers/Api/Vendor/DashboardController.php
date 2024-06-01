@@ -60,4 +60,26 @@ class DashboardController extends Controller
         ]);
     }
 
+
+    public function weeklyTotalTransactions(Request $request)
+    {
+        $vendor = Auth::user()->vendor;
+        $startDate = now()->subDays(7)->startOfDay();
+        $endDate = now()->endOfDay();
+
+
+        $totalTransactions = DB::table('orders')
+            ->join('order_product', 'orders.id', '=', 'order_product.order_id')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->distinct('orders.id')
+            ->count('orders.id');
+
+        return response()->json([
+            'total_transactions' => $totalTransactions,
+        ]);
+    }
+
+
 }
