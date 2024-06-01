@@ -23,6 +23,7 @@ class ProductResource extends JsonResource
             'vendor_firstname'=> $this->user?->first_name,
             'vendor_lastname'=> $this->user?->last_name,
             'vendor_profile_photo'=> $this->user?->vendor->profile_photo,
+            'vendor_business_name' => $this->user?->vendor->business_name,
             'vendor_id'=> $this->user?->vendor->id,
             'vendor_state'=> $this->user?->vendor->state,
             'vendor_country'=> $this->user?->vendor->country_name,
