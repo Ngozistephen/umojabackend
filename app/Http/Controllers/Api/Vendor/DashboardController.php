@@ -117,7 +117,7 @@ class DashboardController extends Controller
             ->select(
                 'users.first_name as user_first_name',
                 'users.last_name as user_last_name',
-                'users.profile_photo as user_profile_photo',
+                'users.user_profile as user_profile_photo',
                 'users.user_country as user_country',
                 'products.name as product_name',
                 'orders.created_at as transaction_date',
