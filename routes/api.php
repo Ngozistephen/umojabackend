@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\Customer\ReviewController;
 use App\Http\Controllers\Api\Vendor\CustomerController;
 use App\Http\Controllers\Api\Auth\SocialLoginController;
 use App\Http\Controllers\Api\Auth\VendorLoginController;
+use App\Http\Controllers\Api\Vendor\DashboardController;
 use App\Http\Controllers\Api\Admin\SubcategoryController;
 use App\Http\Controllers\Api\Auth\SocialVendorController;
 use App\Http\Controllers\Api\Auth\VerificationController;
@@ -155,6 +156,7 @@ Route::middleware('auth:api')->group(function () {
          Route::post('{vendorId}/unfollow', [CustomerController::class, 'unfollowVendor']);
          Route::get('{vendorId}/followers_count', [CustomerController::class, 'getVendorFollowersCount']);
          Route::get('{vendorId}/followers', [CustomerController::class, 'getVendorFollowers']);
+         Route::get('weekly_revenue', [DashboardController::class, 'weeklyRevenue']);
          
 
 
