@@ -246,6 +246,40 @@ class DashboardController extends Controller
         return response()->json($responseData);
     }
 
+    public function weeklyOrdersByCountry(Request $request)
+    {
+        $vendor = Auth::user()->vendor;
+
+        $startDate = now()->subDays(7)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        $ordersByCountry = DB::table('orders')
+            ->join('users', 'orders.user_id', '=', 'users.id')
+            ->join('order_product', 'orders.id', '=', 'order_product.order_id')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->select(
+                'users.country',
+                DB::raw('COUNT(DISTINCT users.id) as user_count')
+            )
+            ->groupBy('users.country')
+            ->get();
+
+        $totalUsers = $ordersByCountry->sum('user_count');
+
+        $responseData = $ordersByCountry->map(function($item) use ($totalUsers) {
+            $percentage = ($totalUsers > 0) ? ($item->user_count / $totalUsers) * 100 : 0;
+            return [
+                'country' => $item->country,
+                'user_count' => $item->user_count,
+                'percentage' => round($percentage, 2),
+            ];
+        });
+
+        return response()->json($responseData);
+    }
+
 
 
 
