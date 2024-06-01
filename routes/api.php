@@ -147,6 +147,7 @@ Route::middleware('auth:api')->group(function () {
          Route::get('{vendorId}/followers_count', [CustomerController::class, 'getVendorFollowersCount']);
          Route::get('{vendorId}/followers', [CustomerController::class, 'getVendorFollowers']);
          Route::get('weekly_revenue', [DashboardController::class, 'weeklyRevenue']);
+         Route::get('total_revenue', [DashboardController::class, 'weeklyTotalRevenue']);
          
 
 

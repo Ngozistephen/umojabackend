@@ -40,4 +40,24 @@ class DashboardController extends Controller
         return response()->json($responseData);
     }
 
+
+    public function weeklyTotalRevenue(Request $request)
+    {
+        $vendor = Auth::user()->vendor;
+        $startDate = now()->subDays(7)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        $totalRevenue = DB::table('order_product')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->join('orders', 'order_product.order_id', '=', 'orders.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->select(DB::raw('SUM(order_product.price * order_product.qty) as total_amount'))
+            ->first();
+
+        return response()->json([
+            'total_amount' => $totalRevenue->total_amount,
+        ]);
+    }
+
 }
