@@ -227,9 +227,9 @@ class DashboardController extends Controller
 
         $outOfStockProducts = DB::table('products')
             ->where('user_id', $vendor->id)
-            ->where('mini_stock', '<=', 0)
+            ->where('unit_per_item', '<=', 0)
             ->whereBetween('updated_at', [$startDate, $endDate])
-            ->select('name', 'sku', 'photo', 'mini_stock', 'price', 'updated_at')
+            ->select('name', 'sku', 'photo', 'unit_per_item', 'price', 'updated_at')
             ->get();
 
         $responseData = $outOfStockProducts->map(function($item) {
@@ -237,7 +237,7 @@ class DashboardController extends Controller
                 'product_name' => $item->name,
                 'sku' => $item->sku,
                 'product_photo' => $item->photo,
-                'mini_stock' => $item->mini_stock,
+                'mini_stock' => $item->unit_per_item,
                 'price' => $item->price,
                 'updated_at' => $item->updated_at,
             ];
