@@ -295,7 +295,7 @@ class DashboardController extends Controller
             ->distinct('orders.user_id')
             ->count('orders.user_id');
     
-        return response()->json(['total_users' => $totalUsers]);
+        return response()->json(['total_customers' => $totalUsers]);
     }
 
 
