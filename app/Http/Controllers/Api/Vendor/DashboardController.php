@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Vendor;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -296,6 +297,79 @@ class DashboardController extends Controller
             ->count('orders.user_id');
     
         return response()->json(['total_customers' => $totalUsers]);
+    }
+
+
+    public function vendorStats(Request $request)
+    {
+        $vendor = Auth::user()->vendor;
+
+        $filterType = $request->input('filter', 'last7days'); // default to 'last7days'
+        $startDate = now();
+        $endDate = now();
+
+        switch ($filterType) {
+            case 'last7days':
+                $startDate = now()->subDays(7)->startOfDay();
+                break;
+            case 'month':
+                $startDate = now()->startOfMonth();
+                $endDate = now()->endOfMonth();
+                break;
+            case 'year':
+                $year = $request->input('year', now()->year);
+                $startDate = Carbon::createFromDate($year)->startOfYear();
+                $endDate = Carbon::createFromDate($year)->endOfYear();
+                break;
+            case 'custom':
+                $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date'))->startOfDay() : now()->subDays(7)->startOfDay();
+                $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date'))->endOfDay() : now()->endOfDay();
+                break;
+            default:
+                return response()->json(['error' => 'Invalid filter type'], 400);
+        }
+
+        // Total Revenue
+        $totalRevenue = DB::table('order_product')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->join('orders', 'order_product.order_id', '=', 'orders.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->select(DB::raw('SUM(order_product.price * order_product.qty) as total_amount'))
+            ->first();
+
+        // Total Transactions
+        $totalTransactions = DB::table('orders')
+            ->join('order_product', 'orders.id', '=', 'order_product.order_id')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->distinct('orders.id')
+            ->count('orders.id');
+
+        // Total Products Sold
+        $totalProductsSold = DB::table('order_product')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->join('orders', 'order_product.order_id', '=', 'orders.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->sum('order_product.qty');
+
+        // Total Users
+        $totalUsers = DB::table('orders')
+            ->join('order_product', 'orders.id', '=', 'order_product.order_id')
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->where('products.vendor_id', $vendor->id)
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->distinct('orders.user_id')
+            ->count('orders.user_id');
+
+        return response()->json([
+            'total_revenue' => $totalRevenue->total_amount,
+            'total_transactions' => $totalTransactions,
+            'total_products_sold' => $totalProductsSold,
+            'total_customers' => $totalUsers,
+        ]);
     }
 
 
