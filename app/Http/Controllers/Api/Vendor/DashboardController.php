@@ -157,6 +157,7 @@ class DashboardController extends Controller
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->select(
                 'products.name as product_name',
+                'products.photo as product_photo',
                 'categories.name as category_name',
                 'order_product.qty as product_quantity',
                 'order_product.price as sales_price',
@@ -169,6 +170,7 @@ class DashboardController extends Controller
         $responseData = $recentOrders->map(function($item) {
             return [
                 'product_name' => $item->product_name,
+                'product_photo' => $item->product_photo,
                 'category_name' => $item->category_name,
                 'product_quantity' => $item->product_quantity,
                 'sales_price' => $item->sales_price,
