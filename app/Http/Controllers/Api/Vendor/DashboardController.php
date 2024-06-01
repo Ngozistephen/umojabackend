@@ -218,6 +218,35 @@ class DashboardController extends Controller
     }
 
 
+    public function weeklyOutOfStockProducts(Request $request)
+    {
+        $vendor = Auth::user()->vendor;
+
+        $startDate = now()->subDays(7)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        $outOfStockProducts = DB::table('products')
+            ->where('user_id', $vendor->id)
+            ->where('mini_stock', '<=', 0)
+            ->whereBetween('updated_at', [$startDate, $endDate])
+            ->select('name', 'sku', 'photo', 'mini_stock', 'price', 'updated_at')
+            ->get();
+
+        $responseData = $outOfStockProducts->map(function($item) {
+            return [
+                'product_name' => $item->name,
+                'sku' => $item->sku,
+                'product_photo' => $item->photo,
+                'mini_stock' => $item->mini_stock,
+                'price' => $item->price,
+                'updated_at' => $item->updated_at,
+            ];
+        });
+
+        return response()->json($responseData);
+    }
+
+
 
 
 
