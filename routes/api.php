@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\Auth\SocialRegisterController;
 use App\Http\Controllers\Api\Auth\VendorRegisterController;
 use App\Http\Controllers\Api\Customer\AllProductController;
 use App\Http\Controllers\Api\Customer\VendorPageController;
+use App\Http\Controllers\Api\Vendor\ReviewSearchController;
 use App\Http\Controllers\Api\Vendor\SubscriptionController;
 use App\Http\Controllers\Api\Admin\ShippingMethodController;
 use App\Http\Controllers\Api\Public\ProductSearchController;
@@ -172,6 +173,8 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('paymentMethods', PaymentMethodController::class);
         Route::post('checkout', [CheckoutController::class, 'checkout']);
         Route::apiResource('reviews', ReviewController::class);
+        Route::get('review_seach', [ReviewSearchController::class, 'search']);
+
         // Route::get('reviews/all', [ReviewController::class, 'allreview']);
         Route::post('reviews/{review}/reply', [ReviewController::class, 'reply']);
         Route::put('reviews/{review}/reply', [ReviewController::class, 'editReply']);
