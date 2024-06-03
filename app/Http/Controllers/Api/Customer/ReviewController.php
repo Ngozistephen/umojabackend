@@ -55,14 +55,16 @@ class ReviewController extends Controller
             5 => 0,
         ];
     
-        // Merge the counts from the query into the initialized array
-        $ratingsCount = array_merge($allRatingsCount, $ratingsCount->toArray());
+        // Merge the counts from the query into the initialized array, maintaining keys
+        foreach ($ratingsCount as $rating => $count) {
+            $allRatingsCount[$rating] = $count;
+        }
     
         return response()->json([
             'data' => ReviewResource::collection($reviews),
             'average_rating' => $averageRating,
             'total_reviews' => $totalReviews,
-            'ratings_count' => $ratingsCount,
+            'ratings_count' => $allRatingsCount,
             'pagination' => [
                 'current_page' => $reviews->currentPage(),
                 'last_page' => $reviews->lastPage(),
@@ -71,6 +73,7 @@ class ReviewController extends Controller
             ],
         ]);
     }
+    
     
 
     // public function index()
