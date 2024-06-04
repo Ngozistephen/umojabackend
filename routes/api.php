@@ -174,6 +174,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('checkout', [CheckoutController::class, 'checkout']);
         Route::apiResource('reviews', ReviewController::class);
         Route::get('review_search', [ReviewSearchController::class, 'search']);
+        Route::get('review_filter', [ReviewSearchController::class, 'filter']);
 
         // Route::get('reviews/all', [ReviewController::class, 'allreview']);
         Route::post('reviews/{review}/reply', [ReviewController::class, 'reply']);
