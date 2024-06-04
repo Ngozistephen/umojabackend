@@ -179,6 +179,7 @@ Route::middleware('auth:api')->group(function () {
 
         // Route::get('reviews/all', [ReviewController::class, 'allreview']);
         Route::post('reviews/{review}/reply', [ReviewController::class, 'reply']);
+        Route::post('reviews/{review}/mark_as_pending', [ReviewController::class, 'markAsPending']);
         Route::put('reviews/{review}/reply', [ReviewController::class, 'editReply']);
         Route::delete('reviews/{review}/reply', [ReviewController::class, 'deleteReply']);
         Route::post('reviews/{review}/like', [ReviewController::class, 'like']);

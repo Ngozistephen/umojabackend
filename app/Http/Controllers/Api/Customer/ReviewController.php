@@ -284,4 +284,21 @@ class ReviewController extends Controller
         return response()->json(['message' => 'Review reply deleted successfully']);
     }
 
+
+    public function markAsPending(UpdateReviewReplyRequest $request, $id)
+    {
+        $review = Review::findOrFail($id);
+        $vendor = $request->user()->vendor;
+
+        // Check if the vendor associated with the review matches the authenticated vendor
+        if ($review->vendor_id !== $vendor->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+      
+        $review->update(['review_status' => 'pending']);
+
+        return new ReviewResource($review->load(['product', 'user', 'vendor']));
+    }
+
 }
