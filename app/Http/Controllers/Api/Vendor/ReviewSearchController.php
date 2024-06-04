@@ -40,6 +40,10 @@ class ReviewSearchController extends Controller
                             ->orWhereHas('category', function ($query) use ($searchTerm) {
                                 $query->where('name', 'like', $searchTerm);
                             });
+                    })
+                    ->orWhereHas('user', function ($query) use ($searchTerm) {
+                        $query->where('first_name', 'like', $searchTerm)
+                              ->orWhere('last_name', 'like', $searchTerm);
                     });
             });
         }
