@@ -129,7 +129,6 @@ Route::middleware('auth:api')->group(function () {
          Route::post('posts/draft', [PostController::class, 'draft']);
          Route::post('posts/schedule', [PostController::class, 'schedule']);
          Route::post('posts/{post}/publish', [PostController::class, 'publish']);
-         Route::get('posts/{post}/show_post', [PostController::class, 'showPost']);
          Route::post('posts/{post}/like', [PostController::class, 'like']);
          Route::post('posts/{post}/view', [PostController::class, 'view']);
          Route::post('posts/{post}/unlike', [PostController::class, 'unlike']);
@@ -208,6 +207,7 @@ Route::get('search', [ProductSearchController::class, '__invoke']);
 Route::get('allproducts', [AllProductController::class, '__invoke']);
 Route::get('allarticles', [ArticleController::class, 'allarticles']);
 Route::get('allposts', [PostController::class, 'allposts']);
+Route::get('vendor/posts/{post}/show_post', [PostController::class, 'showPost']);
 Route::get('sub_categories/category/{category_id}', [SubcategoryController::class, 'bycategory']);
 Route::get('allcategory', [CategoryController::class, 'allcategory']);
 Route::get('{vendorId}/articles', [VendorPageController::class, 'vendors_article']);

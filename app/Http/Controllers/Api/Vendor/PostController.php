@@ -92,9 +92,9 @@ class PostController extends Controller
     public function showPost(Post $post)
     {
        
-        if (!Auth::check()) {
-            abort(401, 'Unauthorized action.');
-        }
+        // if (!Auth::check()) {
+        //     abort(401, 'Unauthorized action.');
+        // }
 
         $post->load('products');
         return new PostResource($post);
