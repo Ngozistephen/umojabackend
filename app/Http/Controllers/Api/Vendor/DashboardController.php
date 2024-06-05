@@ -255,25 +255,25 @@ class DashboardController extends Controller
         $endDate = now()->endOfDay();
 
         $ordersByCountry = DB::table('orders')
-            ->join('users', 'orders.user_id', '=', 'users.id')
+            ->join('shipping_addresses', 'orders.shipping_address_id', '=', 'shipping_addresses.id')
             ->join('order_product', 'orders.id', '=', 'order_product.order_id')
             ->join('products', 'order_product.product_id', '=', 'products.id')
             ->where('products.vendor_id', $vendor->id)
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->select(
-                'users.user_country',
-                DB::raw('COUNT(DISTINCT users.id) as user_count')
+                'shipping_addresses.shipping_country',
+                DB::raw('COUNT(DISTINCT orders.id) as order_count')
             )
-            ->groupBy('users.user_country')
+            ->groupBy('shipping_addresses.shipping_country')
             ->get();
 
-        $totalUsers = $ordersByCountry->sum('user_count');
+        $totalOrders = $ordersByCountry->sum('order_count');
 
-        $responseData = $ordersByCountry->map(function($item) use ($totalUsers) {
-            $percentage = ($totalUsers > 0) ? ($item->user_count / $totalUsers) * 100 : 0;
+        $responseData = $ordersByCountry->map(function($item) use ($totalOrders) {
+            $percentage = ($totalOrders > 0) ? ($item->order_count / $totalOrders) * 100 : 0;
             return [
-                'country' => $item->user_country,
-                'user_count' => $item->user_count,
+                'country' => $item->shipping_country,
+                'order_count' => $item->order_count,
                 'percentage' => round($percentage, 2),
             ];
         });
