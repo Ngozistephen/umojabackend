@@ -89,9 +89,9 @@ class ArticleController extends Controller
     public function showArticle(Article $article)
     {
       
-        if (!Auth::check()) {
-            abort(401, 'Unauthorized action.');
-        }
+        // if (!Auth::check()) {
+        //     abort(401, 'Unauthorized action.');
+        // }
 
         return new ArticleResource($article);
     }
