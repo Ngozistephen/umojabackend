@@ -135,12 +135,12 @@ Route::middleware('auth:api')->group(function () {
          Route::post('posts/{post}/unlike', [PostController::class, 'unlike']);
          Route::get('posts/{post}/has_liked', [PostController::class, 'hasLiked']); 
         //  Route::post('posts/{post}/unview', [PostController::class, 'unview']);
-        //  Route::apiResource('articles', ArticleController::class);
-        Route::get('articles/{article}', [ArticleController::class, 'show']);  
-        Route::get('articles', [ArticleController::class, 'index']); 
-        Route::post('articles', [ArticleController::class, 'store']);
-        Route::put('articles/{article}', [ArticleController::class, 'update']);
-        Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
+         Route::apiResource('articles', ArticleController::class);
+        // Route::get('articles/{article}', [ArticleController::class, 'show']);  
+        // Route::get('articles', [ArticleController::class, 'index']); 
+        // Route::post('articles', [ArticleController::class, 'store']);
+        // Route::put('articles/{article}', [ArticleController::class, 'update']);
+        // Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
          Route::post('articles/upload', [ArticleController::class, 'upload']);
          Route::get('sold_products', [SaleController::class, 'soldProducts']); 
          Route::get('top_categories',[SaleController::class, 'topCategories']); 
@@ -177,7 +177,11 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('shippingAddresses', ShippingAddressController::class);
         Route::apiResource('paymentMethods', PaymentMethodController::class);
         Route::post('checkout', [CheckoutController::class, 'checkout']);
-        Route::apiResource('reviews', ReviewController::class);
+        // Route::apiResource('reviews', ReviewController::class);
+        Route::get('reviews', [ReviewController::class, 'index']);
+        Route::post('reviews', [ReviewController::class, 'store']);
+        Route::put('reviews/{review}', [ReviewController::class, 'update']);
+        Route::delete('reviews/{review}', [ReviewController::class, 'destroy']);
         Route::get('review_search', [ReviewSearchController::class, 'search']);
         Route::get('review_filter', [ReviewSearchController::class, 'filter']);
 
@@ -213,4 +217,5 @@ Route::get('{vendorId}/products', [VendorPageController::class, 'vendors_product
 Route::get('{vendorId}/details', [VendorPageController::class, 'vendors_details']);
 Route::get('vendor/articles/{article}/show_article', [ArticleController::class, 'showArticle']); 
 Route::get('customer/allreviews', [SeeReviewController::class, '__invoke']); 
+Route::get('customer/reviews/{review}', [ReviewController::class, 'show']);
 Route::stripeWebhooks('webhook');
