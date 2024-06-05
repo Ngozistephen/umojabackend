@@ -188,7 +188,6 @@ Route::middleware('auth:api')->group(function () {
         Route::delete('reviews/{review}/reply', [ReviewController::class, 'deleteReply']);
         Route::post('reviews/{review}/like', [ReviewController::class, 'like']);
         Route::post('reviews/{review}/unlike', [ReviewController::class, 'unlike']);
-        Route::get('allreviews', [SeeReviewController::class, '__invoke']); 
         Route::get('following_count', [CustomerController::class, 'getFollowingCount']);
         Route::get('following_vendors', [CustomerController::class, 'getFollowedVendors']);
         Route::get('has_followed/{vendor}', [CustomerController::class, 'hasFollowed']);
@@ -213,4 +212,5 @@ Route::get('{vendorId}/promos', [VendorPageController::class, 'vendors_promos'])
 Route::get('{vendorId}/products', [VendorPageController::class, 'vendors_products']);
 Route::get('{vendorId}/details', [VendorPageController::class, 'vendors_details']);
 Route::get('vendor/articles/{article}/show_article', [ArticleController::class, 'showArticle']); 
+Route::get('customer/allreviews', [SeeReviewController::class, '__invoke']); 
 Route::stripeWebhooks('webhook');
