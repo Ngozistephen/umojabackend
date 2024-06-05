@@ -156,11 +156,7 @@ class ReviewController extends Controller
      */
     public function show(Review $review)
     {
-        $this->authorize('order-manage');
-
-        // if ($review->user_id != auth()->id()) {
-        //     abort(403, 'Unauthorized');
-        // }
+       
 
         return new ReviewResource($review->load(['product', 'user', 'vendor']));
     }
