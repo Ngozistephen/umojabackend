@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
     class Vendor extends Model 
     {
-        use  HasFactory,Notifiable, SoftDeletes;
+        use  HasFactory,Notifiable, SoftDeletes,Notifiable;
 
         protected $guarded = ['id'];
         

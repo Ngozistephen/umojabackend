@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\Auth\SocialRegisterController;
 use App\Http\Controllers\Api\Auth\VendorRegisterController;
 use App\Http\Controllers\Api\Customer\AllProductController;
 use App\Http\Controllers\Api\Customer\VendorPageController;
+use App\Http\Controllers\Api\Vendor\NotificationController;
 use App\Http\Controllers\Api\Vendor\ReviewSearchController;
 use App\Http\Controllers\Api\Vendor\SubscriptionController;
 use App\Http\Controllers\Api\Admin\ShippingMethodController;
@@ -161,6 +162,8 @@ Route::middleware('auth:api')->group(function () {
          Route::get('weekly_total_users', [DashboardController::class, 'weeklyVendorTotalUsers']);
          Route::get('recent_weekly_orders', [DashboardController::class, 'recentWeeklyOrders']);
          Route::get('vendor_stats', [DashboardController::class, 'vendorStats']);
+         Route::get('notifications', [NotificationController::class, 'index']); 
+         Route::get('notifications/read', [NotificationController::class, 'markAsRead']); 
          
 
 

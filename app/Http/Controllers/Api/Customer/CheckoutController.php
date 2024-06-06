@@ -13,7 +13,10 @@ use App\Models\OrderItem;
 use Stripe\PaymentIntent;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
+use App\Models\ShippingMethod;
 use App\Mail\OrderConfirmation;
+use App\Models\ShippingAddress;
+use App\Mail\UserOrderDetailsMail;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -21,8 +24,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\OrderResource;
 use Stripe\Exception\ApiErrorException;
 use App\Http\Requests\StoreOrderRequest;
-use App\Models\ShippingMethod;
 use App\Notifications\SendOrderNotification;
+use App\Notifications\VendorOrderNotification;
 
 class CheckoutController extends Controller
 {
@@ -83,6 +86,7 @@ class CheckoutController extends Controller
                 throw new \Exception('User not authenticated');
             }
 
+            $shippingAddress = ShippingAddress::findOrFail($request->shipping_address_id);
             // Create the order first
             $order = DB::transaction(function () use ($products, $request, $orderNumber, $trackingNumber, $subTotal, $totalAmount, $user) {
                 $order = $user->orders()->create([
@@ -161,6 +165,18 @@ class CheckoutController extends Controller
             if (!$defaultPaymentMethod || !$defaultPaymentMethod->card) {
                 throw new \Exception('Default payment method or card information is missing');
             }
+
+             // Send email to user
+            Mail::to($shippingAddress->shipping_email)->send(new UserOrderDetailsMail($order, $user, $trackingNumber));
+
+            // Send notifications to vendors
+            foreach ($products as $product) {
+                $vendor = Vendor::find($product['vendor_id']);
+                if ($vendor) {
+                    $vendor->notify(new VendorOrderNotification($product['name'], $product['quantity'], $orderNumber, $shippingAddress->shipping_full_name));
+                }
+            }
+
 
             // Return response
             return response()->json([

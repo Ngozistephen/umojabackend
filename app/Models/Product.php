@@ -34,16 +34,16 @@ class Product extends Model
         'styles' => 'json',
     ];
 
-    public function getPriceAttribute($value)
-    {
-        return $value / 100;
-    }
+    // public function getPriceAttribute($value)
+    // {
+    //     return $value / 100;
+    // }
 
 
-    public function setPriceAttribute($value)
-    {
-        $this->attributes['price'] = $value * 100;
-    }
+    // public function setPriceAttribute($value)
+    // {
+    //     $this->attributes['price'] = $value * 100;
+    // }
     
     public static function boot(){
 
