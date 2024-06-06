@@ -271,6 +271,31 @@ class ProductController extends Controller
             return response()->json(['error' => 'No file uploaded'], 400);
         }
     }
+    // public function upload(Request $request)
+    // {
+    //     $folder = 'product_photo';
+    
+    //     if ($request->hasFile('photo')) {
+    //         $file = $request->file('photo');
+    //         request()->validate([
+    //             'photo. *' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:6048',
+               
+    //         ]);
+    
+    //         $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
+    //             'folder' => $folder,
+    //             // 'transformation' => [
+    //             //     ['width' => 400, 'height' => 400, 'crop' => 'fit'],
+    //             //     ['quality' => 'auto', 'fetch_format' => 'auto']
+    //             // ]
+    //         ]);
+    
+    //         $secureUrl = $cloudinaryResponse->getSecurePath();
+    //         return response()->json(['secure_url' => $secureUrl], 200);
+    //     } else {
+    //         return response()->json(['error' => 'No file uploaded'], 400);
+    //     }
+    // }
 
 
     public function import(Request $request)
