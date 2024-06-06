@@ -253,7 +253,7 @@ class ProductController extends Controller
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
             request()->validate([
-                'photo. *' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:6048',
+                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:6048',
                
             ]);
     
