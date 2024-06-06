@@ -133,10 +133,10 @@ class VendorController extends Controller
 
                 $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
                     'folder' => $folder,
-                    'transformation' => [
-                        ['width' => 400, 'height' => 400, 'crop' => 'fit'],
-                        ['quality' => 'auto', 'fetch_format' => 'auto']
-                    ]
+                    // 'transformation' => [
+                    //     ['width' => 400, 'height' => 400, 'crop' => 'fit'],
+                    //     ['quality' => 'auto', 'fetch_format' => 'auto']
+                    // ]
                 ]);
 
                 $secureUrl = $cloudinaryResponse->getSecurePath();
@@ -165,10 +165,10 @@ class VendorController extends Controller
             // Upload the file to Cloudinary with higher resolution settings
             $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
                 'folder' => 'cover_image',
-                'transformation' => [
-                    ['width' => 1920, 'height' => 1080, 'crop' => 'fit'], // High resolution dimensions
-                    ['quality' => 'auto:best', 'fetch_format' => 'auto'] // Best quality setting
-                ]
+                // 'transformation' => [
+                //     ['width' => 1920, 'height' => 1080, 'crop' => 'fit'], // High resolution dimensions
+                //     ['quality' => 'auto:best', 'fetch_format' => 'auto'] // Best quality setting
+                // ]
             ]);
 
             $secureUrl = $cloudinaryResponse->getSecurePath();
