@@ -22,7 +22,7 @@ class ArticleController extends Controller
     public function index()
      {
          $vendor = Auth::user()->vendor;
-         $articles = Article::where('vendor_id', $vendor->id)->orderBy('created_at', 'desc')->paginate(5);
+         $articles = Article::where('vendor_id', $vendor->id)->orderBy('created_at', 'desc')->paginate(10);
          return ArticleResource::collection($articles);
      }
 
@@ -32,7 +32,7 @@ class ArticleController extends Controller
         // $articles = Article::with(['vendor', 'category'])->orderBy('created_at', 'desc')->get();
         // return ArticleResource::collection($articles);
     
-        $articles = Article::with(['vendor', 'category'])->orderBy('created_at', 'desc')->paginate(10);
+        $articles = Article::with(['vendor', 'category'])->orderBy('created_at', 'desc')->paginate(5);
         return ArticleResource::collection($articles);
 
        

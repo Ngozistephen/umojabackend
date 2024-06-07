@@ -23,14 +23,14 @@ class PostController extends Controller
     public function index()
     {
         $vendor = Auth::user()->vendor;
-        $posts = Post::where('vendor_id', $vendor->id)->with('products')->orderBy('published_at', 'desc')->paginate(5);
+        $posts = Post::where('vendor_id', $vendor->id)->with('products')->orderBy('published_at', 'desc')->paginate(10);
         return PostResource::collection($posts);
     }
 
     public function allposts()
     {
         // $vendor = Auth::user()->vendor;     
-        $posts = Post::with('products')->orderBy('published_at', 'desc')->paginate(10);
+        $posts = Post::with('products')->orderBy('published_at', 'desc')->paginate(5);
         return PostResource::collection($posts);
     }
 
