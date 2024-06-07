@@ -246,55 +246,54 @@ class ProductController extends Controller
     }
     
 
-    // public function upload(Request $request)
-    // {
-    //     $folder = 'product_photo';
-    
-    //     if ($request->hasFile('photo')) {
-    //         $file = $request->file('photo');
-    //         request()->validate([
-    //             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:6048',
-               
-    //         ]);
-    
-    //         $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
-    //             'folder' => $folder,
-    //       
-    //         ]);
-    
-    //         $secureUrl = $cloudinaryResponse->getSecurePath();
-    //         return response()->json(['secure_url' => $secureUrl], 200);
-    //     } else {
-    //         return response()->json(['error' => 'No file uploaded'], 400);
-    //     }
-    // }
-
-
     public function upload(Request $request)
     {
-        $folder = 'product_photo'; // Change the folder name if needed
-
+        $folder = 'product_photo';
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
             request()->validate([
                 'photo. *' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:6048',
+               
             ]);
-
-            // Storing the image on Cloudinary
-            $cloudinaryImage = $file->storeOnCloudinary($folder);
-
-            // Retrieving the secure URL and public ID
-            $secureUrl = $cloudinaryImage->getSecurePath();
-            $publicId = $cloudinaryImage->getPublicId();
-
-            return response()->json([
-                'secure_url' => $secureUrl,
-                'public_id' => $publicId
-            ], 200);
+    
+            $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
+                'folder' => $folder,
+          
+            ]);
+    
+            $secureUrl = $cloudinaryResponse->getSecurePath();
+            return response()->json(['secure_url' => $secureUrl], 200);
         } else {
             return response()->json(['error' => 'No file uploaded'], 400);
         }
     }
+
+//  working
+    // public function upload(Request $request)
+    // {
+    //     $folder = 'product_photo'; // Change the folder name if needed
+
+    //     if ($request->hasFile('photo')) {
+    //         $file = $request->file('photo');
+    //         request()->validate([
+    //             'photo. *' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:6048',
+    //         ]);
+
+    //         // Storing the image on Cloudinary
+    //         $cloudinaryImage = $file->storeOnCloudinary($folder);
+
+    //         // Retrieving the secure URL and public ID
+    //         $secureUrl = $cloudinaryImage->getSecurePath();
+    //         $publicId = $cloudinaryImage->getPublicId();
+
+    //         return response()->json([
+    //             'secure_url' => $secureUrl,
+    //             'public_id' => $publicId
+    //         ], 200);
+    //     } else {
+    //         return response()->json(['error' => 'No file uploaded'], 400);
+    //     }
+    // }
 
     // public function upload(Request $request)
     // {
