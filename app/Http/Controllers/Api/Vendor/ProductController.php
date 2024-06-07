@@ -259,10 +259,7 @@ class ProductController extends Controller
     
     //         $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
     //             'folder' => $folder,
-    //             // 'transformation' => [
-    //             //     ['width' => 400, 'height' => 400, 'crop' => 'fit'],
-    //             //     ['quality' => 'auto', 'fetch_format' => 'auto']
-    //             // ]
+    //       
     //         ]);
     
     //         $secureUrl = $cloudinaryResponse->getSecurePath();
