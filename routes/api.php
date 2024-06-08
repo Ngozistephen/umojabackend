@@ -163,10 +163,10 @@ Route::middleware('auth:api')->group(function () {
          Route::get('recent_weekly_orders', [DashboardController::class, 'recentWeeklyOrders']);
          Route::get('vendor_stats', [DashboardController::class, 'vendorStats']);
          Route::get('notifications', [NotificationController::class, 'index']); 
-         Route::get('notifications/read', [NotificationController::class, 'markAsRead']); 
          Route::get('notifications/orders', [NotificationController::class, 'orderNotifications']); 
          Route::get('notifications/customers', [NotificationController::class, 'followNotifications']);
          Route::get('notifications/reviews', [NotificationController::class, 'reviewNotifications']);
+         Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead']); 
          
 
 

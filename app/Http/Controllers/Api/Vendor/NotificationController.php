@@ -103,12 +103,26 @@ class NotificationController extends Controller
     }
 
 
-    public function markAsRead(Request $request)
+    public function markAsRead($id)
     {
-     
+        // Get the authenticated vendor
         $vendor = Auth::user()->vendor;
-        $vendor->unreadNotifications->markAsRead();
 
-        return response()->json(['message' => 'Notifications marked as read']);
+        $notification = $vendor->notifications()->where('id', $id)->first();
+
+        if (!$notification) {
+            return response()->json(['message' => 'Notification not found.'], 404);
+        }
+
+        // Mark the notification as read
+        $notification->markAsRead();
+
+        return response()->json([
+            'id' => $notification->id,
+            'data' => $notification->data,
+            'read_at' => $notification->read_at,
+            'created_at' => $notification->created_at->toDateTimeString(),
+            'message' => 'Notification marked as read successfully.'
+        ]);
     }
 }
