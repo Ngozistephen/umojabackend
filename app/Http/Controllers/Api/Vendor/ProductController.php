@@ -157,6 +157,13 @@ class ProductController extends Controller
         return  new ProductResource($product);
     }
 
+
+    public function showProduct(Product $product)
+    {
+        $product->load('variations');
+        return new ProductResource($product);
+    }
+
   
 
     /**

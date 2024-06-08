@@ -211,6 +211,7 @@ Route::get('allproducts', [AllProductController::class, '__invoke']);
 Route::get('allarticles', [ArticleController::class, 'allarticles']);
 Route::get('allposts', [PostController::class, 'allposts']);
 Route::get('vendor/posts/{post}/show_post', [PostController::class, 'showPost']);
+Route::get('vendor/products/{product}/show_product', [ProductController::class, 'showProduct']);
 Route::get('sub_categories/category/{category_id}', [SubcategoryController::class, 'bycategory']);
 Route::get('allcategory', [CategoryController::class, 'allcategory']);
 Route::get('{vendorId}/articles', [VendorPageController::class, 'vendors_article']);
