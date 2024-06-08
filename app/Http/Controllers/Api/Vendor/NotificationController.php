@@ -19,6 +19,59 @@ class NotificationController extends Controller
     }
 
 
+    public function orderNotifications()
+    {
+        // Get the authenticated vendor
+        $vendor = Auth::user()->vendor;
+
+        // Retrieve order notifications
+        $notifications = $vendor->notifications()
+            ->where('type', 'App\Notifications\VendorOrderNotification')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Format the notifications
+        $formattedNotifications = $notifications->map(function ($notification) {
+            return [
+                'product' => $notification->data['product'],
+                'quantity' => $notification->data['quantity'],
+                'order_number' => $notification->data['order_number'],
+                'shipping_full_name' => $notification->data['shipping_full_name'],
+                'message' => $notification->data['message'],
+                'created_at' => $notification->created_at->toDateTimeString(),
+            ];
+        });
+
+        // Return the formatted notifications
+        return response()->json($formattedNotifications);
+    }
+
+
+    public function followNotifications()
+    {
+        // Get the authenticated vendor
+        $vendor = Auth::user()->vendor;
+
+        // Retrieve follow notifications
+        $notifications = $vendor->notifications()
+            ->where('type', 'App\Notifications\VendorFollowedNotification')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Format the notifications
+        $formattedNotifications = $notifications->map(function ($notification) {
+            return [
+                'message' => $notification->data['message'],
+                'followers_count' => $notification->data['followers_count'],
+                'created_at' => $notification->created_at->toDateTimeString(),
+            ];
+        });
+
+        // Return the formatted notifications
+        return response()->json($formattedNotifications);
+    }
+
+
     public function markAsRead(Request $request)
     {
      

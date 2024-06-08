@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\VendorResource;
+use App\Notifications\VendorFollowedNotification;
 
 class CustomerController extends Controller
 {
@@ -23,6 +24,10 @@ class CustomerController extends Controller
         }
 
         $user->followingVendors()->attach($vendorId);
+        $followersCount = $vendor->followers()->count();
+
+      
+        $vendor->notify(new VendorFollowedNotification($user, $followersCount));
 
         return response()->json(['message' => 'Vendor followed successfully.']);
     }
