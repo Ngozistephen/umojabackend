@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ReviewResource;
 use App\Http\Requests\StoreReviewRequest;
+use App\Notifications\ReviewNotification;
 use App\Http\Requests\UpdateReviewRequest;
 use App\Http\Requests\UpdateReviewReplyRequest;
 
@@ -146,8 +147,15 @@ class ReviewController extends Controller
      
          $review = auth()->user()->reviews()->create($data);
      
-        //  return new ReviewResource($review);
-        return new ReviewResource($review->load(['product', 'user', 'vendor']));
+       
+        $review->load(['product.vendor', 'user']);
+
+    
+        if ($review->product->vendor) {
+            $review->product->vendor->notify(new ReviewNotification($review, $review->rating, $review->product->name, $review->review_comment));
+        }
+        return new ReviewResource($review);
+
      }
  
 

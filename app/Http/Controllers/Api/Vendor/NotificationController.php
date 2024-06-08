@@ -79,6 +79,30 @@ class NotificationController extends Controller
     }
 
 
+    public function reviewNotifications()
+    {
+        // Get the authenticated vendor
+        $vendor = Auth::user()->vendor;
+
+        // Retrieve all notifications of type ReviewNotification
+        $notifications = $vendor->notifications()
+            ->where('type', 'App\Notifications\ReviewNotification')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        
+        $formattedNotifications = $notifications->map(function ($notification) {
+            return [
+                'data' => $notification->data,
+                'created_at' => $notification->created_at->toDateTimeString(),
+            ];
+        });
+
+      
+        return response()->json($formattedNotifications);
+    }
+
+
     public function markAsRead(Request $request)
     {
      
