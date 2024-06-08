@@ -152,7 +152,7 @@ class ReviewController extends Controller
 
     
         if ($review->product->vendor) {
-            $review->product->vendor->notify(new ReviewNotification($review, $review->rating, $review->product->name, $review->review_comment));
+            $review->product->vendor->notify(new ReviewNotification($review->user, $review, $review->rating, $review->product->name, $review->review_comment));
         }
         return new ReviewResource($review);
 
