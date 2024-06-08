@@ -11,6 +11,7 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\VendorResource;
 use App\Notifications\VendorFollowedNotification;
+use App\Notifications\VendorUnfollowNotification;
 
 class CustomerController extends Controller
 {
@@ -44,6 +45,8 @@ class CustomerController extends Controller
         }
 
         $user->followingVendors()->detach($vendorId);
+        
+        $vendor->notify(new VendorUnfollowNotification($user));
 
         return response()->json(['message' => 'Vendor unfollowed successfully.']);
     }

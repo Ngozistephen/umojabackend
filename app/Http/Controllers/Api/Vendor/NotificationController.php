@@ -15,7 +15,14 @@ class NotificationController extends Controller
 
         $notifications = $vendor->notifications()->orderBy('created_at', 'desc')->get();
 
-        return response()->json($notifications);
+        $formattedNotifications = $notifications->map(function ($notification) {
+            return [
+                'data' => $notification->data,
+                'created_at' => $notification->created_at->toDateTimeString(),
+            ];
+        });
+
+        return response()->json($formattedNotifications);
     }
 
 
