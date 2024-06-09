@@ -53,6 +53,7 @@ class VendorFollowedNotification extends Notification
     {
         return [
                 'message' => "{$this->user->first_name} {$this->user->last_name} has followed you.",
+                'user_photo' => $this->user->user_profile,
                 'followers_count' => $this->followersCount,
            
         ];

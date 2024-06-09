@@ -62,6 +62,7 @@ class ReviewNotification extends Notification
             'rating' => $this->rating,
             'product_name' => $this->productName,
             'review_comment' => $this->reviewComment,
+            'user_photo' => $this->user->user_profile,
             'message' => "{$this->user->first_name} {$this->user->last_name} has reviewed your product {$this->productName} with rating {$this->rating}",
         ];
     }

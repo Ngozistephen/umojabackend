@@ -51,6 +51,7 @@ class VendorUnfollowNotification extends Notification
     {
         return [
             'message' => "{$this->user->first_name} {$this->user->last_name} has unfollowed  you.",
+            'user_photo' => $this->user->user_profile,
         ];
     }
 }
