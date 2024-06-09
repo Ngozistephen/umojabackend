@@ -71,7 +71,7 @@ class NotificationController extends Controller
             return [
                 'message' => $notification->data['message'],
                 'followers_count' => $notification->data['followers_count'],
-                'user_photo' => $notification->data['user_photo'] ?? null,
+                // 'user_photo' => $notification->data['user_photo'] ?? null,
                 'created_at' => $notification->created_at->toDateTimeString(),
             ];
         });
@@ -96,7 +96,7 @@ class NotificationController extends Controller
         $formattedNotifications = $notifications->map(function ($notification) {
             return [
                 'data' => $notification->data,
-                'user_photo' => $notification->data['user_photo'] ?? null,
+                // 'user_photo' => $notification->data['user_photo'] ?? null,
                 'created_at' => $notification->created_at->toDateTimeString(),
             ];
         });
