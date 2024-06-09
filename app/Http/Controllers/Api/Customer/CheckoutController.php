@@ -173,7 +173,7 @@ class CheckoutController extends Controller
             foreach ($products as $product) {
                 $vendor = Vendor::find($product['vendor_id']);
                 if ($vendor ) {
-                    $productModel = Product::find($product['id']);
+                    $productModel = Product::find($product['id']);  
                     $productPhoto = $productModel ? $productModel->photo : null; 
                     $vendor->notify(new VendorOrderNotification($product['name'], $product['quantity'], $orderNumber, $shippingAddress->shipping_full_name,  $productPhoto));
                 }

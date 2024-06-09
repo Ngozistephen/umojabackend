@@ -44,7 +44,7 @@ class NotificationController extends Controller
                 'quantity' => $notification->data['quantity'],
                 'order_number' => $notification->data['order_number'],
                 'shipping_full_name' => $notification->data['shipping_full_name'],
-                'product_photo' => $notification->data['product_photo'],
+                'product_photo' => $notification->data['product_photo'] ?? null,
                 'message' => $notification->data['message'],
                 'created_at' => $notification->created_at->toDateTimeString(),
             ];
