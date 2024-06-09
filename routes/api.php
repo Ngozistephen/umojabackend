@@ -166,6 +166,7 @@ Route::middleware('auth:api')->group(function () {
          Route::get('notifications/orders', [NotificationController::class, 'orderNotifications']); 
          Route::get('notifications/customers', [NotificationController::class, 'followNotifications']);
          Route::get('notifications/reviews', [NotificationController::class, 'reviewNotifications']);
+         Route::get('notifications/products', [NotificationController::class, 'stockNotifications']);
          Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead']); 
          
 

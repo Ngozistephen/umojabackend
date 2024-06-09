@@ -26,6 +26,7 @@ use Stripe\Exception\ApiErrorException;
 use App\Http\Requests\StoreOrderRequest;
 use App\Notifications\SendOrderNotification;
 use App\Notifications\VendorOrderNotification;
+use App\Notifications\ProductStockNotification;
 
 class CheckoutController extends Controller
 {
@@ -118,6 +119,13 @@ class CheckoutController extends Controller
                         throw new \Exception("Product with ID {$product['id']} not found");
                     }
                     $productModel->decrement('unit_per_item', $product['quantity']);
+
+                    if ($productModel->unit_per_item < $productModel->mini_stock) {
+                        $vendor = $productModel->user->vendor;
+                        if ($vendor) {
+                            $vendor->notify(new ProductStockNotification($productModel, $productModel->unit_per_item));
+                        }
+                    }
                 }
 
                 return $order;

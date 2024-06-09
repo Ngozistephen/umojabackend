@@ -105,6 +105,35 @@ class NotificationController extends Controller
         return response()->json($formattedNotifications);
     }
 
+    public function stockNotifications()
+    {
+    
+        $vendor = Auth::user()->vendor;
+
+        // Retrieve stock notifications
+        $notifications = $vendor->notifications()
+            ->where('type', 'App\Notifications\ProductStockNotification')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Format the notifications
+        $formattedNotifications = $notifications->map(function ($notification) {
+            return [
+                'product_id' => $notification->data['product_id'],
+                'product_name' => $notification->data['product_name'],
+                'product_photo' => $notification->data['product_photo'],
+                'remaining_stock' => $notification->data['remaining_stock'],
+                'mini_stock' => $notification->data['mini_stock'],
+                'message' => $notification->data['message'],
+                'created_at' => $notification->created_at->toDateTimeString(),
+            ];
+        });
+
+        // Return the formatted notifications
+        return response()->json($formattedNotifications);
+    }
+
+
 
     public function markAsRead($id)
     {
