@@ -15,16 +15,18 @@ class VendorOrderNotification extends Notification
     public $quantity;
     public $orderNumber;
     public $shippingFullName;
+    public $productPhoto;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($product, $quantity, $orderNumber, $shippingFullName)
+    public function __construct($product, $quantity, $orderNumber, $shippingFullName, $productPhoto)
     {
         $this->product = $product;
         $this->quantity = $quantity;
         $this->orderNumber = $orderNumber;
         $this->shippingFullName = $shippingFullName;
+        $this->productPhoto = $productPhoto;
     }
 
     /**
@@ -60,6 +62,7 @@ class VendorOrderNotification extends Notification
             'quantity' => $this->quantity,
             'order_number' => $this->orderNumber,
             'shipping_full_name' => $this->shippingFullName,
+            'product_photo' => $this->productPhoto,
             'message' => "New order for product {$this->product} with quantity {$this->quantity}"
         ];
     }
