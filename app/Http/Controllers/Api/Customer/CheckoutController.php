@@ -172,8 +172,9 @@ class CheckoutController extends Controller
             // Send notifications to vendors
             foreach ($products as $product) {
                 $vendor = Vendor::find($product['vendor_id']);
-                if ($vendor) {
-                    $vendor->notify(new VendorOrderNotification($product['name'], $product['quantity'], $orderNumber, $shippingAddress->shipping_full_name, $product->photo));
+                $productModel = Product::find($product['id']);
+                if ($vendor && $productModel) {
+                    $vendor->notify(new VendorOrderNotification($product['name'], $product['quantity'], $orderNumber, $shippingAddress->shipping_full_name, $productModel->photo));
                 }
             }
 
