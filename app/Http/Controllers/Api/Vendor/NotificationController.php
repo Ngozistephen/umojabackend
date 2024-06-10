@@ -18,6 +18,7 @@ class NotificationController extends Controller
         $formattedNotifications = $notifications->map(function ($notification) {
             return [
                 'data' => $notification->data,
+                'read_at' => $notification->read_at,
                 'created_at' => $notification->created_at->toDateTimeString(),
             ];
         });
@@ -46,6 +47,7 @@ class NotificationController extends Controller
                 'shipping_full_name' => $notification->data['shipping_full_name'],
                 'product_photo' => $notification->data['product_photo'] ?? null,
                 'message' => $notification->data['message'],
+                'read_at' => $notification->read_at,
                 'created_at' => $notification->created_at->toDateTimeString(),
             ];
         });
@@ -97,6 +99,7 @@ class NotificationController extends Controller
             return [
                 'data' => $notification->data,
                 // 'user_photo' => $notification->data['user_photo'] ?? null,
+                'read_at' => $notification->read_at,
                 'created_at' => $notification->created_at->toDateTimeString(),
             ];
         });
@@ -125,6 +128,7 @@ class NotificationController extends Controller
                 'remaining_stock' => $notification->data['remaining_stock'],
                 'mini_stock' => $notification->data['mini_stock'],
                 'message' => $notification->data['message'],
+                'read_at' => $notification->read_at,
                 'created_at' => $notification->created_at->toDateTimeString(),
             ];
         });
