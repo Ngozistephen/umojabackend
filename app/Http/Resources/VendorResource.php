@@ -31,6 +31,8 @@ class VendorResource extends JsonResource
                     ->whereNotNull('compare_at_price')
                     ->where('compare_at_price', '>', 0)
                     ->count();
+
+        $unreadNotificationCount = $this->unreadNotifications()->count();           
         return [
             'id' => $this->id,
             // 'language' => $this->language,
@@ -80,6 +82,7 @@ class VendorResource extends JsonResource
             'review_count' => $reviewCount,
             'promo_count' =>  $promoCount,
             'followers_count' => $this->followersCount(),
+            'unread_notification_count' => $unreadNotificationCount,
            
         ];
     }
