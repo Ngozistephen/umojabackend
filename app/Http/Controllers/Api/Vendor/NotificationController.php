@@ -17,6 +17,7 @@ class NotificationController extends Controller
 
         $formattedNotifications = $notifications->map(function ($notification) {
             return [
+                'id' => $notification->id,
                 'data' => $notification->data,
                 'read_at' => $notification->read_at,
                 'created_at' => $notification->created_at->toDateTimeString(),
@@ -41,6 +42,7 @@ class NotificationController extends Controller
         // Format the notifications
         $formattedNotifications = $notifications->map(function ($notification) {
             return [
+                 'id' => $notification->id,
                 'product' => $notification->data['product'],
                 'quantity' => $notification->data['quantity'],
                 'order_number' => $notification->data['order_number'],
@@ -71,6 +73,7 @@ class NotificationController extends Controller
         // Format the notifications
         $formattedNotifications = $notifications->map(function ($notification) {
             return [
+                'id' => $notification->id,
                 'message' => $notification->data['message'],
                 'followers_count' => $notification->data['followers_count'],
                 // 'user_photo' => $notification->data['user_photo'] ?? null,
@@ -98,6 +101,7 @@ class NotificationController extends Controller
         $formattedNotifications = $notifications->map(function ($notification) {
             return [
                 'data' => $notification->data,
+                 'id' => $notification->id,
                 // 'user_photo' => $notification->data['user_photo'] ?? null,
                 'read_at' => $notification->read_at,
                 'created_at' => $notification->created_at->toDateTimeString(),
@@ -122,6 +126,7 @@ class NotificationController extends Controller
         // Format the notifications
         $formattedNotifications = $notifications->map(function ($notification) {
             return [
+                 'id' => $notification->id,
                 'product_id' => $notification->data['product_id'],
                 'product_name' => $notification->data['product_name'],
                 'product_photo' => $notification->data['product_photo'],
