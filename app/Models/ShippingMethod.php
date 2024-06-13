@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Order;
+use App\Models\ShippingZone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -34,6 +35,11 @@ class ShippingMethod extends Model
     public function order(): HasOne
     {
         return $this->hasOne(Order::class, 'shipping_method_id');
+    }
+
+    public function shippingZones()
+    {
+        return $this->hasMany(ShippingZone::class);
     }
 
 }

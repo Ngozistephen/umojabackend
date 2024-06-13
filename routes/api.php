@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Vendor\ProductController;
 use App\Http\Controllers\Api\Admin\VariationController;
 use App\Http\Controllers\Api\Customer\ReviewController;
 use App\Http\Controllers\Api\Vendor\CustomerController;
+use App\Http\Controllers\Api\Vendor\ZoneRateController;
 use App\Http\Controllers\Api\Auth\SocialLoginController;
 use App\Http\Controllers\Api\Auth\VendorLoginController;
 use App\Http\Controllers\Api\Vendor\DashboardController;
@@ -35,6 +36,7 @@ use App\Http\Controllers\Api\Customer\AllProductController;
 use App\Http\Controllers\Api\Customer\VendorPageController;
 use App\Http\Controllers\Api\Vendor\NotificationController;
 use App\Http\Controllers\Api\Vendor\ReviewSearchController;
+use App\Http\Controllers\Api\Vendor\ShippingZoneController;
 use App\Http\Controllers\Api\Vendor\SubscriptionController;
 use App\Http\Controllers\Api\Admin\ShippingMethodController;
 use App\Http\Controllers\Api\Public\ProductSearchController;
@@ -168,6 +170,8 @@ Route::middleware('auth:api')->group(function () {
          Route::get('notifications/reviews', [NotificationController::class, 'reviewNotifications']);
          Route::get('notifications/products', [NotificationController::class, 'stockNotifications']);
          Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead']); 
+         Route::apiResource('shipping_zones', ShippingZoneController::class);
+         Route::apiResource('shipping_zones.zone_rates', ZoneRateController::class);
          
 
 

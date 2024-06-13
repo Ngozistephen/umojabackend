@@ -11,6 +11,7 @@ use App\Models\Vendor;
 use App\Models\Category;
 use App\Models\Variation;
 use App\Models\ReviewLike;
+use App\Models\ShippingZone;
 use App\Models\PaymentMethod;
 use Laravel\Cashier\Billable;
 use App\Models\ShippingMethod;
@@ -166,6 +167,11 @@ class User extends Authenticatable
     public function hasFollowed(Vendor $vendor)
     {
         return $this->followingVendors()->where('vendor_id', $vendor->id)->exists();
+    }
+
+    public function shippingZones()
+    {
+        return $this->hasMany(ShippingZone::class);
     }
 
 
