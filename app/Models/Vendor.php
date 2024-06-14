@@ -13,6 +13,7 @@ use App\Models\Category;
 use App\Models\OrderItem;
 use App\Models\Variation;
 use App\Models\ShippingZone;
+use App\Models\ShippingMethod;
 use App\Models\VariationsOption;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
@@ -77,6 +78,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
         public function shippingZones()
         {
             return $this->hasMany(ShippingZone::class);
+        }
+
+        public function shippingMethod()
+        {
+            return $this->hasOneThrough(ShippingMethod::class, ShippingZone::class, 'vendor_id', 'id', 'id', 'shipping_method_id');
         }
         
     

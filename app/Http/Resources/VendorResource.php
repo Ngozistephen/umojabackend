@@ -32,7 +32,8 @@ class VendorResource extends JsonResource
                     ->where('compare_at_price', '>', 0)
                     ->count();
 
-        $unreadNotificationCount = $this->unreadNotifications()->count();           
+        $unreadNotificationCount = $this->unreadNotifications()->count();   
+        $shippingMethod = $this->shippingMethod;        
         return [
             'id' => $this->id,
             // 'language' => $this->language,
@@ -83,6 +84,12 @@ class VendorResource extends JsonResource
             'promo_count' =>  $promoCount,
             'followers_count' => $this->followersCount(),
             'unread_notification_count' => $unreadNotificationCount,
+            'shipping_method' => $shippingMethod ? [
+                'id' => $shippingMethod->id,
+                'type' => $shippingMethod->type,
+                // 'duration' => $shippingMethod->duration,
+                // 'amount' => $shippingMethod->amount,
+            ] : null,
            
         ];
     }

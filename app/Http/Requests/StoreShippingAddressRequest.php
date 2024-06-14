@@ -27,7 +27,7 @@ class StoreShippingAddressRequest extends FormRequest
             'shipping_city' => 'required|string',
             'shipping_region' => 'required|string',
             'shipping_postal_code' => 'required|string', 
-            'shipping_country' => 'required|string', 
+            'shipping_country' => 'nullable|string', 
             'shipping_full_name' => 'required|string', 
             'shipping_email' => 'required|email', 
             'shipping_phone_number' => 'required|string',
