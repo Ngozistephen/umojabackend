@@ -61,14 +61,15 @@ class CheckoutController extends Controller
             $trackingNumber = 'ID' . substr(uniqid(), -8) . 'RS';
 
             // Calculate shipping amount
-            $shippingAmount = ShippingMethod::findOrFail($shippingID);
-            $Amount4shipping = $shippingAmount->amount;
+            // $shippingAmount = ShippingMethod::findOrFail($shippingID);
+            // $Amount4shipping = $shippingAmount->amount;
 
             // Calculate total amount including shipping
             foreach ($products as $product) {
                 $subTotal += $product['price'] * $product['quantity'];
             }
-            $totalAmount = $subTotal + $Amount4shipping;
+            $totalAmount = $subTotal;
+            // $totalAmount = $subTotal + $Amount4shipping;
 
             // Check product availability
             foreach ($products as $product) {
