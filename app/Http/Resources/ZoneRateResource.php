@@ -19,7 +19,7 @@ class ZoneRateResource extends JsonResource
             'shipping_zone_id' => $this->shipping_zone_id,
             'name' => $this->name,
             'custom_rate_name' => $this->custom_rate_name,
-            'condition' => $this->condition,
+            'condition' => $this->conditions,
             'custom_delivery_description' => $this->custom_delivery_description,
             'price' => $this->price,
             'based_on_item_weight' => $this->based_on_item_weight,
