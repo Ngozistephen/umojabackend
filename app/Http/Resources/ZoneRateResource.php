@@ -26,6 +26,8 @@ class ZoneRateResource extends JsonResource
             'based_on_order_price' => $this->based_on_order_price,
             'minimum_weight' => $this->minimum_weight,
             'maximum_weight' => $this->maximum_weight,
+            'minimum_price' => $this->minimum_price,
+            'maximum_price' => $this->maximum_price,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,

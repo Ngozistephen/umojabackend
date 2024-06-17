@@ -22,6 +22,8 @@ class ZoneRate extends Model
         'based_on_order_price',
         'minimum_weight',
         'maximum_weight',
+        'minimum_price',
+        'maximum_price',
     ];
 
 

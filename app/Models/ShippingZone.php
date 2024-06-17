@@ -19,7 +19,7 @@ class ShippingZone extends Model
         'vendor_id',
         'shipping_method_id',
         'name',
-        'contient',
+        'continent',
         'countries',
         // 'local_delivery_company',
         // 'local_delivery_address',

@@ -32,6 +32,8 @@ class StoreZoneRateRequest extends FormRequest
             'based_on_order_price' => 'nullable|boolean',
             'minimum_weight' => 'nullable|integer|min:0',
             'maximum_weight' => 'nullable|integer|min:0',
+            'minimum_price' => 'nullable|integer|min:0',
+            'maximum_price' => 'nullable|integer|min:0',
         ];
     }
 }

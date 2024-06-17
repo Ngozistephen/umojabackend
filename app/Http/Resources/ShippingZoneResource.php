@@ -23,7 +23,7 @@ class ShippingZoneResource extends JsonResource
             'shipping_method_id' => $this->shipping_method_id,
             'shippingMethod' => $this->shippingMethod?->type,
             'name' => $this->name,
-            'continent' => $this->contient,
+            'continent' => $this->continent,
             'countries' => $this->countries,
             // 'local_delivery_company' => $this->local_delivery_company,
             // 'local_delivery_address' => $this->local_delivery_address,

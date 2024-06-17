@@ -25,7 +25,7 @@ class StoreShippingZoneRequest extends FormRequest
             'vendor_id' => 'nullable|exists:vendors,id',
             'shipping_method_id' => 'required|exists:shipping_methods,id',
             'name' => 'nullable|string|max:255',
-            'contient' => 'nullable|string|max:255',
+            'continent' => 'nullable|string|max:255',
             'countries' => 'nullable|array', 
             'countries.*' => 'string',
             'delivery_date_range' => 'nullable|numeric|max:50', 
