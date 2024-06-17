@@ -25,6 +25,8 @@ return new class extends Migration
                 $table->boolean('based_on_order_price')->default(false)->nullable();
                 $table->integer('minimum_weight')->default(0)->nullable();
                 $table->integer('maximum_weight')->default(0)->nullable();      
+                $table->integer('minimum_price')->default(0)->nullable();
+                $table->integer('maximum_price')->default(0)->nullable();      
                 $table->timestamps();
             });
         }

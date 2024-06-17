@@ -52,7 +52,7 @@ class CheckoutController extends Controller
         try {
             // Retrieve input data
             $products = $request->input('products');
-            $shippingID = $request->input('shipping_method_id');
+            // $shippingID = $request->input('shipping_method_id');
 
             // Initialize variables
             $subTotal = 0;

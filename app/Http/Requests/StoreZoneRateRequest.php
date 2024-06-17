@@ -25,7 +25,7 @@ class StoreZoneRateRequest extends FormRequest
             // 'shipping_zone_id' => 'required|exists:shipping_zones,id',
             'name' => 'nullable|string|max:255',
             'custom_rate_name' => 'nullable|string|max:255',
-            'condition' => 'required|string|max:255',
+            'condition' => 'nullable|string|max:255',
             'custom_delivery_description' => 'nullable|string',
             'price' => 'required|integer|min:0',
             'based_on_item_weight' => 'nullable|boolean',

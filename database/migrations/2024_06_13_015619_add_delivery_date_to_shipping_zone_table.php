@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('shipping_zones', function (Blueprint $table) {
-            $table->json('delivery_date_range')->nullable();
+            $table->unsignedInteger('delivery_date_range')->nullable();
         });
     }
 
