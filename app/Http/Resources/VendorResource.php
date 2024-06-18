@@ -84,12 +84,15 @@ class VendorResource extends JsonResource
             'promo_count' =>  $promoCount,
             'followers_count' => $this->followersCount(),
             'unread_notification_count' => $unreadNotificationCount,
-            'shipping_method' => $shippingMethod ? [
-                'id' => $shippingMethod->id,
-                'type' => $shippingMethod->type,
-                // 'duration' => $shippingMethod->duration,
-                // 'amount' => $shippingMethod->amount,
-            ] : null,
+            'shipping_method' => $shippingMethod->type,
+               
+           
+            // 'shipping_method' => $shippingMethod ? [
+            //     'id' => $shippingMethod->id,
+            //     'type' => $shippingMethod->type,
+            //     // 'duration' => $shippingMethod->duration,
+            //     // 'amount' => $shippingMethod->amount,
+            // ] : null,
            
         ];
     }
