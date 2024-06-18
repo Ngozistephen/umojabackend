@@ -13,6 +13,7 @@ use App\Models\Category;
 use App\Models\OrderItem;
 use App\Models\Variation;
 use App\Models\ShippingZone;
+use App\Models\LocalDelivery;
 use App\Models\ShippingMethod;
 use App\Models\VariationsOption;
 use Spatie\MediaLibrary\HasMedia;
@@ -78,6 +79,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
         public function shippingZones()
         {
             return $this->hasMany(ShippingZone::class);
+        }
+        
+        public function localDeliveries()
+        {
+            return $this->hasMany(LocalDelivery::class);
         }
 
         public function shippingMethod()

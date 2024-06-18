@@ -40,6 +40,7 @@ use App\Http\Controllers\Api\Vendor\ShippingZoneController;
 use App\Http\Controllers\Api\Vendor\SubscriptionController;
 use App\Http\Controllers\Api\Admin\ShippingMethodController;
 use App\Http\Controllers\Api\Public\ProductSearchController;
+use App\Http\Controllers\Api\Vendor\LocalDeliveryController;
 use App\Http\Controllers\Api\Admin\VariationOptionController;
 use App\Http\Controllers\Api\Auth\CustomerRegisterController;
 use App\Http\Controllers\Api\Auth\VendorVerifyCodeController;
@@ -172,6 +173,7 @@ Route::middleware('auth:api')->group(function () {
          Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead']); 
          Route::apiResource('shipping_zones', ShippingZoneController::class);
          Route::apiResource('shipping_zones.zone_rates', ZoneRateController::class);
+         Route::apiResource('local_deliveries', LocalDeliveryController::class);
          
 
 
