@@ -21,7 +21,7 @@ class LocalPickupController extends Controller
         $vendor = Auth::user()->vendor;
         $localPickups = LocalPickup::where('vendor_id', $vendor->id)->orderBy('created_at', 'desc')->paginate(10);
        
-        return LocalPickupResource::collection($localDeliveries);
+        return LocalPickupResource::collection($localPickups);
     }
 
     /**
