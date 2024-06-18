@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api\Vendor;
 
 use Illuminate\Http\Request;
+use App\Models\LocalDelivery;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\LocalDeliveryResource;
 use App\Http\Requests\StoreLocalDeliveryRequest;
+use App\Http\Requests\UpdateLocalDeliveryRequest;
 
 class LocalDeliveryController extends Controller
 {
@@ -53,16 +55,14 @@ class LocalDeliveryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, LocalDelivery $localDelivery)
+    public function update(UpdateLocalDeliveryRequest $request, LocalDelivery $localDelivery)
     {
         $vendor = Auth::user()->vendor;
         if ($vendor->id !== $localDelivery->vendor_id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $validatedData = $request->validate([
-            // Add your validation rules here
-        ]);
+        $validatedData = $request->validated();
 
         $localDelivery->update($validatedData);
 
