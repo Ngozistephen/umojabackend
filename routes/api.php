@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\Customer\CheckoutController;
 use App\Http\Controllers\Api\Admin\DiscountCodeController;
 use App\Http\Controllers\Api\Auth\CustomerLoginController;
 use App\Http\Controllers\Api\Customer\SeeReviewController;
+use App\Http\Controllers\Api\Vendor\LocalPickupController;
 use App\Http\Controllers\Api\Vendor\OrderSearchController;
 use App\Http\Controllers\Api\Auth\SocialRegisterController;
 use App\Http\Controllers\Api\Auth\VendorRegisterController;
@@ -174,6 +175,7 @@ Route::middleware('auth:api')->group(function () {
          Route::apiResource('shipping_zones', ShippingZoneController::class);
          Route::apiResource('shipping_zones.zone_rates', ZoneRateController::class);
          Route::apiResource('local_deliveries', LocalDeliveryController::class);
+         Route::apiResource('local_pickups', LocalPickupController::class);
          
 
 

@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\OrderItem;
 use App\Models\Variation;
+use App\Models\LocalPickup;
 use App\Models\ShippingZone;
 use App\Models\LocalDelivery;
 use App\Models\ShippingMethod;
@@ -84,6 +85,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
         public function localDeliveries()
         {
             return $this->hasMany(LocalDelivery::class);
+        }
+        
+        public function localPickups()
+        {
+            return $this->hasMany(LocalPickup::class);
         }
 
         public function shippingMethod()
