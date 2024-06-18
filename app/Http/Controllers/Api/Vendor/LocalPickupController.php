@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Vendor;
 use App\Models\LocalPickup;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\LocalPickupResource;
 use App\Http\Requests\StoreLocalPickupRequest;
 use App\Http\Requests\UpdateLocalPickupRequest;
