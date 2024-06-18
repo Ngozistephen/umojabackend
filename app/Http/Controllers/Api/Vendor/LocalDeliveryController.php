@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Vendor;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\LocalDeliveryResource;
 use App\Http\Requests\StoreLocalDeliveryRequest;
 
