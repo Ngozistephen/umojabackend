@@ -73,20 +73,20 @@ class HomePageController extends Controller
         $bestSellingVendorsByCategory = [];
     
         foreach ($groupedByCategory as $categoryId => $vendors) {
-            $vendorCollection = $vendors->map(function($vendor) {
+            $vendorCollection = $vendors->map(function ($vendor) {
+                // Here we create a vendor array compatible with the VendorResource
                 return [
                     'id' => $vendor->vendor_id,
                     'business_name' => $vendor->vendor_name,
                     'total_sales' => $vendor->total_sales,
                     'total_ratings' => $vendor->total_ratings,
-                    // Add other vendor fields you need for the resource
                 ];
             });
     
             $bestSellingVendorsByCategory[] = [
                 'category_id' => $categoryId,
                 'category_name' => $vendors->first()->category_name,
-                'vendors' => VendorResource::collection(collect($vendorCollection)),
+                'vendors' => VendorResource::collection($vendorCollection),
             ];
         }
     
