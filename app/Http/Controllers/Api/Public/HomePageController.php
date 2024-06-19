@@ -66,20 +66,23 @@ class HomePageController extends Controller
             ->groupBy('categories.id', 'vendors.id')
             ->orderBy('categories.id')
             ->orderByDesc('total_sales')
-            ->get();
-
+            ->get()
+            ->map(function($item) {
+                return (array) $item;
+            });
+    
         $groupedByCategory = $topVendorsByCategory->groupBy('category_id');
-
+    
         $bestSellingVendorsByCategory = [];
-
+    
         foreach ($groupedByCategory as $categoryId => $vendors) {
             $bestSellingVendorsByCategory[] = [
                 'category_id' => $categoryId,
-                'category_name' => $vendors->first()->category_name,
+                'category_name' => $vendors->first()['category_name'],
                 'vendors' => VendorResource::collection($vendors),
             ];
         }
-
+    
         return response()->json($bestSellingVendorsByCategory);
     }
 
