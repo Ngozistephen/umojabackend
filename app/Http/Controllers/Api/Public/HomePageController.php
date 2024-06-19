@@ -83,7 +83,7 @@ class HomePageController extends Controller
         // Fetch the latest articles from all vendors
         $latestArticles = Article::with('vendor', 'category')
             ->orderBy('published_at', 'desc')
-            ->take(6)
+            ->take(7)
             ->get();
 
         // Return the articles as a resource collection
