@@ -51,9 +51,11 @@ class HomePageController extends Controller
     public function getBestSellingStores()
     {
         // Fetch vendors with the count of their orders
-        $bestSellingStores = Vendor::withCount('orders')
+        $bestSellingStores = Vendor::select('vendors.*', DB::raw('COUNT(order_product.id) as orders_count'))
+            ->join('order_product', 'vendors.id', '=', 'order_product.vendor_id')
+            ->groupBy('vendors.id')
             ->orderBy('orders_count', 'desc')
-            ->take(9) // Get top 10 best-selling stores
+            ->take(10) // Get top 10 best-selling stores
             ->get();
 
         return VendorResource::collection($bestSellingStores);
