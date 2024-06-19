@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\Vendor\ArticleController;
 use App\Http\Controllers\Api\Vendor\ProductController;
 use App\Http\Controllers\Api\Admin\VariationController;
 use App\Http\Controllers\Api\Customer\ReviewController;
+use App\Http\Controllers\Api\Public\HomePageController;
 use App\Http\Controllers\Api\Vendor\CustomerController;
 use App\Http\Controllers\Api\Vendor\ZoneRateController;
 use App\Http\Controllers\Api\Auth\SocialLoginController;
@@ -219,6 +220,7 @@ Route::middleware('auth:api')->group(function () {
    
 });
 Route::get('search', [ProductSearchController::class, '__invoke']);
+Route::get('stores', [HomePageController::class, 'bestSellingStores']);
 Route::get('allproducts', [AllProductController::class, '__invoke']);
 Route::get('allarticles', [ArticleController::class, 'allarticles']);
 Route::get('allposts', [PostController::class, 'allposts']);
