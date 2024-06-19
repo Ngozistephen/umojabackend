@@ -83,7 +83,7 @@ class HomePageController extends Controller
         // Fetch the latest articles from all vendors
         $latestArticles = Article::with('vendor', 'category')
             ->orderBy('published_at', 'desc')
-            ->take(7)
+            ->take(10)
             ->get();
 
         // Return the articles as a resource collection
@@ -105,5 +105,20 @@ class HomePageController extends Controller
         return ProductResource::collection($mostSellingProducts);
     }
 
+
+    public function getProductsCompareAtPrice(Request $request)
+    {
+        // Query to fetch all products with compare_at_price
+        $products = Product::with('vendor', 'variations')
+            ->whereNotNull('compare_at_price')
+            ->where('compare_at_price', '>', 0)
+            ->latest()
+            ->get();
+
+        // Return the products as a JSON response
+        return response()->json([
+            'products' => ProductResource::collection($products),
+        ]);
+    }
   
 }

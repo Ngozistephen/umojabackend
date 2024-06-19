@@ -224,6 +224,7 @@ Route::get('stores', [HomePageController::class, 'getBestSellingStores']);
 Route::get('home_popular_products', [HomePageController::class, 'homepopularProducts']);
 Route::get('latest_articles', [HomePageController::class, 'getLatestArticles']);
 Route::get('most_selling_products', [HomePageController::class, 'getMostSellingProducts']);
+Route::get('products_on_promo', [HomePageController::class, 'getProductsCompareAtPrice']);
 Route::get('allproducts', [AllProductController::class, '__invoke']);
 Route::get('allarticles', [ArticleController::class, 'allarticles']);
 Route::get('allposts', [PostController::class, 'allposts']);
