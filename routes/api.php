@@ -228,6 +228,7 @@ Route::get('most_selling_products', [HomePageController::class, 'getMostSellingP
 Route::get('products_on_promo', [HomePageController::class, 'getProductsCompareAtPrice']);
 Route::get('dis_popular_products', [DiscoveryPageController::class, 'popProducts']);
 Route::get('top_selling_products', [DiscoveryPageController::class, 'getTopSellingProducts']);
+Route::get('dis_products_on_promo', [DiscoveryPageController::class, 'productsOnPromo']);
 Route::get('allproducts', [AllProductController::class, '__invoke']);
 Route::get('allarticles', [ArticleController::class, 'allarticles']);
 Route::get('allposts', [PostController::class, 'allposts']);
