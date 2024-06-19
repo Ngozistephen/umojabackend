@@ -113,6 +113,7 @@ class HomePageController extends Controller
             ->whereNotNull('compare_at_price')
             ->where('compare_at_price', '>', 0)
             ->latest()
+            ->take(10) 
             ->get();
 
         // Return the products as a JSON response
