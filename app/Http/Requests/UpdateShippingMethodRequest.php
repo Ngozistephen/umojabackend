@@ -12,7 +12,7 @@ class UpdateShippingMethodRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('all-access');
+        return Gate::allows('product-manage');
     }
 
     /**
@@ -23,9 +23,8 @@ class UpdateShippingMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => 'nullable|string',
-            'duration' => 'nullable|string',
-            'amount' => 'nullable|numeric',
+            'name' => 'nullable|string|in:umoja logistics,manual shipping',
+           
         ];
     }
 }

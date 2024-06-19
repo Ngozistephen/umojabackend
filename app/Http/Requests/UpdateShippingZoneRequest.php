@@ -26,7 +26,7 @@ class UpdateShippingZoneRequest extends FormRequest
             'shipping_method_id' => 'nullable|exists:shipping_methods,id',
             'name' => 'nullable|string|max:255',
             'continent' => 'nullable|string|max:255',
-            'countries' => 'nullable|array', 
+            'countries' => 'required|array', 
             'countries.*' => 'string',
             'delivery_date_range' => 'nullable|numeric|max:50', 
             

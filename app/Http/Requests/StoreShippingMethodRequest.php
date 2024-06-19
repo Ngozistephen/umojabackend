@@ -12,7 +12,8 @@ class StoreShippingMethodRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('all-access');
+        return Gate::allows('product-manage');
+        // return Gate::allows('all-access');
     }
 
     /**
@@ -23,9 +24,8 @@ class StoreShippingMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => 'required|string',
-            'duration' => 'required|string',
-            'amount' => 'required|numeric',
+            'name' => 'nullable|string|in:umoja logistics,manual shipping',
+           
         ];
     }
 }

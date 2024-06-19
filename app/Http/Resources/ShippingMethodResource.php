@@ -16,10 +16,10 @@ class ShippingMethodResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id'=> $this->user_id,
-            'type' => $this->type,
-            'duration' => $this->duration,
-            'amount' => $this->amount,
+            'vendor_id'=> $this->vendor_id,
+            'name' => $this->type,
+            // 'duration' => $this->duration,
+            // 'amount' => $this->amount,
             'created' => $this->created_at,
             
           

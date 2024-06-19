@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('shipping_methods', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->string('type');
-            $table->string('duration');
-            $table->unsignedInteger('amount')->default(0);
+            $table->foreignId('vendor_id')->nullable()->constrained('vendors');
+            $table->string('name')->nullable();
             $table->timestamps();
         });
     }

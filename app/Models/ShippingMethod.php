@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Order;
+use App\Models\Vendor;
 use App\Models\ShippingZone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -27,9 +28,14 @@ class ShippingMethod extends Model
         $this->attributes['amount'] = $value * 100;
     }
 
-    public function user(): BelongsTo
+    // public function user(): BelongsTo
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
+
+    public function vendor()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Vendor::class);
     }
 
     public function order(): HasOne
