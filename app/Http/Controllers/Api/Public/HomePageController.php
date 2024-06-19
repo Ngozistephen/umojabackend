@@ -83,7 +83,7 @@ class HomePageController extends Controller
         return response()->json($bestSellingVendorsByCategory);
     }
 
-// with rating
+    // with rating
     // public function bestSellingStores()
     // {
     //     $topVendorsByCategory = DB::table('order_product')
