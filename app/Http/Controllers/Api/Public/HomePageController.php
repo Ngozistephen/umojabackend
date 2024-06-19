@@ -13,58 +13,74 @@ use App\Http\Resources\ProductResource;
 
 class HomePageController extends Controller
 {
-    // public function bestSellingStores()
+   
+
+
+    // public function getBestSellingStores()
     // {
-    //     $topVendorsByCategory = DB::table('order_product')
-    //         ->join('products', 'order_product.product_id', '=', 'products.id')
-    //         ->join('vendors', 'order_product.vendor_id', '=', 'vendors.id')
-    //         ->join('categories', 'products.category_id', '=', 'categories.id')
-    //         ->select(
-    //             'categories.id as category_id',
-    //             'categories.name as category_name',
-    //             'vendors.id as vendor_id',
-    //             'vendors.business_name as vendor_name',
-    //             DB::raw('SUM(order_product.qty * order_product.price) as total_sales')
-    //         )
-    //         ->groupBy('categories.id', 'vendors.id')
-    //         ->orderBy('categories.id')
-    //         ->orderByDesc('total_sales')
+    //     // Fetch vendors with the count of their orders
+    //     $bestSellingStores = Vendor::select('vendors.*', DB::raw('COUNT(order_product.id) as orders_count'))
+    //         ->join('order_product', 'vendors.id', '=', 'order_product.vendor_id')
+    //         ->groupBy('vendors.id')
+    //         ->orderBy('orders_count', 'desc')
+    //         ->take(10) // Get top 10 best-selling stores
     //         ->get();
 
-    //     $groupedByCategory = $topVendorsByCategory->groupBy('category_id');
-
-    //     $filteredCategories = $groupedByCategory->filter(function ($vendors) {
-    //         return $vendors->count() >= 2;
-    //     });
-
-    //     $bestSellingVendorsByCategory = [];
-
-    //     foreach ($filteredCategories as $categoryId => $vendors) {
-    //         $bestSellingVendorsByCategory[] = [
-    //             'category_id' => $categoryId,
-    //             'category_name' => $vendors->first()->category_name,
-    //             'vendors' => VendorResource::collection($vendors->take(7)),
-    //         ];
-    //     }
-
-    //     return response()->json($bestSellingVendorsByCategory);
+    //     return VendorResource::collection($bestSellingStores);
     // }
 
 
-    public function getBestSellingStores()
+    // public function getBestSellingStores(Request $request)
+    // {
+    //     // Validate and get the category ID from the request
+    //     $request->validate([
+    //         'category_id' => 'required|exists:categories,id',
+    //     ]);
+        
+    //     $categoryId = $request->input('category_id');
+
+    //     // Fetch vendors with the count of their orders, filtered by category
+    //     $bestSellingStores = Vendor::select('vendors.*', DB::raw('COUNT(order_product.id) as orders_count'))
+    //         ->join('order_product', 'vendors.id', '=', 'order_product.vendor_id')
+    //         ->join('orders', 'orders.id', '=', 'order_product.order_id')
+    //         ->join('product_vendor', 'order_product.vendor_id', '=', 'product_vendor.vendor_id')
+    //         ->join('products', 'products.id', '=', 'product_vendor.product_id')
+    //         ->where('products.category_id', $categoryId)
+    //         ->groupBy('vendors.id')
+    //         ->orderBy('orders_count', 'desc')
+    //         ->take(10) // Get top 10 best-selling stores
+    //         ->get();
+
+    //     return VendorResource::collection($bestSellingStores);
+    // }
+
+
+    public function getBestSellingStores($category_id = null)
     {
-        // Fetch vendors with the count of their orders
-        $bestSellingStores = Vendor::select('vendors.*', DB::raw('COUNT(order_product.id) as orders_count'))
-            ->join('order_product', 'vendors.id', '=', 'order_product.vendor_id')
-            ->groupBy('vendors.id')
-            ->orderBy('orders_count', 'desc')
+        // Base query to fetch vendors with the count of their orders
+        $query = Vendor::select('vendors.*', DB::raw('COUNT(order_product.id) as orders_count'))
+            ->leftJoin('order_product', 'vendors.id', '=', 'order_product.vendor_id')
+            ->groupBy('vendors.id');
+
+        // If a category_id filter is provided, add a where clause
+        if ($category_id) {
+            $query->whereExists(function ($subQuery) use ($category_id) {
+                $subQuery->select(DB::raw(1))
+                    ->from('order_product')
+                    ->join('orders', 'order_product.order_id', '=', 'orders.id')
+                    ->join('products', 'order_product.product_id', '=', 'products.id')
+                    ->whereRaw('vendors.id = order_product.vendor_id')
+                    ->where('products.category_id', $category_id);
+            });
+        }
+
+        // Finalize the query by ordering and limiting the result
+        $bestSellingStores = $query->orderByDesc('orders_count')
             ->take(10) // Get top 10 best-selling stores
             ->get();
 
         return VendorResource::collection($bestSellingStores);
     }
-
-
 
     
     public function homepopularProducts()
@@ -80,88 +96,7 @@ class HomePageController extends Controller
         return ProductResource::collection($popularProducts);
     }
 
-    // public function bestSellingStores()
-    // {
-    //     $topVendorsByCategory = DB::table('order_product')
-    //         ->join('products', 'order_product.product_id', '=', 'products.id')
-    //         ->join('vendors', 'order_product.vendor_id', '=', 'vendors.id')
-    //         ->join('categories', 'products.category_id', '=', 'categories.id')
-    //         ->leftJoin('reviews', 'order_product.vendor_id', '=', 'reviews.vendor_id')
-    //         ->select(
-    //             'categories.id as category_id',
-    //             'categories.name as category_name',
-    //             'vendors.id as vendor_id',
-    //             'vendors.business_name as vendor_name',
-    //             DB::raw('SUM(order_product.qty * order_product.price) as total_sales'),
-    //             DB::raw('COUNT(reviews.id) as total_ratings')
-    //         )
-    //         ->groupBy('categories.id', 'vendors.id')
-    //         ->orderBy('categories.id')
-    //         ->orderByDesc('total_sales')
-    //         ->get();
-    
-    //     $groupedByCategory = $topVendorsByCategory->groupBy('category_id');
-    
-    //     $bestSellingVendorsByCategory = [];
-    
-    //     foreach ($groupedByCategory as $categoryId => $vendors) {
-    //         $vendorCollection = $vendors->map(function ($vendor) {
-    //             // Here we create a vendor array compatible with the VendorResource
-    //             return [
-    //                 'id' => $vendor->vendor_id,
-    //                 'business_name' => $vendor->vendor_name,
-    //                 'total_sales' => $vendor->total_sales,
-    //                 'total_ratings' => $vendor->total_ratings,
-    //             ];
-    //         });
-    
-    //         $bestSellingVendorsByCategory[] = [
-    //             'category_id' => $categoryId,
-    //             'category_name' => $vendors->first()->category_name,
-    //             'vendors' => VendorResource::collection($vendorCollection),
-    //         ];
-    //     }
-    
-    //     return response()->json($bestSellingVendorsByCategory);
-    // }
+ 
 
-    // with rating
-    // public function bestSellingStores()
-    // {
-    //     $topVendorsByCategory = DB::table('order_product')
-    //         ->join('products', 'order_product.product_id', '=', 'products.id')
-    //         ->join('vendors', 'order_product.vendor_id', '=', 'vendors.id')
-    //         ->join('categories', 'products.category_id', '=', 'categories.id')
-    //         ->leftJoin('reviews', 'order_product.vendor_id', '=', 'reviews.vendor_id')
-    //         ->select(
-    //             'categories.id as category_id',
-    //             'categories.name as category_name',
-    //             'vendors.id as vendor_id',
-    //             'vendors.business_name as vendor_name',
-    //             DB::raw('SUM(order_product.qty * order_product.price) as total_sales'),
-    //             DB::raw('COUNT(reviews.id) as total_ratings')
-    //         )
-    //         ->groupBy('categories.id', 'vendors.id')
-    //         ->orderBy('categories.id')
-    //         ->orderByDesc('total_sales')
-    //         ->get();
-
-    //     $groupedByCategory = $topVendorsByCategory->groupBy('category_id');
-
-    //     $filteredCategories = $groupedByCategory->filter(function ($vendors) {
-    //         return $vendors->count() >= 7;
-    //     });
-
-    //     $bestSellingVendorsByCategory = [];
-
-    //     foreach ($filteredCategories as $categoryId => $vendors) {
-    //         $bestSellingVendorsByCategory[] = [
-    //             'category_id' => $categoryId,
-    //             'category_name' => $vendors->first()->category_name,
-    //             'vendors' => VendorResource::collection($vendors->take(7)),
-    //         ];
-    //     }
-
-    //     return response()->json($bestSellingVendorsByCategory);
-    // }
+  
 }
