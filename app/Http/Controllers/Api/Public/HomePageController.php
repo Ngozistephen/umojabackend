@@ -30,29 +30,7 @@ class HomePageController extends Controller
     // }
 
 
-    // public function getBestSellingStores(Request $request)
-    // {
-    //     // Validate and get the category ID from the request
-    //     $request->validate([
-    //         'category_id' => 'required|exists:categories,id',
-    //     ]);
-        
-    //     $categoryId = $request->input('category_id');
-
-    //     // Fetch vendors with the count of their orders, filtered by category
-    //     $bestSellingStores = Vendor::select('vendors.*', DB::raw('COUNT(order_product.id) as orders_count'))
-    //         ->join('order_product', 'vendors.id', '=', 'order_product.vendor_id')
-    //         ->join('orders', 'orders.id', '=', 'order_product.order_id')
-    //         ->join('product_vendor', 'order_product.vendor_id', '=', 'product_vendor.vendor_id')
-    //         ->join('products', 'products.id', '=', 'product_vendor.product_id')
-    //         ->where('products.category_id', $categoryId)
-    //         ->groupBy('vendors.id')
-    //         ->orderBy('orders_count', 'desc')
-    //         ->take(10) // Get top 10 best-selling stores
-    //         ->get();
-
-    //     return VendorResource::collection($bestSellingStores);
-    // }
+ 
 
 
     public function getBestSellingStores($category_id = null)
