@@ -61,6 +61,26 @@ class HomePageController extends Controller
         return VendorResource::collection($bestSellingStores);
     }
 
+
+
+    
+    public function homepopularProducts()
+    {
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = Carbon::now()->endOfWeek();
+
+        $popularProducts = Product::select('products.*')
+            ->join('order_product', 'products.id', '=', 'order_product.product_id')
+            ->join('orders', 'orders.id', '=', 'order_product.order_id')
+            ->whereBetween('orders.created_at', [$startOfWeek, $endOfWeek])
+            ->groupBy('products.id')
+            ->orderByRaw('COUNT(order_product.product_id) DESC')
+            ->take(10)
+            ->get();
+
+        return ProductResource::collection($popularProducts);
+    }
+
     // public function bestSellingStores()
     // {
     //     $topVendorsByCategory = DB::table('order_product')
