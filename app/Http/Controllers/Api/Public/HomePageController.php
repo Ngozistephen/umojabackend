@@ -94,7 +94,7 @@ class HomePageController extends Controller
 
     public function getMostSellingProducts()
     {
-        // Fetch the most selling products
+        
         $mostSellingProducts = Product::select('products.*', DB::raw('COUNT(order_product.product_id) as sales_count'))
             ->join('order_product', 'products.id', '=', 'order_product.product_id')
             ->groupBy('products.id')
