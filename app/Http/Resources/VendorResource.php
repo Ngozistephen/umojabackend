@@ -85,6 +85,7 @@ class VendorResource extends JsonResource
             'followers_count' => $this->followersCount(),
             'unread_notification_count' => $unreadNotificationCount,
             'shipping_method' => $shippingMethod?->type,
+            'total_ratings' => $this->total_ratings,
                
            
             // 'shipping_method' => $shippingMethod ? [
