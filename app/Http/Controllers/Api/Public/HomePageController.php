@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\VendorResource;
+use App\Http\Resources\ProductResource;
 
 class HomePageController extends Controller
 {
