@@ -90,5 +90,21 @@ class HomePageController extends Controller
         return ArticleResource::collection($latestArticles);
     }
 
+
+
+    public function getMostSellingProducts()
+    {
+        // Fetch the most selling products
+        $mostSellingProducts = Product::select('products.*', DB::raw('COUNT(order_product.product_id) as sales_count'))
+            ->join('order_product', 'products.id', '=', 'order_product.product_id')
+            ->groupBy('products.id')
+            ->orderBy('sales_count', 'desc')
+            ->take(10) // You can adjust the number of products to return
+            ->get();
+
+        // Return the products as a resource collection
+        return ProductResource::collection($mostSellingProducts);
+    }
+
   
 }
