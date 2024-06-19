@@ -220,7 +220,7 @@ Route::middleware('auth:api')->group(function () {
    
 });
 Route::get('search', [ProductSearchController::class, '__invoke']);
-Route::get('stores', [HomePageController::class, 'bestSellingStores']);
+Route::get('stores', [HomePageController::class, 'getBestSellingStores']);
 Route::get('allproducts', [AllProductController::class, '__invoke']);
 Route::get('allarticles', [ArticleController::class, 'allarticles']);
 Route::get('allposts', [PostController::class, 'allposts']);
