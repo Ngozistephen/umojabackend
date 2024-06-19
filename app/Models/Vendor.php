@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
         use  HasFactory,Notifiable, SoftDeletes,Notifiable;
 
         protected $guarded = ['id'];
+        protected $appends = ['total_ratings'];
         
 
         public function user(): BelongsTo
@@ -64,6 +65,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
         public function reviews()
         {
             return $this->hasMany(Review::class);
+        }
+
+        public function getTotalRatingsAttribute()
+        {
+            return $this->reviews()->sum('rating');
         }
 
 
