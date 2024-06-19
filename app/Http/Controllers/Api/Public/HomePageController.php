@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api\Public;
 
 use App\Models\Vendor;
+use App\Models\Article;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\VendorResource;
+use App\Http\Resources\ArticleResource;
 use App\Http\Resources\ProductResource;
 
 class HomePageController extends Controller
@@ -75,6 +77,18 @@ class HomePageController extends Controller
     }
 
  
+
+    public function getLatestArticles()
+    {
+        // Fetch the latest articles from all vendors
+        $latestArticles = Article::with('vendor', 'category')
+            ->orderBy('published_at', 'desc')
+            ->take(6)
+            ->get();
+
+        // Return the articles as a resource collection
+        return ArticleResource::collection($latestArticles);
+    }
 
   
 }
