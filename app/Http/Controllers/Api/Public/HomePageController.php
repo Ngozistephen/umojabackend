@@ -99,10 +99,9 @@ class HomePageController extends Controller
             ->join('order_product', 'products.id', '=', 'order_product.product_id')
             ->groupBy('products.id')
             ->orderBy('sales_count', 'desc')
-            ->take(10) // You can adjust the number of products to return
+            ->take(10) 
             ->get();
 
-        // Return the products as a resource collection
         return ProductResource::collection($mostSellingProducts);
     }
 
