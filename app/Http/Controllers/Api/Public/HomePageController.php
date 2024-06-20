@@ -34,20 +34,21 @@ class HomePageController extends Controller
 
  
 
-
-    public function getBestSellingStores($business_type_id = null)
+    public function getBestSellingStores(Request $request)
     {
-    
+      
+        $business_type_id = $request->query('business_type_id');
+
+        
         $query = Vendor::select('vendors.*', DB::raw('COUNT(order_product.id) as orders_count'))
             ->leftJoin('order_product', 'vendors.id', '=', 'order_product.vendor_id')
             ->groupBy('vendors.id');
 
-        
-        if ($business_type_id) {
+       
+        if ($business_type_id !== null) {
             $query->where('vendors.business_type_id', $business_type_id);
         }
-
-  
+      
         $bestSellingStores = $query->orderByDesc('orders_count')
             ->take(10) 
             ->get();
