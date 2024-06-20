@@ -17,10 +17,10 @@ class GenderController extends Controller
         $genders = Gender::all();
         return GenderResource::collection($genders);
     }
-    
+
     public function allgenders()
     {
-        $genders = Gender::all();
+        $genders = Gender::orderBy('id', 'desc')->get();
         return GenderResource::collection($genders);
     }
 
