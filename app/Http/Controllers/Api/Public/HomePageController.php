@@ -35,28 +35,21 @@ class HomePageController extends Controller
  
 
 
-    public function getBestSellingStores($category_id = null)
+    public function getBestSellingStores($business_type_id = null)
     {
-        // Base query to fetch vendors with the count of their orders
+    
         $query = Vendor::select('vendors.*', DB::raw('COUNT(order_product.id) as orders_count'))
             ->leftJoin('order_product', 'vendors.id', '=', 'order_product.vendor_id')
             ->groupBy('vendors.id');
 
-        // If a category_id filter is provided, add a where clause
-        if ($category_id) {
-            $query->whereExists(function ($subQuery) use ($category_id) {
-                $subQuery->select(DB::raw(1))
-                    ->from('order_product')
-                    ->join('orders', 'order_product.order_id', '=', 'orders.id')
-                    ->join('products', 'order_product.product_id', '=', 'products.id')
-                    ->whereRaw('vendors.id = order_product.vendor_id')
-                    ->where('products.category_id', $category_id);
-            });
+        
+        if ($business_type_id) {
+            $query->where('vendors.business_type_id', $business_type_id);
         }
 
-        // Finalize the query by ordering and limiting the result
+  
         $bestSellingStores = $query->orderByDesc('orders_count')
-            ->take(10) // Get top 10 best-selling stores
+            ->take(10) 
             ->get();
 
         return VendorResource::collection($bestSellingStores);
