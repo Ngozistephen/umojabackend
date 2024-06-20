@@ -12,7 +12,7 @@ class DiscoveryPageController extends Controller
     
     public function popProducts(Request $request)
     {
-        // $perPage = $request->query('per_page', 15);
+        
 
        
         $popularProducts = Product::select('products.*')
@@ -20,7 +20,7 @@ class DiscoveryPageController extends Controller
             ->join('orders', 'orders.id', '=', 'order_product.order_id')
             ->groupBy('products.id')
             ->orderByRaw('COUNT(order_product.product_id) DESC')
-            ->paginate(15);
+            ->paginate(10);
 
         return ProductResource::collection($popularProducts);
     }
@@ -28,7 +28,7 @@ class DiscoveryPageController extends Controller
 
     public function getTopSellingProducts(Request $request)
     {
-        // $perPage = $request->query('per_page', 15);
+        
 
        
         $topSellingProducts = Product::select('products.*')
@@ -36,7 +36,7 @@ class DiscoveryPageController extends Controller
             ->join('orders', 'orders.id', '=', 'order_product.order_id')
             ->groupBy('products.id')
             ->orderByRaw('COUNT(order_product.product_id) DESC')
-            ->paginate(15);
+            ->paginate(10);
 
        
         return ProductResource::collection($topSellingProducts);
@@ -50,7 +50,7 @@ class DiscoveryPageController extends Controller
             ->whereNotNull('compare_at_price')
             ->where('compare_at_price', '>', 0)
             ->latest()
-            ->paginate(15);
+            ->paginate(10);
 
         
         return ProductResource::collection($products);
