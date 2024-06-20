@@ -112,9 +112,8 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('variations_option', VariationOptionController::class);
         Route::apiResource('discount_codes', DiscountCodeController::class);
         Route::apiResource('business_types', BusinessTypeController::class);
-        Route::apiResource('genders', GenderController::class);
-        // the endpoint for admin is not ready yet, 
         Route::apiResource('shippingMethods', ShippingMethodController::class);
+        Route::apiResource('genders', GenderController::class); 
 
     });
     Route::prefix('vendor')->group(function () {
