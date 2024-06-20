@@ -57,7 +57,7 @@ class VendorResource extends JsonResource
             'youtube_handle' => $this->youtube_handle,
             'building_name' => $this->building_name,
             'business_type_id' => $this->business_type_id,
-            'business_type_name' => $this->business_type?->name,
+            'business_type' => $this->business_type?->name,
             'business_name' => $this->business_name,
             'business_website' => $this->business_website,
             'office_country' => $this->office_country,
