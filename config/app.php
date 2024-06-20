@@ -71,7 +71,8 @@ return [
 |
 */
 
-'frontend_url' => env('FRONTEND_URL', 'https://umoja-store.netlify.app/'),
+'frontend_url' => env('FRONTEND_URL', 'https://umoja-africa.com/'),
+
 
     /*
     |--------------------------------------------------------------------------

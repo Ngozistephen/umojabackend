@@ -138,7 +138,7 @@ class CheckoutController extends Controller
             $paymentMethod = PaymentMethod::findOrFail($paymentMethodId);
             $user->updateDefaultPaymentMethod($paymentMethod->payment_method);
 
-            $returnUrl = 'https://umoja-store.netlify.app/order/summary';
+            $returnUrl = 'https://umoja-africa.com/order/summary';
             $payment = $user->charge(
                 $totalAmount * 100,
                 $paymentMethod->payment_method,
