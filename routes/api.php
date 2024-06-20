@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Public\UserController;
 use App\Http\Controllers\Api\Vendor\PostController;
 use App\Http\Controllers\Api\Vendor\SaleController;
+use App\Http\Controllers\Api\Admin\GenderController;
 use App\Http\Controllers\Api\Vendor\OrderController;
 use App\Http\Controllers\Api\Vendor\PromoController;
 use App\Http\Controllers\Api\Customer\CartController;
@@ -111,6 +112,7 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('variations_option', VariationOptionController::class);
         Route::apiResource('discount_codes', DiscountCodeController::class);
         Route::apiResource('business_types', BusinessTypeController::class);
+        Route::apiResource('genders', GenderController::class);
         // the endpoint for admin is not ready yet, 
         Route::apiResource('shippingMethods', ShippingMethodController::class);
 
@@ -239,6 +241,7 @@ Route::get('vendor/products/{product}/show_product', [ProductController::class, 
 Route::get('sub_categories/category/{category_id}', [SubcategoryController::class, 'bycategory']);
 Route::get('allcategory', [CategoryController::class, 'allcategory']);
 Route::get('allbusinesstypes', [BusinessTypeController::class, 'allbusinesstypes']);
+Route::get('allgenders', [GenderController::class, 'allgenders']);
 Route::get('{vendorId}/articles', [VendorPageController::class, 'vendors_article']);
 Route::get('{vendorId}/posts', [VendorPageController::class, 'vendors_posts']);
 Route::get('{vendorId}/promos', [VendorPageController::class, 'vendors_promos']);
