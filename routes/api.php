@@ -238,6 +238,7 @@ Route::get('vendor/posts/{post}/show_post', [PostController::class, 'showPost'])
 Route::get('vendor/products/{product}/show_product', [ProductController::class, 'showProduct']);
 Route::get('sub_categories/category/{category_id}', [SubcategoryController::class, 'bycategory']);
 Route::get('allcategory', [CategoryController::class, 'allcategory']);
+Route::get('allbusinesstypes', [BusinessTypeController::class, 'allbusinesstypes']);
 Route::get('{vendorId}/articles', [VendorPageController::class, 'vendors_article']);
 Route::get('{vendorId}/posts', [VendorPageController::class, 'vendors_posts']);
 Route::get('{vendorId}/promos', [VendorPageController::class, 'vendors_promos']);

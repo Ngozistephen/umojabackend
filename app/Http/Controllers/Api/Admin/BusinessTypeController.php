@@ -18,6 +18,13 @@ class BusinessTypeController extends Controller
         return BusinessTypeResource::collection($businessTypes);
     }
 
+
+    public function allbusinesstypes(Request $request)
+    {
+        $businessTypes = BusinessType::orderBy('id', 'desc')->get();
+
+        return BusinessTypeResource::collection( $businessTypes);
+    }
     /**
      * Store a newly created resource in storage.
      */
