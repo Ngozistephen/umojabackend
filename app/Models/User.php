@@ -11,6 +11,7 @@ use App\Models\Vendor;
 use App\Models\Category;
 use App\Models\Variation;
 use App\Models\ReviewLike;
+use App\Models\BusinessType;
 use App\Models\ShippingZone;
 use App\Models\PaymentMethod;
 use Laravel\Cashier\Billable;
@@ -102,6 +103,11 @@ class User extends Authenticatable
     public function categories()
     {
         return $this->hasMany(Category::class);
+    }
+
+    public function business_types()
+    {
+        return $this->hasMany(BusinessType::class);
     }
 
     public function variations()

@@ -13,6 +13,7 @@ use App\Models\Category;
 use App\Models\OrderItem;
 use App\Models\Variation;
 use App\Models\LocalPickup;
+use App\Models\BusinessType;
 use App\Models\ShippingZone;
 use App\Models\LocalDelivery;
 use App\Models\ShippingMethod;
@@ -104,6 +105,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
         }
         
     
+
+        public function business_type()
+        {
+            return $this->belongsTo(BusinessType::class);
+        }
 
     
 

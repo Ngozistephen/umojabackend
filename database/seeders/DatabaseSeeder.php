@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(VariationsOptionSeeder::class);
         $this->call(VariationSeeder::class);
         $this->call(ShippingMethodSeeder::class);
+        $this->call(BusinessTypeSeeder::class);
     }
 }

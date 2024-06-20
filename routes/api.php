@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\Admin\SubcategoryController;
 use App\Http\Controllers\Api\Auth\SocialVendorController;
 use App\Http\Controllers\Api\Auth\VerificationController;
 use App\Http\Controllers\Api\Customer\CheckoutController;
+use App\Http\Controllers\Api\Admin\BusinessTypeController;
 use App\Http\Controllers\Api\Admin\DiscountCodeController;
 use App\Http\Controllers\Api\Auth\CustomerLoginController;
 use App\Http\Controllers\Api\Customer\SeeReviewController;
@@ -109,6 +110,7 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('variations', VariationController::class);
         Route::apiResource('variations_option', VariationOptionController::class);
         Route::apiResource('discount_codes', DiscountCodeController::class);
+        Route::apiResource('business_types', BusinessTypeController::class);
         // the endpoint for admin is not ready yet, 
         Route::apiResource('shippingMethods', ShippingMethodController::class);
 

@@ -54,7 +54,7 @@ class VendorProfileRequest extends FormRequest
             'instagram_handle' => 'nullable|string', 
             'youtube_handle' => 'nullable|string', 
             'building_name' => 'nullable|string', 
-            'business_type' => 'nullable|string',
+            'business_type_id' => 'nullable|integer|exists:business_types,id',
             'business_name' => 'nullable|string',
             'business_website' => 'nullable|url', 
             'bank_name' => 'nullable|string', 
