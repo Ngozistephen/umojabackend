@@ -50,7 +50,7 @@ class ProductResource extends JsonResource
             'unit_per_item' => $this->unit_per_item,
             'condition' => $this->condition,   
             'sell_online' => $this->sell_online,
-            'gender' => $this->gender,
+            'gender' => $this->gender?->name,
             'ust_index' => $this->ust_index,
             'commission' => $this->commission,
             'compare_at_price' => $this->compare_at_price,

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Gender;
 use App\Models\Review;
 use App\Models\CartItem;
 use App\Models\Category;
@@ -80,6 +81,11 @@ class Product extends Model
     public function subCategory(): BelongsTo
     {
         return $this->belongsTo(SubCategory::class);
+    }
+
+    public function gender(): BelongsTo
+    {
+        return $this->belongsTo(Gender::class);
     }
 
     public function variations(): HasMany

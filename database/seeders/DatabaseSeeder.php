@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\GenderSeeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\AdminUserSeeder;
 use Database\Seeders\PermissionSeeder;
@@ -25,5 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(VariationSeeder::class);
         $this->call(ShippingMethodSeeder::class);
         $this->call(BusinessTypeSeeder::class);
+        $this->call(GenderSeeder::class);
     }
 }

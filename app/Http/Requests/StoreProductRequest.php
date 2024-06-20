@@ -38,7 +38,7 @@ class StoreProductRequest extends FormRequest
             'status' => 'nullable|string',
             'category_id' => 'required|string|exists:categories,id',
             'sub_category_id' => 'required|string|exists:sub_categories,id', 
-            'gender' => 'nullable|string',
+            'gender_id' => 'nullable|string|exists:genders,id',
             'photo' => 'nullable',
             'slug' => 'nullable|string',
             'ust_index' => 'nullable|string', 
