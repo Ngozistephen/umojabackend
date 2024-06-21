@@ -217,10 +217,9 @@ class CustomerController extends Controller
                 ->where('vendor_id', $vendorId);
         })->whereIn('user_id', $allUserIds)->get()->groupBy('user_id');
 
-        // Map users to their status and include order details if applicable
-        $userStatus = $allUsers->map(function ($user) use ($followerIds, $orders) {
-            $status = in_array($user->id, $followerIds) ? 'following' : 'member';
+        $userStatus = $allUsers->map(function ($user) use ($orders) {
             $orderDetails = $orders->get($user->id) ?? [];
+            $status = count($orderDetails) > 0 ? 'member' : 'following';
             return [
                 'user' => new UserResource($user),
                 'status' => $status,
