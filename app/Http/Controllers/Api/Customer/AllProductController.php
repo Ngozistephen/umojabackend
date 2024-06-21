@@ -85,7 +85,7 @@ class AllProductController extends Controller
 
     public function __invoke(Request $request)
     {
-        $products = Product::with('variations', 'category', 'subCategory', 'user.vendor', 'reviews')
+        $products = Product::with('variations', 'category', 'subCategory', 'user.vendor', 'reviews', 'gender')
 
             // Search Global
             ->when($request->search_global, function ($query) use ($request) {
