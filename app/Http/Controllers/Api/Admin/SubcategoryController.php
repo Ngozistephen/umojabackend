@@ -28,22 +28,22 @@ class SubcategoryController extends Controller
     public function bycategory($categoryId) 
     {
         $subCategories = SubCategory::where('category_id', $categoryId)
-                                      ->with(['category', 'genderSubcategory'])
+                                      ->with(['category'])
                                       ->paginate(10);
         
         return SubcategoryResource::collection($subCategories);
     }
 
-    public function byUnisexCategory($categoryId)
-    {
-        $unisexGenderId = 3; // Assuming 3 is the ID for 'Unisex' in the gender_subcategories table
-        $subCategories = SubCategory::where('category_id', $categoryId)
-                                      ->where('gender_subcategory_id', $unisexGenderId)
-                                      ->with(['category', 'genderSubcategory'])
-                                      ->paginate(10);
+    // public function byUnisexCategory($categoryId)
+    // {
+    //     $unisexGenderId = 3; // Assuming 3 is the ID for 'Unisex' in the gender_subcategories table
+    //     $subCategories = SubCategory::where('category_id', $categoryId)
+    //                                   ->where('gender_subcategory_id', $unisexGenderId)
+    //                                   ->with(['category', 'genderSubcategory'])
+    //                                   ->paginate(10);
         
-        return SubcategoryResource::collection($subCategories);
-    }
+    //     return SubcategoryResource::collection($subCategories);
+    // }
 
 
 
