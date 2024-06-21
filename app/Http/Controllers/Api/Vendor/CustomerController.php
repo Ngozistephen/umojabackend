@@ -190,10 +190,11 @@ class CustomerController extends Controller
         $allUsers = User::whereIn('id', $allUserIds)->get();
 
         // Retrieve order details for users who have ordered from the vendor
-        $orders = Order::where('vendor_id', $vendorId)
-            ->whereIn('user_id', $allUserIds)
-            ->get()
-            ->groupBy('user_id');
+        $orders = Order::whereIn('id', function ($query) use ($vendorId) {
+            $query->select('order_id')
+                ->from('order_product')
+                ->where('vendor_id', $vendorId);
+            })->whereIn('user_id', $allUserIds)->get()->groupBy('user_id');
 
         // Map users to their status and include order details if applicable
         $userStatus = $allUsers->map(function ($user) use ($followerIds, $orderUsers, $orders) {
