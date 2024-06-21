@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Vendor;
 
 use DB;
+use App\Models\User;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
