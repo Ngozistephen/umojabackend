@@ -132,11 +132,11 @@ class Product extends Model
     }
 
 
-    public function viewedByUsers()
-    {
-        return $this->belongsToMany(User::class, 'recently_viewed_products')
-                    ->withTimestamps()
-                    ->orderBy('recently_viewed_products.created_at', 'desc');
-    }
+    // public function viewedByUsers()
+    // {
+    //     return $this->belongsToMany(User::class, 'recently_viewed_products')
+    //                 ->withTimestamps()
+    //                 ->orderBy('recently_viewed_products.created_at', 'desc');
+    // }
    
 }

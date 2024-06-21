@@ -47,7 +47,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             GateDefineMiddleware::class,
             UpdateLastActiveAt::class,
-            TrackProductView::class,
+            // TrackProductView::class,
         ],
     ];
 

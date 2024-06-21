@@ -183,12 +183,12 @@ class User extends Authenticatable
 
 
 
-    public function recentlyViewedProducts()
-    {
-        return $this->belongsToMany(Product::class, 'recently_viewed_products')
-                    ->withTimestamps()
-                    ->orderBy('recently_viewed_products.created_at', 'desc');
-    }
+    // public function recentlyViewedProducts()
+    // {
+    //     return $this->belongsToMany(Product::class, 'recently_viewed_products')
+    //                 ->withTimestamps()
+    //                 ->orderBy('recently_viewed_products.created_at', 'desc');
+    // }
 
 
     
