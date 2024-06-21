@@ -190,10 +190,10 @@ class CustomerController extends Controller
         // Total number of followers
         $totalFollowers = $followers->count();
 
-        // Number of followers active in the last 7 days
-        $activeFollowers = $vendor->followers()
-            ->where('last_active_at', '>=', Carbon::now()->subDays(7))
-            ->count();
+        // // Number of followers active in the last 7 days
+        // $activeFollowers = $vendor->followers()
+        //     ->where('last_active_at', '>=', Carbon::now()->subDays(7))
+        //     ->count();
 
         // Get users who have ordered from the vendor
         $orderUsers = DB::table('orders')
@@ -233,12 +233,77 @@ class CustomerController extends Controller
         return response()->json([
             'total_customer' => $totalCustomer,
             'total_followers' => $totalFollowers,
-            'active_followers' => $activeFollowers,
+            // 'active_followers' => $activeFollowers,
             'total_order_users' => count($orderUsers),
             'users' => $userStatus,
         ]);
     }
 
+
+    // not tested yet
+    // public function getVendorFollowers($vendorId)
+    // {
+    //     $vendor = Vendor::findOrFail($vendorId);
+
+    //     // Get all followers
+    //     $followers = $vendor->followers()->get();
+    //     $followerIds = $followers->pluck('id')->toArray();
+
+    //     // Get users who have ordered from the vendor
+    //     $orderUserIds = DB::table('orders')
+    //         ->join('order_product', 'orders.id', '=', 'order_product.order_id')
+    //         ->where('order_product.vendor_id', $vendorId)
+    //         ->distinct()
+    //         ->pluck('orders.user_id')
+    //         ->toArray();
+
+    //     // Combine followers and order users to get all relevant users
+    //     $allUserIds = array_unique(array_merge($followerIds, $orderUserIds));
+    //     $allUsers = User::whereIn('id', $allUserIds)->get();
+
+    //     // Retrieve order details for users who have ordered from the vendor
+    //     $orders = Order::whereIn('user_id', $allUserIds)
+    //         ->whereIn('id', function ($query) use ($vendorId) {
+    //             $query->select('order_id')
+    //                 ->from('order_product')
+    //                 ->where('vendor_id', $vendorId);
+    //         })
+    //         ->get()
+    //         ->groupBy('user_id');
+
+    //     // Map users to their status and include order details if applicable
+    //     $userStatus = $allUsers->map(function ($user) use ($orders) {
+    //         $orderDetails = $orders->get($user->id) ?? [];
+    //         $status = count($orderDetails) > 0 ? 'member' : 'following';
+    //         return [
+    //             'user' => new UserResource($user),
+    //             'status' => $status,
+    //             'orders' => OrderResource::collection($orderDetails),
+    //         ];
+    //     });
+
+    //     // Total number of distinct users who follow the vendor or have ordered from the vendor
+    //     $totalCustomer = count($allUserIds);
+
+    //     // Total number of followers
+    //     $totalFollowers = count($followerIds);
+
+    //     // Number of followers active in the last 7 days
+    //     $activeFollowers = $vendor->followers()
+    //         ->where('last_active_at', '>=', Carbon::now()->subDays(7))
+    //         ->count();
+
+    //     // Total number of users who have ordered from the vendor
+    //     $totalOrderUsers = count($orderUserIds);
+
+    //     return response()->json([
+    //         'total_customer' => $totalCustomer,
+    //         'total_followers' => $totalFollowers,
+    //         'active_followers' => $activeFollowers,
+    //         'total_order_users' => $totalOrderUsers,
+    //         'followers' => $userStatus,
+    //     ]);
+    // }
 
 
 
