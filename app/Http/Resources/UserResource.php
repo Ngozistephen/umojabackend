@@ -3,11 +3,21 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\OrderResource;
 use App\Http\Resources\VendorResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
+
+    protected $orders;
+
+    public function __construct($resource, $orders = [])
+    {
+        parent::__construct($resource);
+        $this->orders = $orders;
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -35,6 +45,7 @@ class UserResource extends JsonResource
             // 'vendor_details' => VendorResource::collection($this->whenLoaded('vendor')),
             'vendor_details' => new VendorResource($this->vendor),
             'following_count' => $this->followingCount(),
+            'orders' => OrderResource::collection($this->orders),
            
         ];
     }

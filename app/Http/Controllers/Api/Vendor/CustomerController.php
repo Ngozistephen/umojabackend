@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Vendor;
 
 use DB;
 use App\Models\User;
+use App\Models\Order;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -182,31 +183,39 @@ class CustomerController extends Controller
             ->toArray();
 
         // Combine followers and order users
-        $allUserIds = $followers->pluck('id')->merge($orderUsers)->unique();
+        $followerIds = $followers->pluck('id')->toArray();
+        $allUserIds = array_unique(array_merge($followerIds, $orderUsers));
 
         // Retrieve all user data for the combined user ids
         $allUsers = User::whereIn('id', $allUserIds)->get();
 
-        // Map users to their status
-        $userStatus = $allUsers->map(function ($user) use ($followers, $orderUsers) {
-            $status = in_array($user->id, $followers->pluck('id')->toArray()) ? 'following' : 'member';
+        // Retrieve order details for users who have ordered from the vendor
+        $orders = Order::where('vendor_id', $vendorId)
+            ->whereIn('user_id', $allUserIds)
+            ->get()
+            ->groupBy('user_id');
+
+        // Map users to their status and include order details if applicable
+        $userStatus = $allUsers->map(function ($user) use ($followerIds, $orderUsers, $orders) {
+            $status = in_array($user->id, $followerIds) ? 'following' : 'member';
             return [
-                'user' => new UserResource($user),
+                'user' => new UserResource($user, $orders->get($user->id) ?? []),
                 'status' => $status,
             ];
         });
 
         // Total number of distinct users who follow the vendor or have ordered from the vendor
-        $totalCustomer = $allUsers->count();
+        $totalCustomer = count($allUserIds);
 
         return response()->json([
             'total_customer' => $totalCustomer,
             'total_followers' => $totalFollowers,
-            // 'active_followers' => $activeFollowers,
+            'active_followers' => $activeFollowers,
             'total_order_users' => count($orderUsers),
             'followers' => $userStatus,
         ]);
     }
+
 
 
 
