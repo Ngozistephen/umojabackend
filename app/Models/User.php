@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\Order;
 use App\Models\Review;
 use App\Models\Vendor;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\Variation;
 use App\Models\ReviewLike;
@@ -178,6 +179,15 @@ class User extends Authenticatable
     public function shippingZones()
     {
         return $this->hasMany(ShippingZone::class);
+    }
+
+
+
+    public function recentlyViewedProducts()
+    {
+        return $this->belongsToMany(Product::class, 'recently_viewed_products')
+                    ->withTimestamps()
+                    ->orderBy('recently_viewed_products.created_at', 'desc');
     }
 
 

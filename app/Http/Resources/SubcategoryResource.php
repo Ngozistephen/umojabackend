@@ -22,8 +22,8 @@ class SubcategoryResource extends JsonResource
             'category_id' => $this->category?->id,
             // 'gender_subcategory' => $this->genderSubcategory->name,
             // 'gender_subcategory_id' => $this->genderSubcategory->id,
-            'gender_subcategory' => $this->gender_subcategory,
-            'neted_subcategories' => $this->neted_subcategories,
+            // 'gender_subcategory' => $this->gender_subcategory,
+            // 'neted_subcategories' => $this->neted_subcategories,
         ];
     }
 }

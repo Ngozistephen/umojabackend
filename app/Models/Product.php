@@ -120,15 +120,23 @@ class Product extends Model
     //     return $this->hasMany(CartItem::class);
     // }
 
-    public function cartItems(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'cart_items')->withPivot('quantity');
-    }
+    // public function cartItems(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(User::class, 'cart_items')->withPivot('quantity');
+    // }
 
 
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+
+    public function viewedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'recently_viewed_products')
+                    ->withTimestamps()
+                    ->orderBy('recently_viewed_products.created_at', 'desc');
     }
    
 }
