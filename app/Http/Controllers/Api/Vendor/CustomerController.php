@@ -116,6 +116,48 @@ class CustomerController extends Controller
 
     // }
 
+    // working without status
+    // public function getVendorFollowers($vendorId)
+    // {
+    //     $vendor = Vendor::findOrFail($vendorId);
+
+    //     // Get all followers
+    //     $followers = $vendor->followers()->get();
+
+    //     // Total number of followers
+    //     $totalFollowers = $followers->count();
+
+    //     // Number of followers active in the last 7 days
+    //     $activeFollowers = $vendor->followers()
+    //         ->where('last_active_at', '>=', Carbon::now()->subDays(7))
+    //         ->count();
+
+    //     // Get users who have ordered from the vendor
+    //     $orderUsers = DB::table('orders')
+    //         ->join('order_product', 'orders.id', '=', 'order_product.order_id')
+    //         ->where('order_product.vendor_id', $vendorId)
+    //         ->distinct('orders.user_id')
+    //         ->pluck('orders.user_id')
+    //         ->toArray();
+
+    //     // Combine followers and order users
+    //     $allUserIds = $followers->pluck('id')->merge($orderUsers)->unique();
+
+    //     // Retrieve all user data for the combined user ids
+    //     $allUsers = User::whereIn('id', $allUserIds)->get();
+
+    //     // Total number of distinct users who follow the vendor or have ordered from the vendor
+    //     $totalCustomer = $allUsers->count();
+
+    //     return response()->json([
+    //         'total_customer' => $totalCustomer,
+    //         'total_followers' => $totalFollowers,
+    //         'active_followers' => $activeFollowers,
+    //         'total_order_users' => count($orderUsers),
+    //         'followers' => UserResource::collection($allUsers),
+    //     ]);
+    // }
+
     public function getVendorFollowers($vendorId)
     {
         $vendor = Vendor::findOrFail($vendorId);
@@ -145,17 +187,27 @@ class CustomerController extends Controller
         // Retrieve all user data for the combined user ids
         $allUsers = User::whereIn('id', $allUserIds)->get();
 
+        // Map users to their status
+        $userStatus = $allUsers->map(function ($user) use ($followers, $orderUsers) {
+            $status = in_array($user->id, $followers->pluck('id')->toArray()) ? 'following' : 'member';
+            return [
+                'user' => new UserResource($user),
+                'status' => $status,
+            ];
+        });
+
         // Total number of distinct users who follow the vendor or have ordered from the vendor
         $totalCustomer = $allUsers->count();
 
         return response()->json([
             'total_customer' => $totalCustomer,
             'total_followers' => $totalFollowers,
-            'active_followers' => $activeFollowers,
+            // 'active_followers' => $activeFollowers,
             'total_order_users' => count($orderUsers),
-            'followers' => UserResource::collection($allUsers),
+            'followers' => $userStatus,
         ]);
     }
+
 
 
     public function hasFollowed(Request $request, Vendor $vendor)
