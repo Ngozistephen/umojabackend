@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\OrderResource;
 use App\Http\Resources\VendorResource;
 use App\Notifications\VendorFollowedNotification;
 use App\Notifications\VendorUnfollowNotification;
@@ -235,7 +236,7 @@ class CustomerController extends Controller
             'total_followers' => $totalFollowers,
             'active_followers' => $activeFollowers,
             'total_order_users' => count($orderUsers),
-            'followers' => $userStatus,
+            'users' => $userStatus,
         ]);
     }
 
