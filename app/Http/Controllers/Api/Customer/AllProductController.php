@@ -114,7 +114,9 @@ class AllProductController extends Controller
 
             // Filter by gender
             ->when($request->gender, function ($query) use ($request) {
-                $query->where('gender', $request->gender);
+                $query->whereHas('gender', function ($q) use ($request) {
+                    $q->where('name', $request->gender);
+                });
             })
 
             // Filter by category_name
@@ -125,20 +127,20 @@ class AllProductController extends Controller
             })
 
             // Filter by sub_category_name
-            // ->when($request->sub_category_name, function ($query) use ($request) {
-            //     $query->whereHas('subCategory', function ($q) use ($request) {
-            //         $q->where('name', $request->sub_category_name);
-            //     });
-            // })
-
             ->when($request->sub_category_name, function ($query) use ($request) {
                 $query->whereHas('subCategory', function ($q) use ($request) {
-                    $q->where(function ($query) use ($request) {
-                        $query->where('name', $request->sub_category_name)
-                                ->orWhereJsonContains('neted_subcategories', $request->sub_category_name);
-                    });
+                    $q->where('name', $request->sub_category_name);
                 });
             })
+
+            // ->when($request->sub_category_name, function ($query) use ($request) {
+            //     $query->whereHas('subCategory', function ($q) use ($request) {
+            //         $q->where(function ($query) use ($request) {
+            //             $query->where('name', $request->sub_category_name);
+                                
+            //         });
+            //     });
+            // })
 
             // Filter by sizes
             ->when($request->sizes, function ($query) use ($request) {
