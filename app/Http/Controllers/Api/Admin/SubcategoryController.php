@@ -29,7 +29,7 @@ class SubcategoryController extends Controller
     {
         $subCategories = SubCategory::where('category_id', $categoryId)
                                       ->with(['category'])
-                                      ->paginate(10);
+                                      ->paginate(25);
         
         return SubcategoryResource::collection($subCategories);
     }
