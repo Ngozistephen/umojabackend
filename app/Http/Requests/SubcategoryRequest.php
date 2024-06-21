@@ -43,7 +43,7 @@ class SubcategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name' => "Sub Cateegory Name must be Uniue",
+            'name' => "Sub Category Name must be Uniue",
            
         ];
     }
