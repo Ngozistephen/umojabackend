@@ -81,6 +81,40 @@ class CustomerController extends Controller
     //     return UserResource::collection($followers);
     // }
 
+    // public function getVendorFollowers($vendorId)
+    // {
+    //     $vendor = Vendor::findOrFail($vendorId);
+
+    //     // Get all followers
+    //     $followers = $vendor->followers()->get();
+
+    //     // Total number of followers
+    //     $totalFollowers = $followers->count();
+
+    //     // Number of followers active in the last 7 days
+    //     $activeFollowers = $vendor->followers()
+    //         ->where('last_active_at', '>=', Carbon::now()->subDays(7))
+    //         ->count();
+
+    //         $totalOrderUsers = DB::table('orders')
+    //                 ->join('order_product', 'orders.id', '=', 'order_product.order_id')
+    //                 ->where('order_product.vendor_id', $vendorId)
+    //                 ->distinct('orders.user_id')
+    //                 ->count('orders.user_id');
+
+    //     $totalCustomer = $totalFollowers +  $totalOrderUsers;
+      
+
+    //     return response()->json([
+    //         'total_customer' =>   $totalCustomer,
+    //         'total_followers' => $totalFollowers,
+    //         'active_followers' => $activeFollowers,
+    //         'total_order_users' => $totalOrderUsers,
+    //         'followers' => UserResource::collection($followers),
+    //     ]);
+
+    // }
+
     public function getVendorFollowers($vendorId)
     {
         $vendor = Vendor::findOrFail($vendorId);
@@ -96,21 +130,32 @@ class CustomerController extends Controller
             ->where('last_active_at', '>=', Carbon::now()->subDays(7))
             ->count();
 
-            $totalOrderUsers = DB::table('orders')
-                    ->join('order_product', 'orders.id', '=', 'order_product.order_id')
-                    ->where('order_product.vendor_id', $vendorId)
-                    ->distinct('orders.user_id')
-                    ->count('orders.user_id');
-        // test it on production level
+        // Get users who have ordered from the vendor
+        $orderUsers = DB::table('orders')
+            ->join('order_product', 'orders.id', '=', 'order_product.order_id')
+            ->where('order_product.vendor_id', $vendorId)
+            ->distinct('orders.user_id')
+            ->pluck('orders.user_id')
+            ->toArray();
+
+        // Combine followers and order users
+        $allUserIds = $followers->pluck('id')->merge($orderUsers)->unique();
+
+        // Retrieve all user data for the combined user ids
+        $allUsers = User::whereIn('id', $allUserIds)->get();
+
+        // Total number of distinct users who follow the vendor or have ordered from the vendor
+        $totalCustomer = $allUsers->count();
 
         return response()->json([
+            'total_customer' => $totalCustomer,
             'total_followers' => $totalFollowers,
             'active_followers' => $activeFollowers,
-            'total_order_users' => $totalOrderUsers,
-            'followers' => UserResource::collection($followers),
+            'total_order_users' => count($orderUsers),
+            'followers' => UserResource::collection($allUsers),
         ]);
-
     }
+
 
     public function hasFollowed(Request $request, Vendor $vendor)
     {
