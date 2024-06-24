@@ -115,7 +115,13 @@ class AllProductController extends Controller
             // Filter by gender
             ->when($request->gender, function ($query) use ($request) {
                 $query->whereHas('gender', function ($q) use ($request) {
-                    $q->where('name', $request->gender);
+                    if ($request->gender == 'male') {
+                        $q->whereIn('name', ['male', 'unisex']);
+                    } elseif ($request->gender == 'female') {
+                        $q->whereIn('name', ['female', 'unisex']);
+                    } else {
+                        $q->where('name', $request->gender);
+                    }
                 });
             })
 
