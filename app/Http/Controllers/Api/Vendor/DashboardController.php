@@ -379,10 +379,10 @@ class DashboardController extends Controller
 
 
 
-    public function consolidatedVendorStats(Request $request, $vendorId)
+    public function consolidatedVendorStats(Request $request)
     {
         // Retrieve vendor details
-        $vendor = Vendor::findOrFail($vendorId);
+        $vendor = Auth::user()->vendor;
 
         // Determine the date range based on the filter type
         $filterType = $request->input('filter', 'last7days'); // default to 'last7days'
