@@ -381,14 +381,14 @@ class DashboardController extends Controller
 
     public function consolidatedVendorStats(Request $request)
     {
-        // Retrieve vendor details
+        // Retrieve vendor details from authenticated user
         $vendor = Auth::user()->vendor;
-
+    
         // Determine the date range based on the filter type
         $filterType = $request->input('filter', 'last7days'); // default to 'last7days'
         $startDate = now();
         $endDate = now();
-
+    
         switch ($filterType) {
             case 'last7days':
                 $startDate = now()->subDays(7)->startOfDay();
@@ -409,35 +409,35 @@ class DashboardController extends Controller
             default:
                 return response()->json(['error' => 'Invalid filter type'], 400);
         }
-
+    
         // Get all followers
         $followers = $vendor->followers()->get();
         $followerIds = $followers->pluck('id')->toArray();
-
+    
         // Get users who have ordered from the vendor within the date range
         $orderUserIds = DB::table('orders')
             ->join('order_product', 'orders.id', '=', 'order_product.order_id')
-            ->where('order_product.vendor_id', $vendorId)
+            ->where('order_product.vendor_id', $vendor->id)
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->distinct()
             ->pluck('orders.user_id')
             ->toArray();
-
+    
         // Combine followers and order users to get all relevant users
         $allUserIds = array_unique(array_merge($followerIds, $orderUserIds));
         $allUsers = User::whereIn('id', $allUserIds)->get();
-
+    
         // Retrieve order details for users who have ordered from the vendor within the date range
         $orders = Order::whereIn('user_id', $allUserIds)
-            ->whereIn('id', function ($query) use ($vendorId, $startDate, $endDate) {
+            ->whereIn('id', function ($query) use ($vendor, $startDate, $endDate) {
                 $query->select('order_id')
                     ->from('order_product')
-                    ->where('vendor_id', $vendorId)
-                    ->whereBetween('orders.created_at', [$startDate, $endDate]);
+                    ->where('vendor_id', $vendor->id)
+                    ->whereBetween('created_at', [$startDate, $endDate]);
             })
             ->get()
             ->groupBy('user_id');
-
+    
         // Map users to their status and include order details if applicable
         $userStatus = $allUsers->map(function ($user) use ($orders) {
             $orderDetails = $orders->get($user->id) ?? [];
@@ -448,21 +448,21 @@ class DashboardController extends Controller
                 'orders' => OrderResource::collection($orderDetails),
             ];
         });
-
+    
         // Total number of distinct users who follow the vendor or have ordered from the vendor
         $totalCustomer = count($allUserIds);
-
+    
         // Total number of followers
         $totalFollowers = count($followerIds);
-
+    
         // Number of followers active in the last 7 days
         $activeFollowers = $vendor->followers()
             ->where('last_active_at', '>=', Carbon::now()->subDays(7))
             ->count();
-
+    
         // Total number of users who have ordered from the vendor within the date range
         $totalOrderUsers = count($orderUserIds);
-
+    
         // Weekly Revenue (or for the specified date range)
         $weeklyRevenue = DB::table('order_product')
             ->join('products', 'order_product.product_id', '=', 'products.id')
@@ -477,7 +477,7 @@ class DashboardController extends Controller
             ->groupBy('day_of_week', 'day_name')
             ->orderBy('day_of_week')
             ->get();
-
+    
         $weeklyRevenueData = $weeklyRevenue->map(function ($item) {
             return [
                 'day_of_week' => $item->day_of_week,
@@ -485,7 +485,7 @@ class DashboardController extends Controller
                 'total_amount' => $item->total_amount,
             ];
         });
-
+    
         // Orders by Country within the date range
         $ordersByCountry = DB::table('orders')
             ->join('shipping_addresses', 'orders.shipping_address_id', '=', 'shipping_addresses.id')
@@ -499,9 +499,9 @@ class DashboardController extends Controller
             )
             ->groupBy('shipping_addresses.shipping_country')
             ->get();
-
+    
         $totalOrders = $ordersByCountry->sum('order_count');
-
+    
         $ordersByCountryData = $ordersByCountry->map(function ($item) use ($totalOrders) {
             $percentage = ($totalOrders > 0) ? ($item->order_count / $totalOrders) * 100 : 0;
             return [
@@ -510,7 +510,7 @@ class DashboardController extends Controller
                 'percentage' => round($percentage, 2),
             ];
         });
-
+    
         // Vendor Statistics within the date range
         // Total Revenue
         $totalRevenue = DB::table('order_product')
@@ -520,7 +520,7 @@ class DashboardController extends Controller
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->select(DB::raw('SUM(order_product.price * order_product.qty) as total_amount'))
             ->first();
-
+    
         // Total Transactions
         $totalTransactions = DB::table('orders')
             ->join('order_product', 'orders.id', '=', 'order_product.order_id')
@@ -529,7 +529,7 @@ class DashboardController extends Controller
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->distinct('orders.id')
             ->count('orders.id');
-
+    
         // Total Products Sold
         $totalProductsSold = DB::table('order_product')
             ->join('products', 'order_product.product_id', '=', 'products.id')
@@ -537,7 +537,7 @@ class DashboardController extends Controller
             ->where('products.vendor_id', $vendor->id)
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->sum('order_product.qty');
-
+    
         // Total Users
         $totalUsers = DB::table('orders')
             ->join('order_product', 'orders.id', '=', 'order_product.order_id')
@@ -546,7 +546,7 @@ class DashboardController extends Controller
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->distinct('orders.user_id')
             ->count('orders.user_id');
-
+    
         return response()->json([
             'total_customer' => $totalCustomer,
             'total_followers' => $totalFollowers,
@@ -561,6 +561,7 @@ class DashboardController extends Controller
             'total_customers' => $totalUsers,
         ]);
     }
+    
 
 
 
