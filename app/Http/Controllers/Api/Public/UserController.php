@@ -24,7 +24,7 @@ class UserController extends Controller
             return response()->json(['error' => 'User not found'], 404);
         }
        
-        $user->load('vendor');
+        $user->load(['vendor.shippingZones', 'vendor.policy']);
 
         // Transform user data using UserResource
         return new UserResource($user);

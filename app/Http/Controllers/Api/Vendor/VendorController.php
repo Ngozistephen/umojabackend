@@ -31,10 +31,9 @@ class VendorController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Vendor $vendor)
+    public function show(string $id)
     {
-        $vendor->load(['shippingZone', 'policy']);
-        return new VendorResource($vendor);
+        //
     }
 
     /**
