@@ -8,6 +8,8 @@ use App\Models\Review;
 use App\Models\Article;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Resources\PolicyResource;
+use App\Http\Resources\ShippingZoneResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class VendorResource extends JsonResource
@@ -87,6 +89,8 @@ class VendorResource extends JsonResource
             'unread_notification_count' => $unreadNotificationCount,
             'shipping_method' => $shippingMethod?->type,
             'total_ratings' => $this->total_ratings,
+            'shipping_zone' => new ShippingZoneResource($this->whenLoaded('shippingZone')),
+            'policy' => new PolicyResource($this->whenLoaded('policy')),
                
            
             // 'shipping_method' => $shippingMethod ? [
