@@ -87,9 +87,9 @@ class VendorResource extends JsonResource
             'promo_count' =>  $promoCount,
             'followers_count' => $this->followersCount(),
             'unread_notification_count' => $unreadNotificationCount,
-            'shipping_method' => $shippingMethod?->type,
+            'shipping_method' => $shippingMethod?->name,
             'total_ratings' => $this->total_ratings,
-            'shipping_zones' => ShippingZoneResource::collection($this->whenLoaded('shippingZones')),
+            // 'shipping_zones' => ShippingZoneResource::collection($this->whenLoaded('shippingZones')),
             'policy' => new PolicyResource($this->whenLoaded('policy')),
                
            

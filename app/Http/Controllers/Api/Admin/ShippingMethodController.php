@@ -25,9 +25,22 @@ class ShippingMethodController extends Controller
      */
     public function store(StoreShippingMethodRequest $request)
     {
-        $shippingMethod = auth()->user()->shippingMethods()->create($request->validated());
+        $vendor = Auth::user()->vendor;
 
-        return new ShippingMethodResource( $shippingMethod);
+        if ($vendor->shippingMethod) {
+            return response()->json(['message' => 'Shipping Method already exists for this vendor'], 400);
+        }
+
+        $validatedData = $request->validated();
+        $validatedData['vendor_id'] = $vendor->id;
+        $shippingMethod = ShippingMethod::create($validatedData);
+
+        // $shippingMethod = auth()->user()->shippingMethods()->create($request->validated());
+
+        return new ShippingMethodResource($shippingMethod);
+
+
+
     }
 
     /**
