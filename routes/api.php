@@ -172,6 +172,7 @@ Route::middleware('auth:api')->group(function () {
          Route::get('weekly_total_users', [DashboardController::class, 'weeklyVendorTotalUsers']);
          Route::get('recent_weekly_orders', [DashboardController::class, 'recentWeeklyOrders']);
          Route::get('vendor_stats', [DashboardController::class, 'vendorStats']);
+         Route::get('vendor_allstats', [DashboardController::class, 'consolidatedVendorStats']);
          Route::get('notifications', [NotificationController::class, 'index']); 
          Route::get('notifications/orders', [NotificationController::class, 'orderNotifications']); 
          Route::get('notifications/customers', [NotificationController::class, 'followNotifications']);
