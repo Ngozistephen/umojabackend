@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Policy;
 use App\Models\Review;
 use App\Models\Article;
 use App\Models\Product;
@@ -113,6 +114,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
     
 
+        public function policy()
+        {
+            return $this->hasOne(Policy::class);
+        }
 
     
 

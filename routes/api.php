@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Admin\GenderController;
 use App\Http\Controllers\Api\Vendor\OrderController;
 use App\Http\Controllers\Api\Vendor\PromoController;
 use App\Http\Controllers\Api\Customer\CartController;
+use App\Http\Controllers\Api\Vendor\PolicyController;
 use App\Http\Controllers\Api\Vendor\VendorController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Vendor\ArticleController;
@@ -181,6 +182,7 @@ Route::middleware('auth:api')->group(function () {
          Route::apiResource('shipping_zones.zone_rates', ZoneRateController::class);
          Route::apiResource('local_deliveries', LocalDeliveryController::class);
          Route::apiResource('local_pickups', LocalPickupController::class);
+         Route::apiResource('policies', PolicyController::class);
          
 
 
