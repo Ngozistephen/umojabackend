@@ -24,19 +24,16 @@ class Policy extends Model
         // 'customer_provides_return_shipping',
         // 'free_return_shipping',
         // 'flat_rate_return_shipping',
-        // 'no_refund',
-        // 'full_refund',
-        // '50%_refund',
-        // 'restocking_fee',
+      
         'return_window',
         'return_window_cost',
         'refund_policy'
     ];
 
 
-    protected $casts = [
-        'restocking_fee' => 'boolean',
-    ];
+    // protected $casts = [
+    //     'restocking_fee' => 'boolean',
+    // ];
 
     
     
