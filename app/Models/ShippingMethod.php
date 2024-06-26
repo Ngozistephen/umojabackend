@@ -17,16 +17,16 @@ class ShippingMethod extends Model
 
     protected $fillable = ['vendor_id','name', 'admin_shipping_id'];
 
-    public function getAmountAttribute($value)
-    {
-        return $value / 100;
-    }
+    // public function getAmountAttribute($value)
+    // {
+    //     return $value / 100;
+    // }
 
 
-    public function setAmountAttribute($value)
-    {
-        $this->attributes['amount'] = $value * 100;
-    }
+    // public function setAmountAttribute($value)
+    // {
+    //     $this->attributes['amount'] = $value * 100;
+    // }
 
     // public function user(): BelongsTo
     // {
