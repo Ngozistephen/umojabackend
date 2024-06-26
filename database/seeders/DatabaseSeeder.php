@@ -9,6 +9,7 @@ use Database\Seeders\GenderSeeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\AdminUserSeeder;
 use Database\Seeders\PermissionSeeder;
+use Database\Seeders\AdminShippingSeeder;
 use Database\Seeders\ShippingMethodSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -27,5 +28,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ShippingMethodSeeder::class);
         $this->call(BusinessTypeSeeder::class);
         $this->call(GenderSeeder::class);
+        $this->call(AdminShippingSeeder::class);
     }
 }

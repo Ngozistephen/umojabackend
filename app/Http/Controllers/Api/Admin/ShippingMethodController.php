@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use Illuminate\Http\Request;
 use App\Models\ShippingMethod;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ShippingMethodResource;
 use App\Http\Requests\StoreShippingMethodRequest;
 use App\Http\Requests\UpdateShippingMethodRequest;
@@ -27,17 +28,24 @@ class ShippingMethodController extends Controller
     {
         $vendor = Auth::user()->vendor;
 
-        if ($vendor->shippingMethod) {
-            return response()->json(['message' => 'Shipping Method already exists for this vendor'], 400);
+        $existingShippingMethod = ShippingMethod::where('vendor_id', $vendor->id)->first();
+
+        if ($existingShippingMethod) {
+            return response()->json(['error' => 'Shipping method already exists. Please update the existing shipping method.'], 400);
         }
 
         $validatedData = $request->validated();
         $validatedData['vendor_id'] = $vendor->id;
-        $shippingMethod = ShippingMethod::create($validatedData);
+        $shippingMethod = new ShippingMethod();
+        $shippingMethod->vendor_id = $vendor->id;
+        $shippingMethod->name = $request->name;
+        $shippingMethod->admin_shipping_id = $request->admin_shipping_id;
+
+        $shippingMethod->save();
 
         // $shippingMethod = auth()->user()->shippingMethods()->create($request->validated());
 
-        return new ShippingMethodResource($shippingMethod);
+        return response()->json(['message' => 'Shipping method created successfully', 'shipping_method' => $shippingMethod], 201);
 
 
 
@@ -54,10 +62,32 @@ class ShippingMethodController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateShippingMethodRequest $request, ShippingMethod $shippingMethod)
+    public function update(UpdateShippingMethodRequest $request, $id)
     {
-        $shippingMethod->update($request->validated());
-        return new ShippingMethodResource($shippingMethod);
+        $vendor = Auth::user()->vendor;
+    
+        // Find the existing shipping method for the vendor
+        $shippingMethod = ShippingMethod::where('vendor_id', $vendor->id)->where('id', $id)->first();
+    
+        if (!$shippingMethod) {
+            return response()->json(['error' => 'Shipping method not found or does not belong to the vendor.'], 404);
+        }
+    
+        // Update the shipping method with validated data
+        $validatedData = $request->validated();
+    
+        // Check if 'name' exists in the validated data
+        if (isset($validatedData['name'])) {
+            $shippingMethod->name = $validatedData['name'];
+        }
+        if (isset($validatedData['admin_shipping_id'])) {
+            $shippingMethod->admin_shipping_id = $validatedData['admin_shipping_id'];
+        }
+    
+        // Add other fields as necessary
+        $shippingMethod->save();
+    
+        return response()->json(['message' => 'Shipping method updated successfully', 'shipping_method' => $shippingMethod], 200);
     }
 
     /**

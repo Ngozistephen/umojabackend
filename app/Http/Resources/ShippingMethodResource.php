@@ -17,7 +17,9 @@ class ShippingMethodResource extends JsonResource
         return [
             'id' => $this->id,
             'vendor_id'=> $this->vendor_id,
-            'name' => $this->type,
+            'name' => $this->name,
+            'admin_shipping_id' => $this->admin_shipping_id,
+            'admin_shipping_name' => $this->admin_shipping_name,
             // 'duration' => $this->duration,
             // 'amount' => $this->amount,
             'created' => $this->created_at,

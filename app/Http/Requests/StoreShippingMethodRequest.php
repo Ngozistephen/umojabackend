@@ -24,8 +24,19 @@ class StoreShippingMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'nullable|string|in:umoja logistics,manual shipping',
+            'admin_shipping_id' => 'required|integer|exists:admin_shippings,id',
+            'name' => 'required|string|in:umoja logistics,manual shipping',
            
+        ];
+    }
+
+
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'The name must be umoja logistics or manual shipping is required.',
+            
         ];
     }
 }

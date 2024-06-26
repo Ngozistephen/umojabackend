@@ -23,7 +23,8 @@ class UpdateShippingMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'nullable|string|in:umoja logistics,manual shipping',
+            'admin_shipping_id' => 'sometimes|integer|exists:admin_shippings,id',
+            'name' => 'sometimes|required|string|in:umoja logistics,manual shipping',
            
         ];
     }

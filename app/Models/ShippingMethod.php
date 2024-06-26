@@ -15,7 +15,7 @@ class ShippingMethod extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','type','duration','amount'];
+    protected $fillable = ['vendor_id','name', 'admin_shipping_id'];
 
     public function getAmountAttribute($value)
     {

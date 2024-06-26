@@ -14,6 +14,7 @@ use App\Models\Variation;
 use App\Models\ReviewLike;
 use App\Models\BusinessType;
 use App\Models\ShippingZone;
+use App\Models\AdminShipping;
 use App\Models\PaymentMethod;
 use Laravel\Cashier\Billable;
 use App\Models\ShippingMethod;
@@ -190,6 +191,11 @@ class User extends Authenticatable
     //                 ->orderBy('recently_viewed_products.created_at', 'desc');
     // }
 
+
+    public function adminShippings(): HasMany
+    {
+        return $this->hasMany(AdminShipping::class);
+    }
 
     
 }

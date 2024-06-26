@@ -184,8 +184,9 @@ Route::middleware('auth:api')->group(function () {
          Route::apiResource('local_deliveries', LocalDeliveryController::class);
          Route::apiResource('local_pickups', LocalPickupController::class);
          Route::apiResource('policies', PolicyController::class);
-         Route::apiResource('shippingMethods', ShippingMethodController::class);
-         
+        //  Route::apiResource('shippingMethods', ShippingMethodController::class);
+         Route::post('shippingMethods', [ShippingMethodController::class, 'store']);
+        Route::put('shippingMethods/{id}', [ShippingMethodController::class, 'update']);
 
 
         
