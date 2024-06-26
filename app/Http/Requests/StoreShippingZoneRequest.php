@@ -23,7 +23,8 @@ class StoreShippingZoneRequest extends FormRequest
     {
         return [
             'vendor_id' => 'nullable|exists:vendors,id',
-            'shipping_method_id' => 'required|exists:shipping_methods,id',
+            // 'shipping_method_id' => 'required|exists:shipping_methods,id',
+            'admin_shipping_id' => 'nullable|exists:admin_shippings,id',
             'name' => 'nullable|string|max:255',
             'continent' => 'nullable|string|max:255',
             'countries' => 'required|array', 

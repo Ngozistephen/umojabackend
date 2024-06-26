@@ -17,7 +17,7 @@ class ShippingZone extends Model
     protected $fillable = [
         'user_id',
         'vendor_id',
-        'shipping_method_id',
+        'admin_shipping_id',
         'name',
         'continent',
         'countries',
