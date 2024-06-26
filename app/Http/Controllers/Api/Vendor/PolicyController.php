@@ -30,9 +30,9 @@ class PolicyController extends Controller
     {
         $vendor = Auth::user()->vendor;
 
-        if ($vendor->policy) {
-            return response()->json(['message' => 'Policy already exists for this vendor'], 400);
-        }
+        // if ($vendor->policy) {
+        //     return response()->json(['message' => 'Policy already exists for this vendor'], 400);
+        // }
 
         $validatedData = $request->validated();
         $validatedData['vendor_id'] = $vendor->id;
