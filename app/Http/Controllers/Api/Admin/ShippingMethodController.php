@@ -66,17 +66,17 @@ class ShippingMethodController extends Controller
     {
         $vendor = Auth::user()->vendor;
     
-        // Find the existing shipping method for the vendor
+      
         $shippingMethod = ShippingMethod::where('vendor_id', $vendor->id)->where('id', $id)->first();
     
         if (!$shippingMethod) {
             return response()->json(['error' => 'Shipping method not found or does not belong to the vendor.'], 404);
         }
     
-        // Update the shipping method with validated data
+      
         $validatedData = $request->validated();
     
-        // Check if 'name' exists in the validated data
+       
         if (isset($validatedData['name'])) {
             $shippingMethod->name = $validatedData['name'];
         }
