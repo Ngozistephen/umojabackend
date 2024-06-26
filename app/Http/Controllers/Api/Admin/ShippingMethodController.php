@@ -91,33 +91,59 @@ class ShippingMethodController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateShippingMethodRequest $request, $id)
-    {
-        $vendor = Auth::user()->vendor;
+    // public function update(UpdateShippingMethodRequest $request, $id)
+    // {
+    //     $vendor = Auth::user()->vendor;
     
       
-        $shippingMethod = ShippingMethod::where('vendor_id', $vendor->id)->where('id', $id)->first();
+    //     $shippingMethod = ShippingMethod::where('vendor_id', $vendor->id)->where('id', $id)->first();
     
-        if (!$shippingMethod) {
-            return response()->json(['error' => 'Shipping method not found or does not belong to the vendor.'], 404);
-        }
+    //     if (!$shippingMethod) {
+    //         return response()->json(['error' => 'Shipping method not found or does not belong to the vendor.'], 404);
+    //     }
     
       
-        $validatedData = $request->validated();
+    //     $validatedData = $request->validated();
     
        
+    //     if (isset($validatedData['name'])) {
+    //         $shippingMethod->name = $validatedData['name'];
+    //     }
+    //     if (isset($validatedData['admin_shipping_id'])) {
+    //         $shippingMethod->admin_shipping_id = $validatedData['admin_shipping_id'];
+    //     }
+    
+    //     // Add other fields as necessary
+    //     $shippingMethod->save();
+    
+    //     return response()->json(['message' => 'Shipping method updated successfully', 'shipping_method' => $shippingMethod], 200);
+    // }
+
+    public function update(UpdateShippingMethodRequest $request, ShippingMethod $shippingMethod)
+    {
+        $vendor = Auth::user()->vendor;
+
+        // Ensure the shipping method belongs to the authenticated vendor
+        if ($shippingMethod->vendor_id !== $vendor->id) {
+            return response()->json(['error' => 'Shipping method not found or does not belong to the vendor.'], 404);
+        }
+
+        // Update the shipping method with validated data
+        $validatedData = $request->validated();
+
         if (isset($validatedData['name'])) {
             $shippingMethod->name = $validatedData['name'];
         }
         if (isset($validatedData['admin_shipping_id'])) {
             $shippingMethod->admin_shipping_id = $validatedData['admin_shipping_id'];
         }
-    
+
         // Add other fields as necessary
         $shippingMethod->save();
-    
+
         return response()->json(['message' => 'Shipping method updated successfully', 'shipping_method' => $shippingMethod], 200);
     }
+
 
     /**
      * Remove the specified resource from storage.
