@@ -35,7 +35,7 @@ class VendorResource extends JsonResource
                     ->count();
 
         $unreadNotificationCount = $this->unreadNotifications()->count();   
-        $shippingMethod = $this->shippingMethod;        
+        $shippingMethods = $this->shippingMethods->pluck('name');       
         return [
             'id' => $this->id,
             // 'language' => $this->language,
@@ -87,7 +87,7 @@ class VendorResource extends JsonResource
             'promo_count' =>  $promoCount,
             'followers_count' => $this->followersCount(),
             'unread_notification_count' => $unreadNotificationCount,
-            'shipping_method' => $this->shippingMethod?->name,
+            'shipping_method' => $shippingMethods,
             'total_ratings' => $this->total_ratings,
             'policy' => new PolicyResource($this->whenLoaded('policy')),
                
