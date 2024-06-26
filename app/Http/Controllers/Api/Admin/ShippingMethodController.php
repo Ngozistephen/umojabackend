@@ -80,6 +80,12 @@ class ShippingMethodController extends Controller
      */
     public function show(ShippingMethod  $shippingMethod)
     {
+
+        $vendor = Auth::user()->vendor;
+
+        if ($vendor->id !== $shippingMethod->vendor_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
         return new ShippingMethodResource($shippingMethod);
     }
 
