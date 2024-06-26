@@ -100,11 +100,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
             return $this->hasMany(LocalPickup::class);
         }
 
-        public function shippingMethod()
-        {
-            return $this->hasOneThrough(ShippingMethod::class, ShippingZone::class, 'vendor_id', 'id', 'id', 'shipping_method_id');
-        }
+        // public function shippingMethod()
+        // {
+        //     return $this->hasOneThrough(ShippingMethod::class, ShippingZone::class, 'vendor_id', 'id', 'id', 'shipping_method_id');
+        // }
         
+        public function shippingMethods(): HasMany
+        {
+            return $this->hasMany(ShippingMethod::class);
+        }
     
 
         public function business_type()
