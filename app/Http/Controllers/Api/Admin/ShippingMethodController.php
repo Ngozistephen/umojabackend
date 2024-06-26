@@ -54,24 +54,23 @@ class ShippingMethodController extends Controller
     public function store(StoreShippingMethodRequest $request)
     {
         $vendor = Auth::user()->vendor;
-
+    
         $existingShippingMethod = ShippingMethod::where('vendor_id', $vendor->id)->first();
-
+    
         if ($existingShippingMethod) {
             return response()->json(['error' => 'Shipping method already exists. Please update the existing shipping method.'], 400);
         }
-
+    
         $validatedData = $request->validated();
-        $validatedData['vendor_id'] = $vendor->id;
-
-        // Create the shipping method
+    
+      
         $shippingMethod = new ShippingMethod();
-        $shippingMethod->vendor_id = $validatedData['vendor_id'];
+        $shippingMethod->vendor_id = $vendor->id;
         $shippingMethod->name = $validatedData['name'];
         $shippingMethod->admin_shipping_id = $validatedData['admin_shipping_id'];
-        
+       
         $shippingMethod->save();
-
+    
         return response()->json(['message' => 'Shipping method created successfully', 'shipping_method' => $shippingMethod], 201);
     }
 
