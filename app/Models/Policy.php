@@ -16,17 +16,8 @@ class Policy extends Model
 
     protected $fillable = [
         'vendor_id',
-        // '14_days',
-        // '30_days',
-        // '90_days',
-        // 'unlimited',
-        // 'custom_days',
-        // 'customer_provides_return_shipping',
-        // 'free_return_shipping',
-        // 'flat_rate_return_shipping',
-      
         'return_window',
-        'return_window_cost',
+        'return_shipping_cost',
         'refund_policy'
     ];
 
