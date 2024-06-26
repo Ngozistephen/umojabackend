@@ -16,6 +16,7 @@ use App\Models\Variation;
 use App\Models\LocalPickup;
 use App\Models\BusinessType;
 use App\Models\ShippingZone;
+use App\Models\AdminShipping;
 use App\Models\LocalDelivery;
 use App\Models\ShippingMethod;
 use App\Models\VariationsOption;
@@ -105,9 +106,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
         //     return $this->hasOneThrough(ShippingMethod::class, ShippingZone::class, 'vendor_id', 'id', 'id', 'shipping_method_id');
         // }
         
-        public function shippingMethods(): HasMany
+        public function adminShipping(): HasOneThrough
         {
-            return $this->hasMany(ShippingMethod::class);
+            return $this->hasOneThrough(AdminShipping::class, ShippingZone::class, 'vendor_id', 'id', 'id', 'admin_shipping_id');
         }
     
 
