@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Vendor;
 use App\Models\ZoneRate;
+use App\Models\AdminShipping;
 use App\Models\ShippingMethod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -59,6 +60,11 @@ class ShippingZone extends Model
     public function shippingMethod()
     {
         return $this->belongsTo(ShippingMethod::class);
+    }
+    
+    public function adminShipping()
+    {
+        return $this->belongsTo(AdminShipping::class);
     }
 
 
