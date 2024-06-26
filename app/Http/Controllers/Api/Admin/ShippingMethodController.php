@@ -24,6 +24,33 @@ class ShippingMethodController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    // public function store(StoreShippingMethodRequest $request)
+    // {
+    //     $vendor = Auth::user()->vendor;
+
+    //     $existingShippingMethod = ShippingMethod::where('vendor_id', $vendor->id)->first();
+
+    //     if ($existingShippingMethod) {
+    //         return response()->json(['error' => 'Shipping method already exists. Please update the existing shipping method.'], 400);
+    //     }
+
+    //     $validatedData = $request->validated();
+    //     $validatedData['vendor_id'] = $vendor->id;
+    //     $shippingMethod = new ShippingMethod();
+    //     $shippingMethod->vendor_id = $vendor->id;
+    //     $shippingMethod->name = $request->name;
+    //     $shippingMethod->admin_shipping_id = $request->admin_shipping_id;
+
+    //     $shippingMethod->save();
+
+    //     // $shippingMethod = auth()->user()->shippingMethods()->create($request->validated());
+
+    //     return response()->json(['message' => 'Shipping method created successfully', 'shipping_method' => $shippingMethod], 201);
+
+
+
+    // }
+
     public function store(StoreShippingMethodRequest $request)
     {
         $vendor = Auth::user()->vendor;
@@ -36,19 +63,16 @@ class ShippingMethodController extends Controller
 
         $validatedData = $request->validated();
         $validatedData['vendor_id'] = $vendor->id;
-        $shippingMethod = new ShippingMethod();
-        $shippingMethod->vendor_id = $vendor->id;
-        $shippingMethod->name = $request->name;
-        $shippingMethod->admin_shipping_id = $request->admin_shipping_id;
 
+        // Create the shipping method
+        $shippingMethod = new ShippingMethod();
+        $shippingMethod->vendor_id = $validatedData['vendor_id'];
+        $shippingMethod->name = $validatedData['name'];
+        $shippingMethod->admin_shipping_id = $validatedData['admin_shipping_id'];
+        
         $shippingMethod->save();
 
-        // $shippingMethod = auth()->user()->shippingMethods()->create($request->validated());
-
         return response()->json(['message' => 'Shipping method created successfully', 'shipping_method' => $shippingMethod], 201);
-
-
-
     }
 
     /**
