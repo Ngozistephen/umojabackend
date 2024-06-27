@@ -98,7 +98,7 @@ class CheckoutController extends Controller
                     'order_number' => $orderNumber,
                     'tracking_number' => $trackingNumber,
                     'sub_total' => $subTotal,
-                    'delivery_charge' => $request->delivery_charge,
+                    // 'delivery_charge' => $request->delivery_charge,
                     'discount_code_id' => $request->discount_code_id,
                     'total_amount' => $totalAmount,
                     'transaction_id' => null, // Will be updated after payment
