@@ -26,7 +26,7 @@ class UpdateShippingZoneRequest extends FormRequest
             'admin_shipping_id' => 'nullable|exists:admin_shippings,id',
             'name' => 'nullable|string|max:255',
             'continent' => 'nullable|string|max:255',
-            'countries' => 'required|array', 
+            'countries' => 'nullable|array', 
             'countries.*' => 'string',
             'delivery_date_range' => 'nullable|numeric|max:50', 
             
