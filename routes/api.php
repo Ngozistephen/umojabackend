@@ -35,6 +35,7 @@ use App\Http\Controllers\Api\Auth\CustomerLoginController;
 use App\Http\Controllers\Api\Customer\SeeReviewController;
 use App\Http\Controllers\Api\Vendor\LocalPickupController;
 use App\Http\Controllers\Api\Vendor\OrderSearchController;
+use App\Http\Controllers\Api\Admin\AdminShippingController;
 use App\Http\Controllers\Api\Auth\SocialRegisterController;
 use App\Http\Controllers\Api\Auth\VendorRegisterController;
 use App\Http\Controllers\Api\Customer\AllProductController;
@@ -185,6 +186,7 @@ Route::middleware('auth:api')->group(function () {
          Route::apiResource('local_pickups', LocalPickupController::class);
          Route::apiResource('policies', PolicyController::class);
          Route::apiResource('shippingMethods', ShippingMethodController::class);
+         Route::apiResource('admin_shippings', AdminShippingController::class);
         //  Route::post('shippingMethods', [ShippingMethodController::class, 'store']);
         //  Route::put('shippingMethods/{id}', [ShippingMethodController::class, 'update']);
 
