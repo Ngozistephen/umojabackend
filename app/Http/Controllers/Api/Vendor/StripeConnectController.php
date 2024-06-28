@@ -37,10 +37,11 @@ class StripeConnectController extends Controller
 
         if (!$vendor->stripe_account_id) {
             Stripe::setApiKey(config('services.stripe.secret_key'));
+            $countryCode = $this->mapCountryToCode($vendor->country_name);
 
             $account = Account::create([
                 'type' => 'standard',
-                'country' => $vendor->country_name,
+                'country' => $countryCode,
                 'email' => $vendor->user->email,
                 'business_type' => 'individual',
                 // 'business_type' => $vendor->business_type->name,
