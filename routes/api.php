@@ -188,7 +188,9 @@ Route::middleware('auth:api')->group(function () {
          Route::apiResource('policies', PolicyController::class);
          Route::apiResource('shippingMethods', ShippingMethodController::class);
          Route::apiResource('admin_shippings', AdminShippingController::class);
-         Route::post('connect_account', [StripeConnectController::class, 'onboard']); 
+         Route::post('stripe/onboard/{userId}', [StripeConnectController::class, 'onboard']); 
+         Route::get('stripe/save_account/{token}', [StripeConnectController::class, 'saveStripeAccount']);
+         Route::get('stripe/refresh_account_link', [StripeConnectController::class, 'refreshAccountLink']);
         //  Route::post('shippingMethods', [ShippingMethodController::class, 'store']);
         //  Route::put('shippingMethods/{id}', [ShippingMethodController::class, 'update']);
 

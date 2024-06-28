@@ -19,6 +19,7 @@ use App\Models\ShippingZone;
 use App\Models\AdminShipping;
 use App\Models\LocalDelivery;
 use App\Models\ShippingMethod;
+use App\Models\StripeStateToken;
 use App\Models\VariationsOption;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
@@ -126,6 +127,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
             return $this->hasOne(Policy::class);
         }
 
+
+        public function stripeStateTokens()
+        {
+            return $this->hasMany(StripeStateToken::class);
+        }
     
 
     

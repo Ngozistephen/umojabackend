@@ -120,6 +120,9 @@ class ProductController extends Controller
         // 1. Retrieve the vendor associated with the authenticated user
         $vendor = Auth::user()->vendor;
 
+        // if(!$vendor->completed_stripe_onboarding){
+        //     return response()->json(['message' => 'Please Connect your Account to Stripe'], 404);
+        // }
         // 2. Create the product using the retrieved vendor's ID
         $validatedData = $request->validated();
         $validatedData['vendor_id'] = $vendor->id; // Add the vendor_id to the validated data
