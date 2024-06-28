@@ -20,7 +20,8 @@ class StripeConnectController extends Controller
 
 
     
-    public function onboard($userId)
+   
+    public function onboard(Request $request, $userId)
     {
         $user = User::findOrFail($userId);
         $vendor = $user->vendor ;
