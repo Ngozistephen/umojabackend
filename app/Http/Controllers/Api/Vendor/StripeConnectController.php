@@ -96,36 +96,29 @@ class StripeConnectController extends Controller
 
     public function onboard(Request $request, $userId)
     {
-        // Find the user and their associated vendor
-        $user = User::findOrFail($userId);
-        $vendor = $user->vendor;
-
-        if (!$vendor) {
-            Log::error('No associated vendor found for user ID: ' . $userId);
-            return response()->json(['message' => 'No associated vendor found for the authenticated user'], 404);
-        }
-
-        if (!$vendor->completed_stripe_onboarding) {
-            Log::info('Vendor has not completed Stripe onboarding. Generating token...');
-            $token = Str::random();
-
-            // Create a Stripe state token
-            StripeStateToken::create([
-                'vendor_id' => $vendor->id,
-                'token' => $token,
-            ]);
-        }
-
-        // Check if the vendor already has a Stripe account ID
-        if (!$vendor->stripe_account_id) {
-            try {
-                Log::info('Creating Stripe account for vendor ID: ' . $vendor->id);
+        try {
+            $user = User::findOrFail($userId);
+            $vendor = $user->vendor;
+    
+            if (!$vendor) {
+                return response()->json(['message' => 'No associated vendor found for the authenticated user'], 404);
+            }
+    
+            if (!$vendor->completed_stripe_onboarding) {
+                $token = Str::random();
+    
+                StripeStateToken::create([
+                    'vendor_id' => $vendor->id,
+                    'token' => $token,
+                ]);
+            }
+    
+            if (!$vendor->stripe_account_id) {
                 Stripe::setApiKey(config('services.stripe.secret_key'));
-
-                // Create a new Stripe account
+    
                 $account = Account::create([
                     'type' => 'standard',
-                    'country' => config('countries.'.$vendor->country_name),
+                    'country' => config('countries.' . $vendor->country_name),
                     'email' => $vendor->user->email,
                     'business_type' => 'individual',
                     'individual' => [
@@ -141,53 +134,38 @@ class StripeConnectController extends Controller
                             'city' => $vendor->city,
                             'state' => $vendor->state,
                             'postal_code' => $vendor->postal_code,
-                            'country' => config('countries.'.$vendor->country_name),
+                            'country' => config('countries.' . $vendor->country_name)
                         ],
                     ],
                 ]);
-
-                // Save the Stripe account ID to the vendor
+    
                 $vendor->stripe_account_id = $account->id;
                 $vendor->save();
-
-                Log::info('Stripe account created successfully for vendor ID: ' . $vendor->id);
-
-                // Create an account link for onboarding
+    
                 $accountLink = AccountLink::create([
                     'account' => $vendor->stripe_account_id,
                     'refresh_url' => url('/api/vendor/stripe/refresh_account_link'),
                     'return_url' => config('app.frontend_url') . '/vendor/dashboard/Homepage?token=' . $token,
                     'type' => 'account_onboarding',
                 ]);
-
-                Log::info('Account link created successfully for vendor ID: ' . $vendor->id);
+    
                 return response()->json(['url' => $accountLink->url]);
-
-            } catch (\Exception $e) {
-                Log::error('Stripe Account creation failed: ' . $e->getMessage());
-                return response()->json(['message' => 'Failed to create Stripe account.'], 500);
-            }
-        } else {
-            Log::info('Vendor already has a Stripe account ID: ' . $vendor->stripe_account_id);
-
-            // Create an account link for existing Stripe account
-            try {
+            } else {
                 $accountLink = AccountLink::create([
                     'account' => $vendor->stripe_account_id,
                     'refresh_url' => url('/api/vendor/stripe/refresh_account_link'),
                     'return_url' => config('app.frontend_url') . '/vendor/dashboard/Homepage',
                     'type' => 'account_onboarding',
                 ]);
-
-                Log::info('Account link created successfully for existing Stripe account of vendor ID: ' . $vendor->id);
+    
                 return response()->json(['url' => $accountLink->url]);
-
-            } catch (\Exception $e) {
-                Log::error('Failed to create account link for existing Stripe account: ' . $e->getMessage());
-                return response()->json(['message' => 'Failed to create account link for existing Stripe account.'], 500);
             }
+        } catch (\Exception $e) {
+            Log::error('Stripe Account creation or account link creation failed: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to create Stripe account or account link.', 'error' => $e->getMessage()], 500);
         }
     }
+    
 
 
     // public function onboard(Request $request, $userId)
