@@ -36,7 +36,7 @@ class StripeConnectController extends Controller
         }
 
         if (!$vendor->stripe_account_id) {
-            Stripe::setApiKey(config('services.stripe.secret'));
+            Stripe::setApiKey(config('services.stripe.secret_key'));
 
             $account = Account::create([
                 'type' => 'standard',
