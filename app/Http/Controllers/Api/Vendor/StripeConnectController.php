@@ -133,6 +133,9 @@ class StripeConnectController extends Controller
                         'last_name' => $vendor->user->last_name,
                         'email' => $vendor->user->email,
                         'phone' => $vendor->business_phone_number,
+                        'business_name' => $vendor->business_name,
+                        'icon' => $vendor->business_image,
+                        'brand_color' => $vendor->cover_image,
                         'address' => [
                             'line1' => $vendor->address,
                             'city' => $vendor->city,
