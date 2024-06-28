@@ -51,7 +51,7 @@ class StripeConnectController extends Controller
                     'first_name' => $vendor->user->first_name,
                     'last_name' => $vendor->user->last_name,
                     'email' => $vendor->user->email,
-                    'phone' => $vendor->user->phone_number,
+                    'phone' => $vendor->busniess_phone_number,
                     'address' => [
                         'line1' => $vendor->address,
                         'city' => $vendor->city,
