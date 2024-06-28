@@ -58,10 +58,10 @@ class StripeConnectController extends Controller
                         'country' => config('countries.'.$vendor->country_name)
                     ],
                 ],
-                'tos_acceptance' => [
-                    'date' => time(),
-                    'ip' => $request->ip(),
-                ],
+                // 'tos_acceptance' => [
+                //     'date' => time(),
+                //     'ip' => $request->ip(),
+                // ],
             ]);
 
             $vendor->stripe_account_id = $account->id;
