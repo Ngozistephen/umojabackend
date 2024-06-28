@@ -15,11 +15,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class StripeConnectController extends Controller
-{
-    
-
-
-    
+{  
    
     public function onboard(Request $request, $userId)
     {
@@ -92,7 +88,7 @@ class StripeConnectController extends Controller
     }
     
 
-    public function saveStripeAccount($token)
+    public function saveStripeAccount(Request $request,$token)
     {
         $stripeToken = StripeStateToken::where('token', $token)->first();
 
