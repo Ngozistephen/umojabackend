@@ -47,6 +47,7 @@ class VendorProfileRequest extends FormRequest
             'office_city' => 'nullable|string',
             'office_address' => 'nullable|string',
             'complex_building_address' => 'nullable|string',
+            'postal_code' => 'nullable|string',
             'accept_mail_marketing' => 'nullable|boolean', 
             'tax_exempt' => 'nullable|boolean', 
             'twitter_handle' => 'nullable|string', 
@@ -71,7 +72,8 @@ class VendorProfileRequest extends FormRequest
             'utility_photo' => 'nullable',
             'business_number_photo' => 'nullable',
             'cover_image' => 'nullable',
-            'postal_code' => 'nullable|string|max:20'
+            'postal_code' => 'nullable|string|max:20',
+            'completed_stripe_onboarding' => 'nullable|boolean', 
         ];
     }
 

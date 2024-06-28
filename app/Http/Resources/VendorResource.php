@@ -56,6 +56,7 @@ class VendorResource extends JsonResource
             'state' => $this->state,
             'city' => $this->city,
             'postal_code' => $this->postal_code,
+            'completed_stripe_onboarding' => $this->completed_stripe_onboarding,
             // 'zipcode' => $this->zipcode,
             'business_bio' => $this->business_bio,
             'twitter_handle' => $this->twitter_handle,

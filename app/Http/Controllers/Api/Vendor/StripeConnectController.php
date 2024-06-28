@@ -50,8 +50,8 @@ class StripeConnectController extends Controller
 
         $accountLink = AccountLink::create([
             'account' => $vendor->stripe_account_id,
-            'refresh_url' => url('/vendor/onboard'),
-            'return_url' => url('/dashboard'),
+            'refresh_url' => url('/vendor/connect_account'),
+            'return_url' => url('https://umoja-store.netlify.app/vendor/dashboard/Homepage'),
             'type' => 'account_onboarding',
         ]);
 

@@ -53,8 +53,13 @@ return [
     ],  
 
     'stripe' => [
+       'model' => App\Models\User::class,
         'publishable_key' => env('STRIPE_KEY'),
         'secret_key' => env('STRIPE_SECRET'),
+        'webhook' => [
+            'secret' => env('STRIPE_WEBHOOK_SECRET'),
+            'tolerance' => env('STRIPE_WEBHOOK_TOLERANCE', 300),
+        ],
         //  'redirect' =>  config('app.frontend_url') .'/auth/facebook/callback'
     ],  
 
