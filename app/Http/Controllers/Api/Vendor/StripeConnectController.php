@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Vendor;
 
+use Exception;
 use Stripe\Stripe;
 use Stripe\Account;
 use App\Models\User;
@@ -11,12 +12,13 @@ use Stripe\AccountLink;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\StripeStateToken;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class StripeConnectController extends Controller
 {  
-   
+//    this worked but no return response
     // public function onboard(Request $request, $userId)
     // {
     //     $user = User::findOrFail($userId);
@@ -95,23 +97,26 @@ class StripeConnectController extends Controller
     {
         $user = User::findOrFail($userId);
         $vendor = $user->vendor;
-
+    
         if (!$vendor) {
+            Log::error('No associated vendor found for user ID: ' . $userId);
             return response()->json(['message' => 'No associated vendor found for the authenticated user'], 404);
         }
-
+    
         if (!$vendor->completed_stripe_onboarding) {
+            Log::info('Vendor has not completed Stripe onboarding. Generating token...');
             $token = Str::random();
-
+    
             StripeStateToken::create([
                 'vendor_id' => $vendor->id,
                 'token' => $token,
             ]);
-
+    
             if (!$vendor->stripe_account_id) {
                 try {
+                    Log::info('Creating Stripe account for vendor ID: ' . $vendor->id);
                     Stripe::setApiKey(config('services.stripe.secret_key'));
-
+    
                     $account = Account::create([
                         'type' => 'standard',
                         'country' => config('countries.'.$vendor->country_name),
@@ -122,9 +127,6 @@ class StripeConnectController extends Controller
                             'last_name' => $vendor->user->last_name,
                             'email' => $vendor->user->email,
                             'phone' => $vendor->business_phone_number,
-                            'business_name' => $vendor->business_name,
-                            'icon' => $vendor->business_image,
-                            'brand_color' => $vendor->cover_image,
                             'address' => [
                                 'line1' => $vendor->address,
                                 'city' => $vendor->city,
@@ -134,32 +136,33 @@ class StripeConnectController extends Controller
                             ],
                         ],
                     ]);
-
+    
                     $vendor->stripe_account_id = $account->id;
                     $vendor->save();
-
+    
                     $accountLink = AccountLink::create([
                         'account' => $vendor->stripe_account_id,
                         'refresh_url' => url('/api/vendor/stripe/refresh_account_link'),
                         'return_url' => config('app.frontend_url') . '/vendor/dashboard/Homepage?token=' . $token,
                         'type' => 'account_onboarding',
                     ]);
-
+    
                     return response()->json(['url' => $accountLink->url]);
-
-                } catch (\Exception $e) {
+    
+                } catch (Exception $e) {
                     Log::error('Stripe Account creation failed: ' . $e->getMessage());
                     return response()->json(['message' => 'Failed to create Stripe account.'], 500);
                 }
             }
-        } else {
-            // Optional: Handle the case when onboarding is already completed
-            return response()->json(['message' => 'Stripe onboarding already completed.'], 200);
+    
+            Log::info('Vendor already has a Stripe account ID: ' . $vendor->stripe_account_id);
+            return response()->json(['message' => 'Stripe account already exists.'], 200);
         }
-
-        // Optional: Add a fallback response
-        return response()->json(['message' => 'Unhandled condition'], 400);
+    
+        Log::info('Stripe onboarding already completed for vendor ID: ' . $vendor->id);
+        return response()->json(['message' => 'Stripe onboarding already completed.'], 200);
     }
+    
 
     
 
