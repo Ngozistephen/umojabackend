@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Vendor;
 
 use Stripe\Account;
 use Stripe\AccountLink;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -15,6 +16,22 @@ class StripeConnectController extends Controller
     public function onboard(Request $request)
     {
         $vendor = Auth::user()->vendor;
+
+        if (!$vendor) {
+            return response()->json(['message' => 'No associated vendor found for the authenticated user'], 404);
+        }
+
+        if (!$vendor->completed_stripe_onboarding) {
+            $token = Str::random();
+            
+            StripeStateToken::create([
+                'created_at' => now(),
+                'updated_at' => now(),
+                'vendor_id' => $vendor->id,
+                'token' => $token,
+            ]);
+            
+        }
 
         if (!$vendor->stripe_account_id) {
             Stripe::setApiKey(config('services.stripe.secret'));
@@ -57,6 +74,10 @@ class StripeConnectController extends Controller
 
         return response()->json(['url' => $accountLink->url]);
     }
+
+
+
+    
     // public function createStripeAccount(Request $request)
     // {
 

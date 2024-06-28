@@ -38,6 +38,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
         protected $appends = ['total_ratings'];
         
 
+        protected $casts = ['completed_stripe_onboarding' => 'bool'];
+
         public function user(): BelongsTo
         {
             return $this->belongsTo(User::class);
