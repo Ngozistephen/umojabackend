@@ -270,7 +270,7 @@ class StripeConnectController extends Controller
             return response()->json(['message' => 'No Stripe account associated with this vendor'], 404);
         }
 
-        Stripe::setApiKey(config('services.stripe.secret'));
+        Stripe::setApiKey(config('services.stripe.secret_key'));
 
         $accountLink = AccountLink::create([
             'account' => $vendor->stripe_account_id,
