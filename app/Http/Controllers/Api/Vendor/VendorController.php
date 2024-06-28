@@ -6,8 +6,9 @@ use App\Models\User;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\VendorProfileRequest;
 use App\Http\Resources\VendorResource;
+use App\Http\Requests\VendorProfileRequest;
+use App\Http\Requests\UpdateVendorProfileRequest;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class VendorController extends Controller
@@ -39,9 +40,35 @@ class VendorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function updateAccount(UpdateVendorProfileRequest $request, $userId)
     {
-        //
+        
+        $user = User::findOrFail($userId);
+    
+        $vendor = $user->vendor ?? new Vendor();
+    
+        $vendor->fill($request->validated());
+    
+        $user->vendor()->save($vendor);
+    
+        $uploadedFiles = [];
+    
+        if ($coverImageUrl = $this->uploadCoverImage($request)) {
+            $uploadedFiles['cover_image'] = $coverImageUrl;
+        }
+    
+
+        if ($additionalFiles = $this->upload($request)) {
+            $uploadedFiles = array_merge($uploadedFiles, $additionalFiles);
+        }
+    
+        // Return a JSON response with a success message and relevant data
+        return response()->json([
+            'message' => 'Vendor profile updated successfully',
+            'user' => $user,
+            'vendor' => new VendorResource($vendor),
+            'uploadedFiles' => $uploadedFiles
+        ], 200);
     }
 
     /**
