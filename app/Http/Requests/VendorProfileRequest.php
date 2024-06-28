@@ -70,7 +70,8 @@ class VendorProfileRequest extends FormRequest
             'business_image' => 'nullable',
             'utility_photo' => 'nullable',
             'business_number_photo' => 'nullable',
-            'cover_image' => 'nullable'
+            'cover_image' => 'nullable',
+            'postal_code' => 'nullable|string|max:20'
         ];
     }
 

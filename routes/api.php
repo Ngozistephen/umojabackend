@@ -48,6 +48,7 @@ use App\Http\Controllers\Api\Admin\ShippingMethodController;
 use App\Http\Controllers\Api\Public\DiscoveryPageController;
 use App\Http\Controllers\Api\Public\ProductSearchController;
 use App\Http\Controllers\Api\Vendor\LocalDeliveryController;
+use App\Http\Controllers\Api\Vendor\StripeConnectController;
 use App\Http\Controllers\Api\Admin\VariationOptionController;
 use App\Http\Controllers\Api\Auth\CustomerRegisterController;
 use App\Http\Controllers\Api\Auth\VendorVerifyCodeController;
@@ -187,6 +188,7 @@ Route::middleware('auth:api')->group(function () {
          Route::apiResource('policies', PolicyController::class);
          Route::apiResource('shippingMethods', ShippingMethodController::class);
          Route::apiResource('admin_shippings', AdminShippingController::class);
+         Route::post('connect_account', [StripeConnectController::class, 'onboard']); 
         //  Route::post('shippingMethods', [ShippingMethodController::class, 'store']);
         //  Route::put('shippingMethods/{id}', [ShippingMethodController::class, 'update']);
 

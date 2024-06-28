@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api\Vendor;
 
-use App\Http\Controllers\Controller;
+use Stripe\Account;
+use Stripe\AccountLink;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class StripeConnectController extends Controller
 {
@@ -21,18 +23,19 @@ class StripeConnectController extends Controller
                 'type' => 'standard',
                 'country' => $vendor->country_name, // Change this to the vendor's country
                 'email' => $vendor->user->email,
-                'business_type' => 'individual', // Change based on your requirements
+                'business_type' =>'individual', 
+                // 'business_type' => $vendor->business_type->name, 
                 'individual' => [
                     'first_name' => $vendor->user->first_name,
                     'last_name' => $vendor->user->last_name,
                     'email' => $vendor->user->email,
-                    'phone' => $vendor->phone,
+                    'phone' => $vendor->user->phone_number,
                     'address' => [
-                        'line1' => $vendor->address_line1,
+                        'line1' => $vendor->address,
                         'city' => $vendor->city,
                         'state' => $vendor->state,
                         'postal_code' => $vendor->postal_code,
-                        'country' => 'US', // Change to the vendor's country
+                        'country' => $vendor->country_name, 
                     ],
                 ],
                 'tos_acceptance' => [
