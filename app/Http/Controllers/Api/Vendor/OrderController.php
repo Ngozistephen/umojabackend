@@ -93,7 +93,7 @@ class OrderController extends Controller
     {
         $order->update($request->validated());
 
-        return response()->json(['message' => 'Order updated successfully', 'order' => $order], Response::HTTP_OK);
+        return new OrderResource($order);
     }
 
     /**
