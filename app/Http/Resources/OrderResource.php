@@ -65,6 +65,8 @@ class OrderResource extends JsonResource
                 ];
             }),
             'fulfillment_status'=>$this->fulfillment_status,  
+            'order_status'=>$this->order_status,  
+            'tracking_number'=>$this->tracking_number,  
             'delivery_method' => $this->shippingMethod?->type,
             'delivery_duration' => $this->shippingMethod?->duration,
             'customer_email' => $this->shippingAddress?->shipping_email,
