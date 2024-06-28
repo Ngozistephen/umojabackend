@@ -96,75 +96,65 @@ class StripeConnectController extends Controller
 
     public function onboard(Request $request, $userId)
     {
-        try {
-            $user = User::findOrFail($userId);
-            $vendor = $user->vendor;
+        $user = User::findOrFail($userId);
+        $vendor = $user->vendor;
     
-            if (!$vendor) {
-                return response()->json(['message' => 'No associated vendor found for the authenticated user'], 404);
-            }
-    
-            if (!$vendor->completed_stripe_onboarding) {
-                $token = Str::random();
-    
-                StripeStateToken::create([
-                    'vendor_id' => $vendor->id,
-                    'token' => $token,
-                ]);
-            }
-    
-            if (!$vendor->stripe_account_id) {
-                Stripe::setApiKey(config('services.stripe.secret_key'));
-    
-                $account = Account::create([
-                    'type' => 'standard',
-                    'country' => config('countries.' . $vendor->country_name),
-                    'email' => $vendor->user->email,
-                    'business_type' => 'individual',
-                    'individual' => [
-                        'first_name' => $vendor->user->first_name,
-                        'last_name' => $vendor->user->last_name,
-                        'email' => $vendor->user->email,
-                        'phone' => $vendor->business_phone_number,
-                        'business_name' => $vendor->business_name,
-                        'icon' => $vendor->business_image,
-                        'brand_color' => $vendor->cover_image,
-                        'address' => [
-                            'line1' => $vendor->address,
-                            'city' => $vendor->city,
-                            'state' => $vendor->state,
-                            'postal_code' => $vendor->postal_code,
-                            'country' => config('countries.' . $vendor->country_name)
-                        ],
-                    ],
-                ]);
-    
-                $vendor->stripe_account_id = $account->id;
-                $vendor->save();
-    
-                $accountLink = AccountLink::create([
-                    'account' => $vendor->stripe_account_id,
-                    'refresh_url' => url('/api/vendor/stripe/refresh_account_link'),
-                    'return_url' => config('app.frontend_url') . '/vendor/dashboard/Homepage?token=' . $token,
-                    'type' => 'account_onboarding',
-                ]);
-    
-                return response()->json(['url' => $accountLink->url]);
-            } else {
-                $accountLink = AccountLink::create([
-                    'account' => $vendor->stripe_account_id,
-                    'refresh_url' => url('/api/vendor/stripe/refresh_account_link'),
-                    'return_url' => config('app.frontend_url') . '/vendor/dashboard/Homepage',
-                    'type' => 'account_onboarding',
-                ]);
-    
-                return response()->json(['url' => $accountLink->url]);
-            }
-        } catch (\Exception $e) {
-            Log::error('Stripe Account creation or account link creation failed: ' . $e->getMessage());
-            return response()->json(['message' => 'Failed to create Stripe account or account link.', 'error' => $e->getMessage()], 500);
+        if (!$vendor) {
+            return response()->json(['message' => 'No associated vendor found for the authenticated user'], 404);
         }
+    
+        if (!$vendor->completed_stripe_onboarding) {
+            $token = Str::random();
+    
+            StripeStateToken::create([
+                'vendor_id' => $vendor->id,
+                'token' => $token,
+            ]);
+        }
+    
+        if (!$vendor->stripe_account_id) {
+            Stripe::setApiKey(config('services.stripe.secret_key'));
+    
+            $account = Account::create([
+                'type' => 'standard',
+                'country' => config('countries.' . $vendor->country_name),
+                'email' => $vendor->user->email,
+                'business_type' => 'individual',
+                'individual' => [
+                    'first_name' => $vendor->user->first_name,
+                    'last_name' => $vendor->user->last_name,
+                    'email' => $vendor->user->email,
+                    'phone' => $vendor->business_phone_number,
+                    'business_name' => $vendor->business_name,
+                    'icon' => $vendor->business_image,
+                    'brand_color' => $vendor->cover_image,
+                    'address' => [
+                        'line1' => $vendor->address,
+                        'city' => $vendor->city,
+                        'state' => $vendor->state,
+                        'postal_code' => $vendor->postal_code,
+                        'country' => config('countries.' . $vendor->country_name)
+                    ],
+                ],
+            ]);
+    
+            $vendor->stripe_account_id = $account->id;
+            $vendor->save();
+    
+            $accountLink = AccountLink::create([
+                'account' => $vendor->stripe_account_id,
+                'refresh_url' => url('/api/vendor/stripe/refresh_account_link'),
+                'return_url' => config('app.frontend_url') . '/vendor/dashboard/Homepage?token=' . $token,
+                'type' => 'account_onboarding',
+            ]);
+    
+            return response()->json(['url' => $accountLink->url]);
+        }
+    
+        // If the vendor has already completed onboarding, return a response indicating so.
+        return response()->json(['message' => 'Vendor has already completed Stripe onboarding']);
     }
+    
     
 
 
