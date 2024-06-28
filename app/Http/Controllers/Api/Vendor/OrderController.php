@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\OrderResource;
+use App\Http\Requests\UpdateOrderRequest;
 
 class OrderController extends Controller
 {
@@ -88,9 +89,11 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateOrderRequest $request, Order $order)
     {
-        //
+        $order->update($request->validated());
+
+        return response()->json(['message' => 'Order updated successfully', 'order' => $order], Response::HTTP_OK);
     }
 
     /**
