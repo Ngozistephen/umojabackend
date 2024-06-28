@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
+use App\Enums\FulfillmentStatus;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateOrderRequest extends FormRequest
