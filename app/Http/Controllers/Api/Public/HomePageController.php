@@ -18,19 +18,7 @@ class HomePageController extends Controller
    
 
 
-    // public function getBestSellingStores()
-    // {
-    //     // Fetch vendors with the count of their orders
-    //     $bestSellingStores = Vendor::select('vendors.*', DB::raw('COUNT(order_product.id) as orders_count'))
-    //         ->join('order_product', 'vendors.id', '=', 'order_product.vendor_id')
-    //         ->groupBy('vendors.id')
-    //         ->orderBy('orders_count', 'desc')
-    //         ->take(10) // Get top 10 best-selling stores
-    //         ->get();
-
-    //     return VendorResource::collection($bestSellingStores);
-    // }
-
+   
 
  
 
@@ -109,10 +97,6 @@ class HomePageController extends Controller
             ->latest()
             ->paginate(10);
 
-        // // Return the products as a JSON response
-        // return response()->json([
-        //     'products' => ProductResource::collection($products),
-        // ]);
 
         return ProductResource::collection($products);
     }

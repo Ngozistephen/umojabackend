@@ -29,8 +29,7 @@ class ArticleController extends Controller
     public function allarticles()
     {
        
-        // $articles = Article::with(['vendor', 'category'])->orderBy('created_at', 'desc')->get();
-        // return ArticleResource::collection($articles);
+       
     
         $articles = Article::with(['vendor', 'category'])->orderBy('created_at', 'desc')->paginate(5);
         return ArticleResource::collection($articles);
@@ -89,9 +88,6 @@ class ArticleController extends Controller
     public function showArticle(Article $article)
     {
       
-        // if (!Auth::check()) {
-        //     abort(401, 'Unauthorized action.');
-        // }
 
         return new ArticleResource($article);
     }
@@ -140,10 +136,7 @@ class ArticleController extends Controller
     
             $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
                 'folder' => $folder,
-                // 'transformation' => [
-                //     ['width' => 400, 'height' => 400, 'crop' => 'fit'],
-                //     ['quality' => 'auto', 'fetch_format' => 'auto']
-                // ]
+                
             ]);
     
             $secureUrl = $cloudinaryResponse->getSecurePath();

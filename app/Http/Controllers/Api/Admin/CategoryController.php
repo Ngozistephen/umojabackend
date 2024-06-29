@@ -38,17 +38,7 @@ class CategoryController extends Controller
      * 
      */
 
-    // public function index(Request $request)
-    // {
-    //     $perPage = $request->get('per_page', 20);
-    //     $cacheKey = 'categories_' . $perPage . '_' . $request->page;
 
-    //     $categories = Cache::remember($cacheKey, Carbon::now()->addDay(), function () use ($perPage) {
-    //         return Category::paginate($perPage);
-    //     });
-
-    //     return CategoryResource::collection($categories);
-    // }
 
     public function index(Request $request)
     {
@@ -69,14 +59,7 @@ class CategoryController extends Controller
     }
 
 
-    // public function index(Request $request)
-    // {
-    //     $categories = Category::orderBy('created_at', 'desc')->take(4)->get();
-    //     // $categories = Category::orderBy('created_at', 'desc')->take(4)->get();
-
-      
-    //     return CategoryResource::collection($categories);
-    // }
+    
    /**
      * POST Categories
      *
@@ -105,19 +88,7 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    // public function show(Category $category)
-    // {
-    //     $this->authorize('all-access');
 
-    //     if ($category->user_id != auth()->id()) {
-    //         abort(403, 'Unauthorized');
-    //     }
-    //     // it gets the subcategories that is related to the passed category
-    //     $subcategories = $category->subcategories;
-    //     return SubcategoryResource::collection($subcategories);
- 
-    //     // return new CategoryResource($category);
-    // }
 
     public function show(Category $category)
     {

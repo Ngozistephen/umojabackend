@@ -14,26 +14,7 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    // public function index(Request $request)
-    // {
-    //     $vendorId = Auth::user()->vendor->id;
-    //     $orders = Order::whereHas('products', function ($query) use ($vendorId) {
-    //             $query->where('order_product.vendor_id', $vendorId);
-    //         })->with(['products' => function ($query) use ($vendorId) {
-    //             $query->where('order_product.vendor_id', $vendorId);
-    //         }]
 
-    //         ->when($request->fulfillment_status === 'is_unfulfilled', function ($query) use ($request){
-    //             $query->where('fulfillment_status', 'is_unfulfilled');
-    //         })
-            
-    //         )->latest()
-            
-    //         ->paginate(20);
-
- 
-    //     return OrderResource::collection($orders);
-    // }
 
     public function index(Request $request)
     {

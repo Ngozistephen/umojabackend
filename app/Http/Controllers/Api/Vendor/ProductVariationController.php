@@ -18,7 +18,6 @@ class ProductVariationController extends Controller
     public function index(Product $product)
     {
         $variations = $product->variations()->paginate(10);
-        // return response()->json(['variations' => $variations], 200);
         return ProductVariationResource::collection($variations);
     }
 

@@ -92,9 +92,7 @@ class PostController extends Controller
     public function showPost(Post $post)
     {
        
-        // if (!Auth::check()) {
-        //     abort(401, 'Unauthorized action.');
-        // }
+        
 
         $post->load('products');
         return new PostResource($post);
@@ -135,7 +133,7 @@ class PostController extends Controller
             $post->products()->sync($productIds);
         }
         
-        // Use $isDraft variable consistently
+      
         if (empty($validatedData['scheduled_at']) && !$isDraft) {
             $validatedData['published_at'] = now();
         }
@@ -248,40 +246,10 @@ class PostController extends Controller
         ], 200);
     }
 
-    // public function view(Request $request, Post $post)
-    // {
-    //     $ipAddress = $request->ip();
-    //     $cacheKey = 'view_post_' . $post->id . '_ip_' . $ipAddress;
-    //     $cacheExpiration = now()->addDay(); 
-
-    
-    //     if (Cache::has($cacheKey)) {
-    //         return response()->json([
-    //             'message' => 'You have already viewed this post today'
-    //         ], 403);
-    //     }
-
-    //     $post->increment('views');
-
-    //     Cache::put($cacheKey, true, $cacheExpiration);
-
-    //     return response()->json([
-    //         'message' => 'Post view count incremented successfully',
-    //         'post' => new PostResource($post)
-    //     ], 200);
-    // }
+   
 
   
 
-    // public function like(Post $post)
-    // {
-    //     $user = Auth::user();
-    //     $post->increment('likes');
-    //     return response()->json([
-    //         'message' => 'Post like count incremented successfully',
-    //         'post' => new PostResource($post)
-    //     ], 200);
-    // }
 
     public function like(Request $request, Post $post)
     {
@@ -318,27 +286,7 @@ class PostController extends Controller
     }
 
 
-    // public function view(Post $post)
-    // {
-    //     $post->increment('views');
-    //     return response()->json([
-    //         'message' => 'Post view count incremented successfully',
-    //         'post' => new PostResource($post)
-    //     ], 200);
-    // }
-
-   
-
-    // public function unlike(Post $post)
-    // {
-    //     if ($post->likes > 0) {
-    //         $post->decrement('likes');
-    //     }
-    //     return response()->json([
-    //         'message' => 'Post like count decremented successfully',
-    //         'post' => new PostResource($post)
-    //     ], 200);
-    // }
+    
 
     public function unlike(Request $request, Post $post)
     {
@@ -381,10 +329,7 @@ class PostController extends Controller
     
             $cloudinaryResponse = Cloudinary::upload($file->getRealPath(), [
                 'folder' => $folder,
-                // 'transformation' => [
-                //     ['width' => 400, 'height' => 400, 'crop' => 'fit'],
-                //     ['quality' => 'auto', 'fetch_format' => 'auto']
-                // ]
+                
             ]);
     
             $secureUrl = $cloudinaryResponse->getSecurePath();

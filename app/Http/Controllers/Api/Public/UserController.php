@@ -67,37 +67,7 @@ class UserController extends Controller
        
         return response()->json(['message' => 'User updated successfully', 'user' => new UserResource($user)], 200);
     }
-    // public function update (User $user, UpdateUserRequest $request)
-    // {
-    //     // Update user data
-    //     $user->update($request->validated());
 
-    //     if ($user->vendor) {
-    //         $user->vendor->update([
-    //             'phone_number' => $request->input('phone_number'),
-    //             'country_name' => $request->input('country_name'),
-    //             'company' => $request->input('company'),
-    //             'address' => $request->input('address'),
-    //             'rep_country' => $request->input('rep_country'),
-    //             'state' => $request->input('state'),
-    //             'city' => $request->input('city'),
-    //             'business_bio' => $request->input('business_bio'),
-    //             'twitter_handle' => $request->input('twitter_handle'),
-    //             'facebook_handle' => $request->input('facebook_handle'),
-    //             'instagram_handle' => $request->input('instagram_handle'),
-    //             'youtube_handle' => $request->input('youtube_handle'),
-    //             'building_name' => $request->input('building_name'),
-    //             'bank_name' => $request->input('bank_name'),
-    //             'bank_account_number' => $request->input('bank_account_number'),
-    //             'name_on_account' => $request->input('name_on_account'),
-    //             'sort_code' => $request->input('sort_code'),
-    //             'swift_code' => $request->input('swift_code'),
-    //             'iban' => $request->input('iban'),
-    //         ]);
-    //     }
-       
-    //     return response()->json(['message' => 'User updated successfully', 'user' => new UserResource($user)], 200);
-    // }
     
 
     public function destroy(User $user)
