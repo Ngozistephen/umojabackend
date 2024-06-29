@@ -317,38 +317,43 @@ class StripeConnectController extends Controller
     public function refreshAccountLink(Request $request)
     {
         $vendor = Auth::user()->vendor;
-
+    
         if (!$vendor) {
             return response()->json(['message' => 'No associated vendor found for the authenticated user'], 404);
         }
-
+    
         if (!$vendor->stripe_account_id) {
             return response()->json(['message' => 'No Stripe account associated with this vendor'], 404);
         }
-
+    
         Stripe::setApiKey(config('services.stripe.secret_key'));
-
+    
         try {
             // Log the data being sent to Stripe
             Log::info('Creating Stripe Account Link', [
                 'vendor_id' => $vendor->id,
                 'stripe_account_id' => $vendor->stripe_account_id,
             ]);
-
-            $accountLink = \Stripe\AccountLink::create([
+    
+            $accountLink = AccountLink::create([
                 'account' => $vendor->stripe_account_id,
                 'refresh_url' => url('/api/vendor/stripe/refresh_account_link'),
                 'return_url' => config('app.frontend_url') . '/vendor/dashboard/Homepage?token=' . Str::random(),
                 'type' => 'account_onboarding',
             ]);
-
+    
+            // Log the created account link
+            Log::info('Stripe Account Link Created', [
+                'url' => $accountLink->url,
+            ]);
+    
             return response()->json(['url' => $accountLink->url]);
-        } catch (InvalidRequestException $e) {
+        } catch (\Stripe\Exception\InvalidRequestException $e) {
             // Log the error message for debugging
             Log::error('Stripe Account Link Creation Error', [
                 'error' => $e->getMessage(),
             ]);
-
+    
             return response()->json(['message' => $e->getMessage()], 400);
         }
     }
