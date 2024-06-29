@@ -12,8 +12,7 @@ use Stripe\AccountLink;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\StripeStateToken;
-// use Illuminate\Support\Facades\Log;
-// use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Stripe\Exception\InvalidRequestException;
@@ -313,7 +312,7 @@ class StripeConnectController extends Controller
     // }
 
 
-    use Illuminate\Support\Facades\Log;
+   
 
     public function refreshAccountLink(Request $request)
     {
