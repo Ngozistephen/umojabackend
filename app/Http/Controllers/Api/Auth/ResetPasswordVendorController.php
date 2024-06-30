@@ -45,11 +45,25 @@ class ResetPasswordVendorController extends Controller
     }
 
 
+    // protected function tokenExpired($passwordResetToken)
+    // {
+    //     $expirationTime = config('auth.passwords.vendors.expire');
+    //     $createdAt = $passwordResetToken->created_at;
+
+    //     return now()->diffInMinutes($createdAt) > $expirationTime;
+    // }
+
     protected function tokenExpired($passwordResetToken)
     {
         $expirationTime = config('auth.passwords.vendors.expire');
         $createdAt = $passwordResetToken->created_at;
+        $diffInMinutes = now()->diffInMinutes($createdAt);
 
-        return now()->diffInMinutes($createdAt) > $expirationTime;
+        Log::info('Token created at: ' . $createdAt);
+        Log::info('Current time: ' . now());
+        Log::info('Difference in minutes: ' . $diffInMinutes);
+        Log::info('Expiration time: ' . $expirationTime);
+
+        return $diffInMinutes > $expirationTime;
     }
 }
