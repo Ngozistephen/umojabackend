@@ -22,7 +22,10 @@ class ResetPasswordVendorController extends Controller
             'password' => ['required','confirmed', Password::defaults()],
         ]);
     
-        $passwordResetToken = PasswordResetToken::where('email', $request->email)
+        // $passwordResetToken = PasswordResetToken::where('email', $request->email)
+        //     ->where('token', $request->token)
+        //     ->first();
+        $passwordResetToken = PasswordResetToken::where('email', strtolower($request->email))
             ->where('token', $request->token)
             ->first();
     
