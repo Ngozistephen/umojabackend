@@ -50,7 +50,7 @@ class ForgetVendorPasswordController extends Controller
 
         // if it is code is want i use rand(10,100000)
         // $resetLink = route('auth.reset_vendor_password', ['token' => $token]);
-        $resetLink = config('app.frontend_url') . 'vendor/newpass/' . $token;
+        $resetLink = config('app.frontend_url') . '/vendor/newpass/' . $token;
 
         Mail::to($email)->send(new ForgetPasswordMail($resetLink));
 
