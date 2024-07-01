@@ -52,10 +52,10 @@ class ProductController extends Controller
 
                 // filter by price range 
                 ->when($request->priceFrom, function ($query) use ($request){
-                    $query->where('price', '>=', $request->priceFrom * 100);
+                    $query->where('price', '>=', $request->priceFrom);
                 })
                 ->when($request->priceTo, function ($query) use ($request){
-                    $query->where('price', '<=', $request->priceTo * 100);
+                    $query->where('price', '<=', $request->priceTo);
                 })
 
                 // for status is active, pass true in the param
