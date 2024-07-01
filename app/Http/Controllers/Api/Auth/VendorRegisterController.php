@@ -71,40 +71,7 @@ class VendorRegisterController extends Controller
 
     
     }
-    // public function register(VendorRegistrationRequest $request)
-    // {
-    //     $userDetails = $request->only(['first_name', 'last_name', 'email', 'password','phone_number']);
-    //     $role = Role::where('name', 'Vendor')->value('id');
-    //     $userDetails['role_id'] = $role;
 
-    //     return DB::transaction(function () use ($request, $userDetails, $role) {
-    //         $user = User::create($userDetails);
-
-    //         $uploadedFiles = $this->upload($request);
-    //         $vendorData = $request->except(array_keys($uploadedFiles), ['password']);
-    //         $vendor = Vendor::create(array_merge($vendorData, $uploadedFiles, ['user_id' => $user->id]));
-
-    //         $passwordSetupToken = Str::random(60);
-    //         $user->update(['password_setup_token' => $passwordSetupToken]);
-
-  
-    //         // $passwordSetupUrl = config('app.frontend_url') . '/auth/password_setup/' . $passwordSetupToken;
-
-    //         Mail::to($user->email)->send(new VendorPasswordSetupMail($user, $passwordSetupUrl));
-
-    //         $device = substr($request->userAgent() ?? '', 0, 255);
-    //         $token = $user->createToken($device)->accessToken;
-
-    //         $response = [
-    //             'access_token' => $token,
-    //             'vendor' => $user->first_name,
-    //             'role' => Role::find($role)->name,
-    //             'Message' => 'registered successfully. Check your email to set up your password.'
-    //         ];
-
-    //         return response()->json($response,  Response::HTTP_CREATED);
-    //     });
-    // }
 
     
 
