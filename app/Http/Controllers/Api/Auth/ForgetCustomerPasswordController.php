@@ -51,7 +51,7 @@ class ForgetCustomerPasswordController extends Controller
 
         // if it is code is want i use rand(10,100000)
         // $resetLink = route('auth.reset_customer_password', ['token' => $token]);
-        $resetLink = config('app.frontend_url') . '/user/newpass/' . $token;
+        $resetLink = config('app.frontend_url') . 'user/newpass/' . $token;
 
         Mail::to($email)->send(new ForgetPasswordMail($resetLink));
 
