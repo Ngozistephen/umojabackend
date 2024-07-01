@@ -46,7 +46,7 @@ class VendorRegisterController extends Controller
         $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
-            'email' => $request->email,
+            'email' =>  strtolower($request->email),
             'password' => Hash::make($request->password),
             'terms_accepted' => $request->terms_accepted,
             'role_id' => $role, 

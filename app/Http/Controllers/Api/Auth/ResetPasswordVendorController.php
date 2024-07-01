@@ -23,12 +23,12 @@ class ResetPasswordVendorController extends Controller
             'password' => ['required','confirmed', Password::defaults()],
         ]);
     
-        // $passwordResetToken = PasswordResetToken::where('email', $request->email)
-        //     ->where('token', $request->token)
-        //     ->first();
-        $passwordResetToken = PasswordResetToken::where('email', strtolower($request->email))
+        $passwordResetToken = PasswordResetToken::where('email', $request->email)
             ->where('token', $request->token)
             ->first();
+        // $passwordResetToken = PasswordResetToken::where('email', strtolower($request->email))
+        //     ->where('token', $request->token)
+        //     ->first();
     
         if (!$passwordResetToken || $this->tokenExpired($passwordResetToken)) {
             return response()->json(['error' => 'Invalid or expired reset token.'], 400);
