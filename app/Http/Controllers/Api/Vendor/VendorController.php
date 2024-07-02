@@ -40,28 +40,64 @@ class VendorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function updateAccount(UpdateVendorProfileRequest $request, $userId)
-    {
+    // public function updateAccount(UpdateVendorProfileRequest $request, $userId)
+    // {
         
-        $user = User::findOrFail($userId);
+    //     $user = User::findOrFail($userId);
     
-        $vendor = $user->vendor ?? new Vendor();
+    //     $vendor = $user->vendor ?? new Vendor();
     
-        $vendor->fill($request->validated());
+    //     $vendor->fill($request->validated());
     
-        $user->vendor()->save($vendor);
+    //     $user->vendor()->save($vendor);
     
-        $uploadedFiles = [];
+    //     $uploadedFiles = [];
     
-        if ($coverImageUrl = $this->uploadCoverImage($request)) {
-            $uploadedFiles['cover_image'] = $coverImageUrl;
-        }
+    //     if ($coverImageUrl = $this->uploadCoverImage($request)) {
+    //         $uploadedFiles['cover_image'] = $coverImageUrl;
+    //     }
     
 
-        if ($additionalFiles = $this->upload($request)) {
-            $uploadedFiles = array_merge($uploadedFiles, $additionalFiles);
-        }
+    //     if ($additionalFiles = $this->upload($request)) {
+    //         $uploadedFiles = array_merge($uploadedFiles, $additionalFiles);
+    //     }
     
+    //     // Return a JSON response with a success message and relevant data
+    //     return response()->json([
+    //         'message' => 'Vendor profile updated successfully',
+    //         'user' => $user,
+    //         'vendor' => new VendorResource($vendor),
+    //         'uploadedFiles' => $uploadedFiles
+    //     ], 200);
+    // }
+
+
+    public function updateAccount(UpdateVendorProfileRequest $request, $userId)
+    {
+        // Find the user or fail
+        $user = User::findOrFail($userId);
+
+        // Validate the request data
+        $validatedData = $request->validated();
+
+        // Find existing vendor or create a new one
+        $vendor = $user->vendor ?? new Vendor();
+
+        // Fill the vendor with validated data
+        $vendor->fill($validatedData);
+
+        // Save the vendor
+        $user->vendor()->save($vendor);
+
+        // Handle file uploads
+        $coverImageUrl = $this->uploadCoverImage($request);
+
+        $uploadedFiles = $this->upload($request);
+
+        if ($coverImageUrl) {
+            $uploadedFiles['cover_image'] = $coverImageUrl;
+        }
+
         // Return a JSON response with a success message and relevant data
         return response()->json([
             'message' => 'Vendor profile updated successfully',
@@ -71,6 +107,7 @@ class VendorController extends Controller
         ], 200);
     }
 
+
     /**
      * Remove the specified resource from storage.
      */
@@ -79,57 +116,70 @@ class VendorController extends Controller
         //
     }
    
+    // public function setupAccount(VendorProfileRequest $request, $userId)
+    // {
+    //     $user = User::findOrFail($userId);
+
+    //     $vendor = $user->vendor ?? new Vendor();
+    //     $vendor->fill($request->validated());
+    //     $user->vendor()->save($vendor);
+
+    //     // Process cover image upload
+    //     $coverImageUrl = $this->uploadCoverImage($request);
+
+    //     // Process other file uploads
+    //     $uploadedFiles = $this->upload($request);
+
+    //     if ($coverImageUrl) {
+    //         $uploadedFiles['cover_image'] = $coverImageUrl;
+    //     }
+
+    //     return response()->json([
+    //         'message' => 'Vendor profile setup successfully',
+    //         'user' => $user,
+    //         'vendor' => new VendorResource($vendor),
+    //         'uploadedFiles' => $uploadedFiles
+    //     ], 200);
+    // }
+
     public function setupAccount(VendorProfileRequest $request, $userId)
     {
+        // Find the user or fail
         $user = User::findOrFail($userId);
 
+        // Validate the request data
+        $validatedData = $request->validated();
+
+        // Find existing vendor or create a new one
         $vendor = $user->vendor ?? new Vendor();
-        $vendor->fill($request->validated());
+
+        // Fill the vendor with validated data
+        $vendor->fill($validatedData);
+
+        // Save the vendor
         $user->vendor()->save($vendor);
 
-        // Process cover image upload
         $coverImageUrl = $this->uploadCoverImage($request);
 
-        // Process other file uploads
         $uploadedFiles = $this->upload($request);
 
         if ($coverImageUrl) {
             $uploadedFiles['cover_image'] = $coverImageUrl;
         }
+    
 
+        // Return a JSON response with a success message and relevant data
         return response()->json([
             'message' => 'Vendor profile setup successfully',
             'user' => $user,
             'vendor' => new VendorResource($vendor),
             'uploadedFiles' => $uploadedFiles
         ], 200);
+
     }
 
-    // public function setupAccount(VendorProfileRequest $request, $userId)
-    // {
-      
-    //     $user = User::findOrFail($userId);
-      
-    //     $vendor = $user->vendor ?? new Vendor();
-    //     $vendor->fill($request->validated());
-    //     $user->vendor()->save($vendor);
-
-    //     // Process file uploads
-    //     $uploadedFiles = $this->upload($request);
-           
 
 
-    //      return response()->json([
-    //         'message' => 'Vendor profile Setup successfully',
-    //         'user' => $user,
-    //         'vendor' => new VendorResource($vendor),
-    //         // 'uploadedFiles' => $uploadedFiles
-    //     ], 200);
-
-
-
-     
-    // }
 
     
 
