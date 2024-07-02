@@ -41,7 +41,7 @@ class VendorProfileRequest extends FormRequest
             'city' => 'nullable|string', 
             'business_bio' => 'nullable|string|min:20',
             'busniess_email' => 'nullable| string|email',
-            'busniess_phone_number' => 'nullable|string|unique:vendors',
+            'busniess_phone_number' => 'nullable|string|min:20',
             'office_country' => 'nullable|string',
             'office_state' => 'nullable|string',
             'office_city' => 'nullable|string',
